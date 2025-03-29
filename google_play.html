@@ -1,0 +1,117 @@
+<!DOCTYPE html><html lang="ru">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Страница установки</title>
+    <link rel="stylesheet" href="styles.css">
+</head>
+<body>
+    <div class="container">
+        <div class="header">
+            <img src="raspisanie.png" alt="App Icon" class="app-icon">
+            <div class="app-info">
+                <h2>Расписание</h1>
+                <p>Разработчик: Komron Sharipov</p>
+            </div>
+        </div>
+        <div class="rating">
+            <span class="star">⭐⭐⭐⭐⭐</span> 4.7 (19 отзывов)
+        </div><button id="installButton">Установить</button>
+    <p id="downloadCounter" class="counter">Скачиваний: 0</p>
+    
+    <p class="description"></p>
+    
+    <div class="screenshots">
+        <img src="neon.jpg" alt="Скриншот 1" class="screenshot">
+        <img src="neon.jpg" alt="Скриншот 2" class="screenshot">
+        <img src="neon.jpg" alt="Скриншот 3" class="screenshot">
+    </div>
+</div>
+
+<style>
+    body {
+        font-family: Arial, sans-serif;
+        background-color: #121212;
+        color: white;
+        display: flex;
+        justify-content: center;
+        align-items: center;
+        height: 100vh;
+        margin: 0;
+    }
+    .container {
+        background: #1e1e1e;
+        padding: 35px;
+        border-radius: 10px;
+        text-align: none;
+        width: 350px;
+        overflow-y: auto;
+        max-height: 90vh;
+    }
+    .header {
+        display: flex;
+        align-items: center;
+        margin-bottom: 10px;
+    }
+    .app-icon {
+        width: 50px;
+        height: 50px;
+        border-radius: 10px;
+    }
+    .app-info {
+        margin-left: 10px;
+        text-align: left;
+    }
+    .rating {
+        margin: 10px 0;
+    }
+    button {
+        background-color: #007bff;
+        color: white;
+        border: none;
+        padding: 10px;
+        border-radius: 25px;
+        cursor: pointer;
+        width: 100%;
+        height: 40px;
+    }
+    button:hover {
+        background-color: #121212;
+    }
+    .counter {
+        margin-top: 10px;
+        font-size: 14px;
+        color: #ccc;
+    }
+    .description {
+        font-size: 14px;
+        margin-top: 10px;
+        color: #ccc;
+    }
+    .screenshots {
+        display: flex;
+        overflow-x: auto;
+        gap: 10px;
+        margin-top: 15px;
+        padding-bottom: 10px;
+    }
+    .screenshot {
+        width: 80%;
+        border-radius: 10px;
+    }
+    
+</style>
+
+<script>
+    let downloadCount = 0;
+    document.getElementById("installButton").addEventListener("click", function() {
+        this.textContent = "Скачиваеться....";
+        this.style.backgroundColor = "#121212";
+        window.location.href="Расписание.apk"
+        downloadCount++;
+        document.getElementById("downloadCounter").textContent = `Скачиваний: ${downloadCount}`;
+    });
+</script>
+
+</body>
+</html>

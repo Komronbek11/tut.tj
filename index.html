@@ -1,0 +1,169 @@
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Вход</title>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/crypto-js/4.1.1/crypto-js.min.js"></script>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            background-image: url('');
+            background-repeat: no-repeat;
+            text-align: center;
+        }
+        .container {
+            display: ;
+            top: -50px;
+            height: 70vh;
+            justify-content: center;
+            align-items: center;
+            width: 300px;
+            margin: 50px auto;
+            display: transparent;
+            backdrop-filter: blur(15px);
+            background: ;
+            padding: 35px;
+            border-radius: 10px;
+            box-shadow: 0px 0px 10px rgba(0, 0, 0, 0.1);
+        }
+        h2 {
+            color: #333;
+        }
+        input {
+            width: 90%;
+            height: 30px;
+            padding: 8px;
+            margin: 10px 0;
+            border: 1px solid green;
+            border-radius: 25px;
+        }
+    input:hover{
+        border: 2px solid lime;
+    }
+    input::active{
+        border: 4px solid lime;
+    }
+        .password-container {
+            position: relative;
+        }
+        .toggle-password {
+            position: absolute;
+            right: 10px;
+            top: 50%;
+            transform: translateY(-50%);
+            cursor: pointer;
+        }
+        button {
+            width: 95%;
+            padding: 10px;
+            background: #28a745;
+            color: white;
+            border: none;
+            border-radius: 25px;
+            cursor: pointer;
+            font-size: 16px;
+        }
+        button:hover {
+            background: #218838;
+        }
+        .hidden {
+            display: none;
+        }
+    img{
+        width: 150px;
+        height: 150px;
+        border-radius: 50%;
+        border: 2px solid blue;
+    }
+    </style>
+</head>
+<body>
+
+    <div class="container" id="loginContainer">
+        <img src="logo.png">
+        <h2>Вход</h2>
+        <form id="loginForm">
+            <input type="text" id="loginUsername" placeholder="Имя пользователя" required>
+            <div class="password-container">
+                <input type="password" id="loginPassword" placeholder="Пароль" required>
+                <span class="toggle-password" onclick="togglePassword('loginPassword')">👁️</span>
+            </div>
+            <button type="submit">Войти &#10145;</button>
+        </form>
+    </div>
+
+    <div class="container hidden" id="profileContainer">
+        <h2>Личный кабинет</h2>
+        <p>Добро пожаловать, <span id="userProfile"></span>!</p>
+        <button onclick="logout()">Выйти</button>
+    </div>
+
+    <script>
+        const secretKey = "mySecretKey123"; // Ключ для шифрования паролей
+
+        // ✅ Разрешённые пользователи (с зашифрованными паролями)
+        const usersData = [
+            { username: "admin", password: CryptoJS.AES.encrypt("123456", secretKey).toString() },
+            { username: "komron_sharipov", password: CryptoJS.AES.encrypt("11012005", secretKey).toString() },
+            { username: "muhammad_hamroev", password: CryptoJS.AES.encrypt("muhammad", secretKey).toString() },
+    { username: "avzalsho_azamov", password: CryptoJS.AES.encrypt("avzalsho", secretKey).toString() },
+       { username: "firdavs_shamsuddinzoda", password: CryptoJS.AES.encrypt("firdavs", secretKey).toString() },
+       { username: "firuz_kachurov", password: CryptoJS.AES.encrypt("firuz", secretKey).toString() },
+       { username: "mirmuhammad_izatulloev", password: CryptoJS.AES.encrypt("mirmuhammad", secretKey).toString() },
+       { username: "elchibek_murodbekov", password: CryptoJS.AES.encrypt("elchibek", secretKey).toString() },
+       { username: "hisrav_rohbarov", password: CryptoJS.AES.encrypt("hisrav", secretKey).toString() },
+       { username: "nozim_goibov", password: CryptoJS.AES.encrypt("nozim", secretKey).toString() },
+       { username: "romish_asalzoda", password: CryptoJS.AES.encrypt("romish", secretKey).toString() },
+       { username: "", password: CryptoJS.AES.encrypt("", secretKey).toString() },
+       { username: "", password: CryptoJS.AES.encrypt("", secretKey).toString() },
+       { username: "", password: CryptoJS.AES.encrypt("", secretKey).toString() }
+        ];
+
+        function decryptPassword(encryptedPassword) {
+            return CryptoJS.AES.decrypt(encryptedPassword, secretKey).toString(CryptoJS.enc.Utf8);
+        }
+
+        document.getElementById('loginForm').addEventListener('submit', function() {
+            event.preventDefault();
+
+            const loginUsername = document.getElementById('loginUsername').value.trim();
+            const loginPassword = document.getElementById('loginPassword').value.trim();
+
+            const user = usersData.find(u => u.username === loginUsername);
+
+            if (user && decryptPassword(user.password) === loginPassword) {
+                
+                window.location.href = "home.html";
+                localStorage.setItem('loggedInUser', loginUsername);
+                showProfile();
+            } else {
+                alert('Неверный логин или пароль');
+            }
+        });
+
+        function togglePassword(inputId) {
+            const input = document.getElementById(inputId);
+            input.type = input.type === "password" ? "text" : "password";
+        }
+
+        function showProfile() {
+            const user = localStorage.getItem('loggedInUser');
+            if (user) {
+                document.getElementById('userProfile').innerText = user;
+                document.getElementById('loginContainer').classList.add('');
+                document.getElementById('profileContainer').classList.remove('hidden');
+            }
+        }
+
+        function logout() {
+            localStorage.removeItem('loggedInUser');
+            document.getElementById('profileContainer').classList.add('hidden');
+            document.getElementById('loginContainer').classList.remove('hidden');
+        }
+
+        showProfile();
+    </script>
+
+</body>
+</html>

@@ -1,0 +1,172 @@
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Анимация загрузки</title>
+    <style>
+  * {
+    margin: 0;
+    padding: 0;
+    box-sizing: border-box;
+    font-family: Arial, sans-serif;
+}
+
+body {
+    background-color: ;
+    text-align: center;
+}
+
+/* Экран загрузки */
+.splash-screen {
+    position: fixed;
+    width: 100%;
+    height: 100vh;
+    background-color: #294675;
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    align-items: center;
+    opacity: 1;
+    animation: fadeOut 3s ease-in-out forwards;
+}
+
+.logo, img {
+  border-radius: 50%;
+  border: 2px blue;
+    width: 150px;
+    height: auto;
+    opacity: 0;
+    animation: fadeIn 1.5s ease-in-out forwards;
+}
+
+.text {
+    margin-top: 10px;
+    font-size: 20px;
+    color: white;
+    opacity: 1;
+    animation: fadeIn 4s ease-in-out forwards 3s;
+}
+
+/* Контент приложения (изначально скрыт) */
+.content {
+    display: ;
+    padding: 0px;
+}
+
+/* Анимации */
+@keyframes fadeIn {
+    from {
+        opacity: 0;
+        transform: scale(0.7);
+    }
+    to {
+        opacity: 1;
+        transform: scale(1);
+    }
+}
+
+@keyframes fadeOut {
+    0% {
+        opacity: 2;
+    }
+    90% {
+        opacity: 1;
+    }
+    100% {
+        opacity: 0.5;
+        display: none;
+    }
+}
+  </style>
+</head>
+<body>
+
+    <div class="splash-screen">
+        <img src="AI.png" alt="Логотип ВУЗа" class="logo">
+      <div class="container hidden" id="profileContainer">
+        <h1 class="text">Добро пожаловать <span id="userProfile"></span>в наш ВУЗ!</h1>
+    </div>
+    </div>
+
+    <div class="content">
+        <h2>Главная страница</h2>
+        <p>Здесь будет контент приложения.</p>
+    </div>
+
+    <script src="script.js">
+  const secretKey = "mySecretKey123"; // Ключ для шифрования паролей
+
+        // ✅ Разрешённые пользователи (с зашифрованными паролями)
+        const usersData = [
+            { username: "admin", password: CryptoJS.AES.encrypt("123456", secretKey).toString() },
+            { username: "komron_sharipov", password: CryptoJS.AES.encrypt("11012005", secretKey).toString() },
+            { username: "muhammad_hamroev", password: CryptoJS.AES.encrypt("muhammad", secretKey).toString() },
+    { username: "avzalsho_azamov", password: CryptoJS.AES.encrypt("avzalsho", secretKey).toString() },
+       { username: "firdavs_shamsuddinzoda", password: CryptoJS.AES.encrypt("firdavs", secretKey).toString() },
+       { username: "firuz_kachurov", password: CryptoJS.AES.encrypt("firuz", secretKey).toString() },
+       { username: "mirmuhammad_izatulloev", password: CryptoJS.AES.encrypt("mirmuhammad", secretKey).toString() },
+       { username: "", password: CryptoJS.AES.encrypt("", secretKey).toString() },
+       { username: "", password: CryptoJS.AES.encrypt("", secretKey).toString() },
+       { username: "", password: CryptoJS.AES.encrypt("", secretKey).toString() },
+       { username: "", password: CryptoJS.AES.encrypt("", secretKey).toString() },
+       { username: "", password: CryptoJS.AES.encrypt("", secretKey).toString() },
+       { username: "", password: CryptoJS.AES.encrypt("", secretKey).toString() },
+       { username: "", password: CryptoJS.AES.encrypt("", secretKey).toString() }
+        ];
+  
+  function decryptPassword(encryptedPassword) {
+            return CryptoJS.AES.decrypt(encryptedPassword, secretKey).toString(CryptoJS.enc.Utf8);
+        }
+
+        document.getElementById('loginForm').addEventListener('submit', function(event) {
+            event.preventDefault();
+
+            const loginUsername = document.getElementById('loginUsername').value.trim();
+            const loginPassword = document.getElementById('loginPassword').value.trim();
+
+            const user = usersData.find(u => u.username === loginUsername);
+
+            if (user && decryptPassword(user.password) === loginPassword) {
+                window.location.href = "for_university.html";
+   
+                localStorage.setItem('loggedInUser', loginUsername);
+                showProfile();
+            } else {
+                alert('Неверный логин или пароль');
+            }
+        });
+
+        function togglePassword(inputId) {
+            const input = document.getElementById(inputId);
+            input.type = input.type === "password" ? "text" : "password";
+        }
+
+        function showProfile() {
+            const user = localStorage.getItem('loggedInUser');
+            if (user) {
+                document.getElementById('userProfile').innerText = user;
+                document.getElementById('loginContainer').classList.add('hidden');
+                document.getElementById('profileContainer').classList.remove('hidden');
+            }
+        }
+    function Submit() {
+        
+         }
+        function logout() {
+            
+            localStorage.removeItem('loggedInUser');
+            document.getElementById('profileContainer').classList.add('hidden');
+            document.getElementById('loginContainer').classList.remove('hidden');
+        }
+
+        showProfile();
+  document.addEventListener("DOMContentLoaded", () => {
+    setTimeout(() => {
+        document.querySelector(".splash-screen").style.display = "none";
+        document.querySelector(".content").style.display = "block";
+    }, 3000); // Время совпадает с `fadeOut`
+});
+  </script>
+</body>
+</html>
