@@ -69,22 +69,6 @@ tr:hover {
     font-weight: bold;
 }
 
-    .button{
-        margin-left: 0;
-        border: none;
-          width: 130px;
-          height: 40px;
-          border-radius: 20px;
-          background-color: #146de0;
-          color: white;
-    margin-top: 0px;
-       text-align: center;
-    }
-    .nazad{
-        justify-content: left;
-        top: right;
-        margin-right: 500px;
-    }
 /* Адаптивность */
 @media (max-width: 768px) {
     table {
@@ -125,7 +109,7 @@ tr:hover {
         body { font-family: Arial, sans-serif; }
         table { width: 100%; border-collapse: collapse; margin-top: 15px; }
         th, td { border: 1px solid black; padding: 15px; text-align: left; }
-        th { background-color: #4d8cbf; }
+        th { background-color: #6d7ba1; }
     
         .ongoing { background-color: #05e439; } /* Зелёный цвет для текущего экзамена */
 .past { background-color: #ff1427; } /* Красный цвет для завершённых экзаменов */
@@ -133,8 +117,8 @@ tr:hover {
     </style>
 </head>
 <body>
-    
-        <h1></h1><h2>Расписание экзаменов</h2>
+
+    <h2>Расписание экзаменов</h2>
 
     <table id="examTable">
         <thead>
@@ -150,14 +134,8 @@ tr:hover {
             <!-- Данные загружаются динамически -->
         </tbody>
     </table>
-<div class="nazad">
-    <button onclick="goBack()" class="button"><Назад</button>
-    </div>
-    <script>
-    function goBack() {
-        window.location.href="jadvalidarsi.html";
-    }
-    // Данные экзаменов
+
+    <script>// Данные экзаменов
         const exams = [
             { date: "2025-04-01", startTime: "08:00", endTime: "08:30", subject: "База данных", teacher: "доц. Аликулов А.", room: "8/304" },
             { date: "2025-04-01", startTime: "11:30", endTime: "12:00", subject: "Усул ва ВХИ", teacher: "доц. Насруллоева Д.", room: "8/302" },
@@ -183,7 +161,7 @@ function renderSchedule() {
 
     exams.forEach(exam => {
         const examDate = new Date(exam.date);
-        const examStartTime = new Date(`${exam.date}`);
+        const examStartTime = new Date(`${exam.date}T${exam.startTime}`);
         const examEndTime = new Date(`${exam.date}T${exam.endTime}`);
 
         const row = document.createElement("tr");
@@ -196,19 +174,18 @@ function renderSchedule() {
 
         row.innerHTML = `
             <td>${formatDate(exam.date)}</td>
-            <td>${exam.startTime}  ${exam.endTime}</td>
+            <td>${exam.startTime} - ${exam.endTime}</td>
             <td>${exam.subject}</td>
             <td>${exam.teacher}</td>
             <td>${exam.room}</td>
         `;
-const teachers = ["доц. Аликулов А.", "доц. Насруллоева Д."]
+
         tableBody.appendChild(row);
     });
 }
 
 // Вызов функции при загрузке страницы
 document.addEventListener("DOMContentLoaded", renderSchedule);
-        document.getElementById("myButton").style.left = "0px";
             </script>
 </body>
 </html>
