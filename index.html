@@ -4,6 +4,7 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Вход</title>
+        <link rel="manifest" href="manifest.json">
     <script src="https://cdnjs.cloudflare.com/ajax/libs/crypto-js/4.1.1/crypto-js.min.js"></script>
     <style>
         body {
@@ -98,7 +99,8 @@
         <p>Добро пожаловать, <span id="userProfile"></span>!</p>
         <button onclick="logout()">Выйти</button>
     </div>
-
+<script src="app.js"></script>
+    <script src="service-worker"></script>
     <script>
         const secretKey = "mySecretKey123"; // Ключ для шифрования паролей
 
