@@ -1,0 +1,717 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+   <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta name="description" content="jadvalidarsnew">
+    <meta name="keywords" content="1-40010101B">
+      <meta name="theme-color" content="#06c1db">
+  <title>Расписание</title>
+  <style>
+  @import url('https://fonts.googleapis.com/css2?family=DM+Sans:ital,opsz,wght@0,9..40,100..1000;1,9..40,100..1000&family=Lato:ital,wght@0,100;0,300;0,400;0,700;0,900;1,100;1,300;1,400;1,700;1,900&family=Manrope:wght@200..800&family=Poppins:ital,wght@0,100;0,200;0,300;0,400;0,500;0,600;0,700;0,800;0,900;1,100;1,200;1,300;1,400;1,500;1,600;1,700;1,800;1,900&family=Satisfy&display=swap');
+    * {
+      width: none;
+      padding: 0;
+      margin: 0;
+      box-sizing: border-box;
+      transition: all 0.2s ease;
+    }
+
+    body {
+      font-family: 'Poppins', sans-serif;
+     /* background: #64969e;
+background: -webkit-linear-gradient(0deg, rgba(100, 150, 158, 1) 0%, rgba(255, 253, 247, 1) 100%);
+background: -moz-linear-gradient(0deg, rgba(100, 150, 158, 1) 0%, rgba(255, 253, 247, 1) 100%);
+background: linear-gradient(0deg, rgba(100, 150, 158, 1) 0%, rgba(255, 253, 247, 1) 100%);
+filter: progid:DXImageTransform.Microsoft.gradient(startColorstr="#64969E", endColorstr="#FFFDF7", GradientType=0);*/
+      background-color: #FAF9F6;
+      padding: 10px;
+      color: black;
+      width: 100%;
+      overflow-x: hidden;
+      text-align: left;
+    }
+
+    h1, h2 {
+      font-family: 'DM Sans', sans-serif;
+      text-align: center;
+      color: none;
+    }
+
+    .controls {
+      display: flex;
+      flex-wrap: wrap;
+      justify-content: center;
+      margin-bottom: 20px;
+    }
+
+    .controls select {
+      padding: 10px 15px;
+      border-radius: 10px;
+      border: 2px solid #4a148c;
+      background-color: white;
+      font-size: 16px;
+      margin-right: 10px;
+      box-shadow: 0 3px 6px rgba(0, 0, 0, 0.1);
+      color: #4a148c;
+      font-weight: bold;
+    }
+
+    .buttons button {
+      font-family: 'Poppins', sans-serif;
+      margin: 5px;
+      padding: 10px 20px;
+      background-color: lightgreen;
+      color: none;
+      border: none;
+      border-radius: 8px;
+      font-weight: bold;
+      font-size: 14px;
+      cursor: pointer;
+      box-shadow: 0 4px 6px rgba(0,0,0,0.2);
+    }
+
+    .buttons button:hover {
+      background-color: #0ac723;
+      transform: scale(1.05);
+    }
+
+    .schedule-day {
+      width: 100%;
+      display: none;
+      background: #E5E7EB;
+      backdrop-filter: blur('50px');
+      color: none;
+      border: 1px solid none;
+      padding: 2px 2px;
+      border-radius: 15px;
+      box-shadow: 0 10px 25px rgba(0,0,0,0.3);
+      animation: fadeIn 0.5s ease-in-out;
+    }
+
+    .active {
+      display: block;
+    }
+
+    table {
+      min-width: 100%;
+      border-collapse: collapse;
+     display: absolute;
+    }
+
+    th, td {
+      padding: 6px 16px;
+      border-bottom: 1px solid #ddd;
+    }
+
+    th {
+      background: none;
+background: linear-gradient(0deg, rgba(0, 89, 92, 0.77) 100%, rgba(224, 247, 255, 1) 52%);
+      color: white;
+      text-align: left;
+    }
+
+    @keyframes fadeIn {
+      from {
+        opacity: 0;
+        transform: translateY(20px);
+      }
+      to {
+        opacity: 1;
+        transform: translateY(0);
+      }
+    }
+
+    @media (max-width: 600px) {
+      .controls {
+        flex-direction: column;
+        align-items: center;
+      }
+
+      .controls select {
+        margin-bottom: 10px;
+      }
+    }
+:root {
+  --bg: #f1f5f9;
+  --text: #0f172a;
+  --primary: #4ade80;
+  --button-bg: #4ade80;
+  --button-text: #ffffff;
+  --card-bg: #e2e8f0;
+}
+
+body {
+  background-color: var(--bg);
+  color: var(--text);
+}
+
+.buttons button{
+  background-color: var(--button-bg);
+  color: var(--button-text);
+  border-radius: 8px;
+  padding: 10px 20px;
+  border: none;
+}
+
+.schedule-day {
+  width: 100%;
+  background-color: var(--card-bg);
+  padding: 12px 2px;
+  border-radius: 15px;
+  
+}
+
+.theme-picker {
+  display: flex;
+  justify-content: center;
+  gap: 1rem;
+  margin-bottom: 1rem;
+}
+
+.theme {
+  width: 36px;
+  height: 36px;
+  border-radius: 50%;
+  border: 2px solid #333;
+  cursor: pointer;
+}
+
+.theme[data-theme="theme1"] {
+  background: conic-gradient(#d8f3dc, #95d5b2, #52b788, #1b4332);
+}
+.theme[data-theme="theme2"] {
+  background: conic-gradient(#fff7ed, #fdba74, #fb923c, #7c2d12);
+}
+.theme[data-theme="theme3"] {
+  background: conic-gradient(#e0f2fe, #7dd3fc, #38bdf8, #1e3a8a);
+}
+.theme[data-theme="theme4"] {
+  background: conic-gradient(#d9f99d, #bef264, #84cc16, #365314);
+}
+  .theme[data-theme="theme5"] {
+  background: conic-gradient(#3d4039, #171c0f, #000000, #404040);
+}
+   .theme[data-theme="theme6"] {
+  background: conic-gradient(#eabfff, #8a0cc9, #740ca8, #740ca8);
+}
+    :root {
+      --bg: #f8fafc;
+      --text: #1e293b;
+      --primary: #4ade80;
+      --button-bg: #4ade80;
+      --button-text: #ffffff;
+      --card-bg: #e2e8f0;
+    }
+
+    body {
+      background-color: var(--bg);
+      color: var(--text);
+      transition: background 0.2s, color 0.2s;
+    }
+
+    .theme-card {
+      background-color: var(--card-bg);
+      padding: 10px;
+      margin-top: 40px;
+      border-radius: 1rem;
+      box-shadow: 0 4px 10px rgba(0,0,0,0.1);
+   
+      text-align: none;
+      transition: background 0.3s;
+    }
+   .theme-card2 {
+      background-color: var(--card-bg);
+      border-radius: 1rem;
+      box-shadow: 0 4px 10px rgba(0,0,0,0.1);
+      transition: background 0.3s;
+     padding: 10px;
+     margin-bottom: 20px;
+    }
+
+    .theme-card h3 {
+      margin-bottom: 1rem;
+    }
+
+    .theme-grid {
+      display: grid;
+      grid-template-columns: repeat(4, 1fr);
+      gap: 10px;
+      justify-content: center;
+      margin-bottom: 1rem;
+    }
+
+    .theme {
+      margin: 13px;
+      width: 40px;
+      height: 40px;
+      border-radius: 50%;
+      border: 2px solid #ccc;
+      cursor: pointer;
+      transition: transform 0.2s;
+    }
+
+    .theme:hover {
+      transform: scale(1.1);
+    }
+
+    .theme[data-theme="theme1"] {
+      background: conic-gradient(#d8f3dc, #95d5b2, #52b788, #1b4332);
+    }
+    .theme[data-theme="theme2"] {
+      background: conic-gradient(#fff7ed, #fdba74, #fb923c, #7c2d12);
+    }
+    .theme[data-theme="theme3"] {
+      background: conic-gradient(#e0f2fe, #7dd3fc, #38bdf8, #1e3a8a);
+    }
+    .theme[data-theme="theme4"] {
+      background: conic-gradient(#f7fee7, #bef264, #84cc16, #365314);
+    }
+
+    .mode-switch {
+      font-size: 0.9rem;
+      color: var(--text);
+    }
+
+    label {
+      cursor: pointer;
+      user-select: none;
+    }
+  h6{
+    text-align: center;
+    padding: px;
+    margin-top: 40px;
+  }
+  scheduleContainer
+  </style>
+</head>
+<body>
+ <div class="theme-card">
+    <h3>Выберите тему</h3>
+    <div class="theme-grid">
+      <div class="theme" data-theme="theme1" title="Светло-зелёная"><h6>Светло-зелёная</h6></div>
+      <div class="theme" data-theme="theme2" title="Оранжевая"><h6>Оранжевая</h6></div>
+      <div class="theme" data-theme="theme3" title="Синяя"><h6>Синяя</h6></div>
+      <div class="theme" data-theme="theme4" title="Зелёная тёмная"><h6>Зелёная тёмная</h6></div>
+        <div class="theme" data-theme="theme5" title="Зелёная тёмная"><h6>Тёмная</h6></div>
+       <div class="theme" data-theme="theme6" title="Зелёная тёмная"><h6>Фиолетевый</h6></div>
+    </div>
+  
+    </div>
+  </div>
+<br>
+  <h1>Ҷадвали дарсҳо</h1>
+<br>
+  <div class="controls">
+    <select id="groupSelect" onchange="updateSchedule()">
+      <option value="guruh1">1-40010101B</option>
+      <option value="guruh2">1-40010102B</option>
+      <option value="guruh3">1-40010103B</option>
+   <option value="guruh4">1-40010104B</option>
+   <option value="guruh5">1-40010108B</option>
+    <option value="guruh6">1-40010108</option>
+   
+    </select>
+ <div class="theme-card2">
+    <div class="buttons">
+      <button onclick="showDay('Душанбе')">Душанбе</button>
+      <button onclick="showDay('Сешанбе')">Сешанбе</button>
+      <button onclick="showDay('Чоршанбе')">Чоршанбе</button>
+      <button onclick="showDay('Панҷшанбе')">Панҷшанбе</button>
+      <button onclick="showDay('Ҷумъа')">Ҷумъа</button>
+      <button onclick="showDay('Шанбе')">Шанбе</button>
+    </div>
+  </div>
+    
+  <div id="scheduleContainer">
+    <!-- Jadval shu yerda hosil bo‘ladi -->
+  </div>
+
+<footer id="footer">
+  <br>
+      <p>© 2025.ДТТ. Душанбе. <br>Факултети Технологияҳои иттилоотӣ ва интеллекти сунъӣ </p>
+  <p>Разработчик: Komron Sharipov™</p>
+    </footer>
+  <script>
+const themes = {
+  theme1: {
+    "--bg": "#f1fef4",
+    "--text": "#1b4332",
+    "--primary": "#52b788",
+    "--button-bg": "#52b788",
+    "--button-text": "#ffffff",
+    "--card-bg": "#d8f3dc"
+  },
+  theme2: {
+    "--bg": "#fff7ed",
+    "--text": "#7c2d12",
+    "--primary": "#fb923c",
+    "--button-bg": "#fb923c",
+    "--button-text": "#1a202c",
+    "--card-bg": "#fde68a"
+  },
+  theme3: {
+    "--bg": "#eff6ff",
+    "--text": "#1e3a8a",
+    "--primary": "#0ea5e9",
+    "--button-bg": "#0ea5e9",
+    "--button-text": "#ffffff",
+    "--card-bg": "#dbeafe"
+  },
+  theme4: {
+    "--bg": "#f7fee7",
+    "--text": "#365314",
+    "--primary": "#84cc16",
+    "--button-bg": "#84cc16",
+    "--button-text": "#1e293b",
+    "--card-bg": "#ecfccb"
+  },
+  theme5: {
+    "--bg": "black",
+    "--text": "white",
+    "--primary": "white",
+    "--button-bg": "#1c60e8",
+    "--button-text": "white",
+    "--card-bg": "#2b2b2b"
+  },
+  theme6: {
+    "--bg": "#eabfff",
+    "--text": "#1a151c",
+    "--primary": "white",
+    "--button-bg": "#8a0cc9",
+    "--button-text": "white",
+    "--card-bg": "#cf6eff"
+  }
+};
+
+function applyTheme(themeName) {
+  const theme = themes[themeName];
+  Object.entries(theme).forEach(([key, value]) => {
+    document.documentElement.style.setProperty(key, value);
+  });
+  localStorage.setItem("selectedTheme", themeName);
+}
+
+const saved = localStorage.getItem("selectedTheme");
+if (saved && themes[saved]) applyTheme(saved);
+
+document.querySelectorAll(".theme").forEach(el => {
+  el.addEventListener("click", () => {
+    applyTheme(el.dataset.theme);
+  });
+});
+  
+    const schedules = {
+      guruh1: {
+        Душанбе: [
+          ['08:00<br>08:50', '8/---', 'Соати кураторӣ <br> Шарипова Л'],
+          ['09:00<br>09:50', '8/208', 'Программирование в Java(лек)<br> Турсунов Р'],
+          ['10:00<br>10:50', '8/208', 'Программирование в Java(лек) <br> Турсунов Р'],
+          ['11:00<br>11:50', '8/208', 'Статистика ва КОД (срсп)<br>Ғуломсафдаров А.'],
+           ['12:00<br>12:50', '8/208', 'Статистика ва КОД (срсп)<br>Ғуломсафдаров А.'],
+          ['13:00<br>13:50', '8/406', 'Статистика ва КОД (срсп)<br>Ғуломсафдаров А.']
+        ],
+        Сешанбе: [
+        ['08:00<br>08:50', '', ''],
+          ['09:00<br>09:50', '', ''],
+          ['10:00<br>10:50', '', ''],
+          ['11:00<br>11:50', '', ''],
+           ['12:00<br>12:50', '8/206', 'Статистика ва КОД(лек) <br>Ғуломсафдаров А.'],
+          ['13:00<br>13:50', '8/206', 'Статистика ва КОД(лек) <br>Ғуломсафдаров А.']
+        ],
+        Чоршанбе: [
+         ['08:00<br>08:50', '8/304', 'Программирование в Java (срсп)<br> доц. Турсунов Р'],
+          ['09:00<br>09:50', '8/304', 'Программирование в Java (срсп)<br> доц. Турсунов Р'],
+          ['10:00<br>10:50', '8/304', 'Программирование в Java (срсп)<br> доц. Турсунов Р'],
+          ['11:00<br>11:50', '8/301', 'Усул ва ВХИ (лек)<br>доц. Насруллоева Д.'],
+         ['12:00<br>12:50', '8/301', 'Усул ва ВХИ (лек)<br>доц. Насруллоева Д.'],
+         ['13:00<br>13:50', '8/301', 'Усул ва ВХИ (лек)<br>доц. Насруллоева Д.'],
+        ],
+        Панҷшанбе: [
+          ['08:00<br>08:50', '', ''],
+          ['09:00<br>09:50', '', ''],
+          ['10:00<br>10:50', '8/206', 'База данных (лекция)<br>доц. Аликулов А'],
+          ['11:00<br>11:50', '8/206', 'База данных (лекция)<br>доц. Аликулов А'],
+         ['12:00<br>12:50', '8/301', 'База данных (срсп)<br>с.п.Парвонаева Х.'],
+         ['13:00<br>13:50', '8/301', 'База данных (срсп)<br>с.п.Парвонаева Х.'],
+        ],
+        Ҷумъа: [
+          ['08:00<br>08:50', '', ''],
+          ['09:00<br>09:50', '', ''],
+          ['10:00<br>10:50', '8/406', 'Статистика и КОД (срсп)<br> доц. Ғуломсафдаров А.'],
+          ['11:00<br>11:50', '8/301', 'База данных (срсп)<br>с.п. Парвонаева Х.'],
+         ['12:00<br>12:50', '8/301', 'База данных (срсп)<br>с.п. Парвонаева Х.'],
+         ['13:00<br>13:50', '8/304', 'Программирование в Java (лек)<br> доц. Турсунов Р.'],
+        ],
+        Шанбе: [
+          ['08:00<br>08:50', '8/103', 'Этика и этетика (лек)<br> доц. Орифчонова Н.'],
+          ['09:00<br>09:50', '8/103', 'Этика и этетика (лек)<br> доц. Орифчонова Н.<br>(хафтаи тоқ)<br>Политология (лек)<br>н.и.с., Мирзоён Р.Х.<br>(хафтаи ҷуфт)'],
+          ['10:00<br>10:50', '8/103', 'Политология (лек)<br>н.и.с., Мирзоён Р.Х.'],
+          ['11:00<br>11:50', '8/101', 'Политология (лек)<br>н.и.с., Мирзоён Р.Х.'],
+         ['12:00<br>12:50', '8/101', 'Политология (лек)<br>н.и.с., Мирзоён Р.Х.'],
+         ['13:00<br>13:50', '8/205', 'Этика и этетика (срсп)<br>доц. Джураев Р.'],
+        ['14:00<br>14:50', '8/205', 'Этика и этетика (срсп)<br>доц. Джураев Р.']
+        ]
+      },
+      guruh2: {
+        Душанбе: [
+          ['08:00<br>08:50', '', ''],
+          ['09:00<br>09:50', '8/208', 'Программирование в Java(лек) <br> Турсунов Р'],
+          ['10:00<br>10:50', '8/208', 'Программирование в Java(лек) <br> Турсунов Р'],
+          ['11:00<br>11:50', '8/304', 'Программирование в Java(лек) <br> Турсунов Р'],
+         ['12:00<br>12:50', '', ''],
+         ['13:00<br>13:50', '', ''],
+        ],
+        Сешанбе: [
+          ['08:00<br>08:50', '', ''],
+          ['09:00<br>09:50', '', ''],
+          ['10:00<br>10:50', '8/303', 'База данных(срсп)<br>доц.Насруллоева Д.'],
+          ['11:00<br>11:50', '8/303', 'База данных(срсп)<br>доц.Насруллоева Д.'],
+        ['12:00<br>12:50', '8/206', 'Статистика ва КОД <br>Ғуломсафдаров А.'],
+          ['13:00<br>13:50', '8/206', 'Статистика ва КОД <br>Ғуломсафдаров А.']
+         ],
+        Чоршанбе: [
+          ['08:00<br>08:50', '', ''],
+          ['09:00<br>09:50', '8/301', 'Усул ва ВХИ (срсп)<br>доц. Насруллоева Д.'],
+          ['10:00<br>10:50', '8/301', 'Усул ва ВХИ (срсп)<br>доц. Насруллоева Д.'],
+          ['11:00<br>11:50', '8/301', 'Усул ва ВХИ (лек)<br>доц. Насруллоева Д.'],
+         ['12:00<br>12:50', '8/304', 'Программирование в Java (срсп)<br> доц. Турсунов Р'],
+         ['13:00<br>13:50', '8/304', 'Программирование в Java (срсп)<br> доц. Турсунов Р'],
+        ],
+        Панҷшанбе: [
+          ['08:00<br>08:50', '', ''],
+          ['09:00<br>09:50', '', ''],
+          ['10:00<br>10:50', '8/206', 'База данных (лек)<br>доц. Аликулов А'],
+          ['11:00<br>11:50', '8/206', 'База данных (лек)<br>доц. Аликулов А'],
+         ['12:00<br>12:50', '8/302',  'Статистика ва КОД(лек) <br>Халимов И.'],
+         ['13:00<br>13:50', '8/302',  'Статистика ва КОД(лек) <br>Халимов И.'],
+        ],
+        Ҷумъа: [
+          ['08:00<br>08:50', '8/302', 'База данных (срсп) <br> Насруллоева Д.'],
+          ['09:00<br>09:50', '8/302', 'База данных (срсп) <br> Насруллоева Д.'],
+          ['10:00<br>10:50', '8/302',  'Статистика ва КОД(лек) <br>Халимов И.'],
+          ['11:00<br>11:50', '8/302',  'Статистика ва КОД(лек) <br>Халимов И.'],
+         ['12:00<br>12:50', '', ''],
+         ['13:00<br>13:50', '', ''],
+        ],
+        Шанбе: [
+          ['08:00<br>08:50', '', ''],
+          ['09:00<br>09:50', '', ''],
+          ['10:00<br>10:50', '', ''],
+          ['11:00<br>11:50', '', ''],
+         ['12:00<br>12:50', '', ''],
+         ['13:00<br>13:50', '', '']
+        ]
+      },
+      guruh3: {
+        Душанбе: [
+          ['08:00<br>08:50', '', ''],
+          ['09:00<br>09:50', '', ''],
+          ['10:00<br>10:50', '', ''],
+          ['11:00<br>11:50', '', ''],
+         ['12:00<br>12:50', '', ''],
+         ['13:00<br>13:50', '', ''],
+        ],
+        Сешанбе: [
+          ['08:00<br>08:50', '', ''],
+          ['09:00<br>09:50', '', ''],
+          ['10:00<br>10:50', '', ''],
+          ['11:00<br>11:50', '', ''],
+         ['12:00<br>12:50', '8/206', 'Статистика ва КОД <br>Ғуломсафдаров А.'],
+          ['13:00<br>13:50', '8/206', 'Статистика ва КОД <br>Ғуломсафдаров А.']
+        ],
+        Чоршанбе: [
+          ['08:00<br>08:50', '', ''],
+          ['09:00<br>09:50', '', ''],
+          ['10:00<br>10:50', '', ''],
+          ['11:00<br>11:50', '', ''],
+         ['12:00<br>12:50', '', ''],
+         ['13:00<br>13:50', '', ''],
+        ],
+        Панҷшанбе: [
+          ['08:00<br>08:50', '', ''],
+          ['09:00<br>09:50', '', ''],
+          ['10:00<br>10:50', '', ''],
+          ['11:00<br>11:50', '', ''],
+         ['12:00<br>12:50', '', ''],
+         ['13:00<br>13:50', '', ''],
+        ],
+        Ҷумъа: [
+          ['08:00<br>08:50', '', ''],
+          ['09:00<br>09:50', '', ''],
+          ['10:00<br>10:50', '', ''],
+          ['11:00<br>11:50', '', ''],
+         ['12:00<br>12:50', '', ''],
+         ['13:00<br>13:50', '', ''],
+        ],
+        Шанбе: [
+          ['08:00<br>08:50', '', ''],
+          ['09:00<br>09:50', '', ''],
+          ['10:00<br>10:50', '', ''],
+          ['11:00<br>11:50', '', ''],
+         ['12:00<br>12:50', '', ''],
+         ['13:00<br>13:50', '', '']
+        ]
+      },
+      guruh4: {
+        Душанбе: [
+          ['08:00<br>08:50', '', ''],
+          ['09:00<br>09:50', '', ''],
+          ['10:00<br>10:50', '', ''],
+          ['11:00<br>11:50', '', ''],
+         ['12:00<br>12:50', '', ''],
+         ['13:00<br>13:50', '', ''],
+        ],
+        Сешанбе: [
+          ['08:00<br>08:50', '', ''],
+          ['09:00<br>09:50', '', ''],
+          ['10:00<br>10:50', '', ''],
+          ['11:00<br>11:50', '', ''],
+         ['12:00<br>12:50', '', ''],
+         ['13:00<br>13:50', '', ''],
+        ],
+        Чоршанбе: [
+          ['08:00<br>08:50', '', ''],
+          ['09:00<br>09:50', '', ''],
+          ['10:00<br>10:50', '', ''],
+          ['11:00<br>11:50', '', ''],
+         ['12:00<br>12:50', '', ''],
+         ['13:00<br>13:50', '', ''],
+        ],
+        Панҷшанбе: [
+          ['08:00<br>08:50', '', ''],
+          ['09:00<br>09:50', '', ''],
+          ['10:00<br>10:50', '', ''],
+          ['11:00<br>11:50', '', ''],
+         ['12:00<br>12:50', '', ''],
+         ['13:00<br>13:50', '', ''],
+        ],
+        Ҷумъа: [
+          ['08:00<br>08:50', '', ''],
+          ['09:00<br>09:50', '', ''],
+          ['10:00<br>10:50', '', ''],
+          ['11:00<br>11:50', '', ''],
+         ['12:00<br>12:50', '', ''],
+         ['13:00<br>13:50', '', ''],
+        ],
+        Шанбе: [
+          ['08:00<br>08:50', '', ''],
+          ['09:00<br>09:50', '', ''],
+          ['10:00<br>10:50', '', ''],
+          ['11:00<br>11:50', '', ''],
+         ['12:00<br>12:50', '', ''],
+         ['13:00<br>13:50', '', '']
+        ]
+      },
+      guruh5: {
+        Душанбе: [
+          ['08:00<br>08:50', '', ''],
+          ['09:00<br>09:50', '', ''],
+          ['10:00<br>10:50', '', ''],
+          ['11:00<br>11:50', '', ''],
+         ['12:00<br>12:50', '', ''],
+         ['13:00<br>13:50', '', ''],
+        ],
+        Сешанбе: [
+          ['08:00<br>08:50', '', ''],
+          ['09:00<br>09:50', '', ''],
+          ['10:00<br>10:50', '', ''],
+          ['11:00<br>11:50', '', ''],
+         ['12:00<br>12:50', '', ''],
+         ['13:00<br>13:50', '', ''],
+        ],
+        Чоршанбе: [
+          ['08:00<br>08:50', '', ''],
+          ['09:00<br>09:50', '', ''],
+          ['10:00<br>10:50', '', ''],
+          ['11:00<br>11:50', '', ''],
+         ['12:00<br>12:50', '', ''],
+         ['13:00<br>13:50', '', ''],
+        ],
+        Панҷшанбе: [
+          ['08:00<br>08:50', '', ''],
+          ['09:00<br>09:50', '', ''],
+          ['10:00<br>10:50', '', ''],
+          ['11:00<br>11:50', '', ''],
+         ['12:00<br>12:50', '', ''],
+         ['13:00<br>13:50', '', ''],
+        ],
+        Ҷумъа: [
+          ['08:00<br>08:50', '', ''],
+          ['09:00<br>09:50', '', ''],
+          ['10:00<br>10:50', '', ''],
+          ['11:00<br>11:50', '', ''],
+         ['12:00<br>12:50', '', ''],
+         ['13:00<br>13:50', '', ''],
+        ],
+        Шанбе: [
+          ['08:00<br>08:50', '', ''],
+          ['09:00<br>09:50', '', ''],
+          ['10:00<br>10:50', '', ''],
+          ['11:00<br>11:50', '', ''],
+         ['12:00<br>12:50', '', ''],
+         ['13:00<br>13:50', '', '']
+        ]
+      }
+    };
+
+    let currentDay = '';
+    let currentGroup = 'guruh1';
+
+    function getToday() {
+      const days = ['yakshanbe', 'Душанбе', 'Сешанбе', 'Чоршанбе', 'Панҷшанбе', 'Ҷумъа', 'Шанбе'];
+      const todayIndex = new Date().getDay();
+      return days[todayIndex] || 'Душанбе';
+    }
+
+    function showDay(dayId) {
+      currentDay = dayId;
+      updateSchedule();
+    }
+
+    function updateSchedule() {
+      const group = document.getElementById('groupSelect').value;
+      currentGroup = group;
+
+      const schedule = schedules[group][currentDay];
+      const container = document.getElementById('scheduleContainer');
+
+      if (!schedule || schedule.length === 0) {
+        container.innerHTML = `
+          <div class="schedule-day active">
+            <h2>${capitalize(currentDay)}</h2>
+            <p></p>
+          </div>
+        `;
+        return;
+      }
+
+      let html = `
+        <div class="schedule-day active">
+          <h2>${capitalize(currentDay)}</h2>
+          <table>
+            <tr><th>Вақт</th><th>АУД</th><th>Фан</th></tr>
+      `;
+      schedule.forEach(([time, aud, subject]) => {
+        html += `<tr><td>${time}</td><td>${aud}</td><td>${subject}</td></tr>`;
+      });
+      html += '</table></div>';
+      container.innerHTML = html;
+    }
+
+    function capitalize(text) {
+      return text.charAt(0).toUpperCase() + text.slice(1);
+    }
+
+    // Avtomatik kunni ko‘rsatish
+    window.onload = function () {
+      currentDay = getToday();
+      if (currentDay === 'yakshanbe') currentDay = 'dushanbe';
+      updateSchedule();
+    };
+  
+  
+  </script>
+
+</body>
+</html>
