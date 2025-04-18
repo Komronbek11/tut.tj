@@ -1,7 +1,7 @@
 {
-    "name": "TUT",
-    "short_name": "TUT",
-    "description": "TUT",
+    "name": "UniversityApp",
+    "short_name": "UniversityApp",
+    "description": "UniversityApp",
     "start_url": ".",
     "display": "standalone",
     "background_color": "#ffffff",
