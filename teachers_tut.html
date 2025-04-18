@@ -1,0 +1,207 @@
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Преподавательский состав</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            margin: 0;
+            padding: 0;
+            background-color: #f0f2f5;
+            text-align: center;
+        }
+        .container {
+            max-width: 1000px;
+            margin: 20px auto;
+            padding: 20px;
+            background: white;
+            border-radius: 10px;
+            box-shadow: 0px 4px 10px rgba(0, 0, 0, 0.1);
+        }
+        h1 {
+            color: #333;
+        }
+    p{
+        text-align: left;
+        margin-left: 40px;
+    }
+        .controls {
+            border-radius: 20px;
+            display: flex;
+            justify-content: center;
+            gap: 10px;
+            flex-wrap: wrap;
+            margin-bottom: 20px;
+        }
+        input, select {
+            padding: 10px;
+            border: 1px solid #ccc;
+            border-radius: 25px;
+            font-size: 16px;
+            transition: 0.4s;
+        }
+        input:focus, select:focus {
+            border-color: #007bff;
+            outline: none;
+            box-shadow: 0 0 17px rgba(0, 123, 255, 0.5);
+        }
+        .teachers-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+            gap: 20px;
+        }
+        .teacher-card {
+            background: white;
+            padding: 20px;
+            border-radius: 10px;
+            box-shadow: 0 2px 15px rgba(0, 0, 0, 0.1);
+            text-align: center;
+            transition: transform 0.3s ease, box-shadow 0.3s ease;
+        }
+        .teacher-card:hover {
+            transform: scale(1.05);
+            box-shadow: 0 4px 10px rgba(0, 0, 0, 0.2);
+        }
+        .teacher-card img {
+            width: 100px;
+            height: 100px;
+            border-radius: 50%;
+            object-fit: cover;
+            transition: transform 0.3s ease;
+        }
+        .teacher-card:hover img {
+            transform: scale(1.1);
+        }
+        .teacher-card h2 {
+            margin: 10px 0 5px;
+            font-size: 18px;
+        }
+        .teacher-card p {
+            color: #666;
+            font-size: 14px;
+        }
+        .highlight {
+            background-color: yellow;
+            font-weight: bold;
+        }
+    </style>
+</head>
+<body>
+
+    <div class="container">
+        <h1>Преподавательский состав</h1>
+
+        <!-- Фильтры -->
+        <div class="controls">
+            <input type="text" id="searchInput" placeholder="Поиск по имени..." onkeyup="filterTeachers()">
+            <select id="departmentFilter" onchange="filterTeachers()">
+                <option value="">Все кафедры</option>
+                <option value="Программирование">Программирование</option>
+                <option value="Физика">Физика</option>
+                <option value="Информатика">Информатика</option>
+            </select>
+            <select id="sortSelect" onchange="filterTeachers()">
+                <option value="default">Без сортировки</option>
+                <option value="name">Сортировать по имени</option>
+            </select>
+        </div>
+
+        <!-- Карточки преподавателей -->
+        <div class="teachers-grid" id="teachersContainer"></div>
+    </div>
+<div id="teachersContainer"></div>
+<p id="noResultsMessage" style="display: none; color: red; font-weight: bold;">Ничего не найдено</p>
+    <script>
+        const teachers = [
+            { name: "Зоир Раҳмонзода", department: "", position: "Ректор ТУТ", image: "image1.jpg", bio: "", /*phone: ""*/ },
+            { name: "Абдулназар Гуломсафдаров", department: "Программирование", position: "доцент", image: "image2.jpg", bio: "" },
+     { name: "Нусратзода Мухаммади Нусрат", department: "", position: "Декани ФТИ ва ИС", image: "image3.jpg", bio: "" },
+     { name: "Лола Шарипова", department: "", position: "Заместитель декана", image: "male.jpg", bio: "" },
+     { name: "Хандон Парвонаева", department: "", position: "", image: "image4.jpg", bio: "" },
+      { name: "Умеда Ризвонова", department: "", position: "", image: "male.jpg", bio: "" },
+      { name: "Ҷамшед Назаров", department: "", position: "", image: "man.jpg", bio: "" },
+      { name: "Дилафруз Насруллоева", department: "", position: "", image: "image5.jpg", bio: "" },
+       { name: "", department: "", position: "", image: "man.jpg", bio: "" },
+      { name: "", department: "", position: "", image: "male.jpg", bio: "" },
+       { name: "", department: "", position: "", image: "man.jpg", bio: "" },
+      { name: "", department: "", position: "", image: "male.jpg", bio: "" }
+        
+        
+        ];
+
+        function highlightText(text, query) {
+            if (!query) return text;
+            const regex = new RegExp(`(${query})`, "gi");
+            return text.replace(regex, "<span class='highlight'>$1</span>");
+        }
+
+        function filterTeachers() {
+            const searchText = document.getElementById("searchInput").value.toLowerCase();
+            const selectedDepartment = document.getElementById("departmentFilter").value;
+            const sortOption = document.getElementById("sortSelect").value;
+
+            let filteredTeachers = teachers.filter(teacher => 
+                teacher.name.toLowerCase().includes(searchText) &&
+                (selectedDepartment === "" || teacher.department === selectedDepartment)
+            );
+
+            if (sortOption === "name") {
+                filteredTeachers.sort((a, b) => a.name.localeCompare(b.name));
+            }
+
+            renderTeachers(filteredTeachers, searchText);
+        }
+
+        function renderTeachers(list, searchText) {
+            const container = document.getElementById("teachersContainer");
+            container.innerHTML = "";
+            list.forEach(teacher => {
+                const card = document.createElement("div");
+                card.classList.add("teacher-card");
+                card.innerHTML = `
+                    <img src="${teacher.image}" alt="${teacher.name}">
+                    <h2>${highlightText(teacher.name, searchText)}</h2>
+                    <p><strong>Статус: ${teacher.position} <br>Предмет: ${teacher.department}</strong></p>
+                    <p>${teacher.bio}</p>
+                <p>Телефон: ${teacher.phone}</p>
+                `;
+                container.appendChild(card);
+            });
+        }
+
+        document.addEventListener("DOMContentLoaded", () => {
+            renderTeachers(teachers, "");
+        });
+    
+    function renderTeachers(list, searchText) {
+    const container = document.getElementById("teachersContainer");
+    const noResultsMessage = document.getElementById("noResultsMessage");
+    
+    container.innerHTML = "";
+    
+    if (list.length === 0) {
+        noResultsMessage.style.display = "block";
+        return;
+    }
+    
+    noResultsMessage.style.display = "none";
+    
+    list.forEach(teacher => {
+        const card = document.createElement("div");
+        card.classList.add("teacher-card");
+        card.innerHTML = `
+                    <img src="${teacher.image}" alt="${teacher.name}">
+                    <h2>${highlightText(teacher.name, searchText)}</h2>
+                    <p><strong>Статус: ${teacher.position}<br> Предмет: ${teacher.department}</strong></p>
+                    <p>${teacher.bio}</p>
+                <p>Телефон: ${teacher.phone}</p>
+                `;
+        container.appendChild(card);
+    });
+}
+    </script>
+
+</body>
+</html>
