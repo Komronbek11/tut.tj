@@ -233,7 +233,7 @@ margin-top: 20px;
         <p>Ҷадвали дарсӣ</p>
       </div>
        <div class="card">
-         <img src="books.gif" width="180" height="150"></img>
+         <img onclick="books()" src="books.gif" width="180" height="150"></img>
          <p>Китобҳои электронӣ</p>
          
        </div>
@@ -274,6 +274,9 @@ margin-top: 20px;
           function exam() {
               window.location.href="http://asu.tut.tj/?option=login";
           }
+        function books() {
+        window.location.href="ebooks_tut.html";
+        }
     let index = 0;
     const images = document.querySelectorAll('.carousel img');
     const total = images.length;
