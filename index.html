@@ -86,91 +86,133 @@
 </head>
 <body>
 
-    <div class="container" id="loginContainer">
-        <img src="logo.png">
-        <h2>Вход</h2>
-        <form id="loginForm">
-            <input type="text" id="loginUsername" placeholder="Имя пользователя" required>
-            <div class="password-container">
-                <input type="password" id="loginPassword" placeholder="Пароль" required>
-                <span class="toggle-password" onclick="togglePassword('loginPassword')">👁️</span>
-            </div>
-            <button type="submit">Войти &#10145;</button>
-        </form>
-    </div>
+ <style>
+       * {
+      margin: 0;
+      padding: 2px;
+      box-sizing: border-box;
+    }
 
-    <div class="container hidden" id="profileContainer">
-        <h2>Личный кабинет</h2>
-        <p>Добро пожаловать, <span id="userProfile"></span>!</p>
-        <button onclick="logout()">Выйти</button>
-    </div>
+    body {
+      font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+      background: linear-gradient(135deg, #00c6ff, #0072ff);
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      height: 100vh;
+          text-align: center;
+    }
+    .container {
+      background: white;
+      color: #1a237e;
+      padding: 40px;
+      border-radius: 20px;
+      box-shadow: 0 8px 30px rgba(0, 0, 0, 0.2);
+      width: 100%;
+      max-width: 400px;
+    }
+
+    h2 {
+      text-align: center;
+      margin-bottom: 30px;
+    }
+
+    input {
+      width: 100%;
+      padding: 12px;
+      margin: 10px 0;
+      border-radius: 10px;
+      border: 1px solid #ccc;
+    }
+
+    button {
+      width: 100%;
+      padding: 12px;
+      background: #1a237e;
+      color: white;
+      border: none;
+      border-radius: 10px;
+      margin-top: 15px;
+      cursor: pointer;
+    }
+
+    .toggle {
+      text-align: center;
+      margin-top: 15px;
+      font-size: 14px;
+      cursor: pointer;
+      color: #3949ab;
+    }
+      img{
+            width: 40%;
+            heigh: 40%;
+            border-radius: 50%;
+            text-align: center;
+      }
+  </style>
+</head>
+<body>
+  <div class="container">
+        <img src="logo.png">
+        <br>
+        <br>
+    <h2 id="formTitle">Вход</h2>
+    <input type="email" id="email" placeholder="Email" />
+    <input type="password" id="password" placeholder="Пароль" />
+    <button id="authButton">Войти</button>
+    <div class="toggle" id="toggleMode">Нет аккаунта? Зарегистрироваться</div>
+  </div>
+
+  <!-- Firebase SDK -->
+  <script type="module">
+    import { initializeApp } from "https://www.gstatic.com/firebasejs/10.10.0/firebase-app.js";
+    import { getAuth, signInWithEmailAndPassword, createUserWithEmailAndPassword } from "https://www.gstatic.com/firebasejs/10.10.0/firebase-auth.js";
+
+    const firebaseConfig = {
+  apiKey: "AIzaSyCAOfxPW5m2UqtulWzuh3egOjJ-ti-rDf8",
+  authDomain: "register-221e5.firebaseapp.com",
+  projectId: "register-221e5",
+  storageBucket: "register-221e5.firebasestorage.app",
+  messagingSenderId: "588640206529",
+  appId: "1:588640206529:web:b2abf5413387e251935e40",
+  measurementId: "G-XN40PT5PV2"
+};
+
+    const app = initializeApp(firebaseConfig);
+    const auth = getAuth(app);
+
+    let isLogin = true;
+
+    const email = document.getElementById("email");
+    const password = document.getElementById("password");
+    const authButton = document.getElementById("authButton");
+    const toggleMode = document.getElementById("toggleMode");
+    const formTitle = document.getElementById("formTitle");
+
+    toggleMode.addEventListener("click", () => {
+      isLogin = !isLogin;
+      formTitle.textContent = isLogin ? "Вход" : "Регистрация";
+      authButton.textContent = isLogin ? "Войти" : "Зарегистрироваться";
+      toggleMode.textContent = isLogin ? "Нет аккаунта? Зарегистрироваться" : "Уже есть аккаунт? Войти";
+    });
+
+    authButton.addEventListener("click", async () => {
+      const emailVal = email.value;
+      const passVal = password.value;
+
+      try {
+        if (isLogin) {
+          await signInWithEmailAndPassword(auth, emailVal, passVal);
+        } else {
+          await createUserWithEmailAndPassword(auth, emailVal, passVal);
+        }
+        window.location.href = "dasboard.html"; // личный кабинет
+      } catch (err) {
+        alert("Ошибка: " + err.message);
+      }
+    });
+  </script>
 <script src="app.js"></script>
     <script src="service-worker"></script>
-    <script>
-        const secretKey = "mySecretKey123"; // Ключ для шифрования паролей
-
-        // ✅ Разрешённые пользователи (с зашифрованными паролями)
-        const usersData = [
-            { username: "admin", password: CryptoJS.AES.encrypt("123456", secretKey).toString() },
-            { username: "komron_sharipov", password: CryptoJS.AES.encrypt("11012005", secretKey).toString() },
-            { username: "muhammad_hamroev", password: CryptoJS.AES.encrypt("muhammad", secretKey).toString() },
-    { username: "avzalsho_azamov", password: CryptoJS.AES.encrypt("avzalsho", secretKey).toString() },
-       { username: "firdavs_shamsuddinzoda", password: CryptoJS.AES.encrypt("firdavs", secretKey).toString() },
-       { username: "firuz_kachurov", password: CryptoJS.AES.encrypt("firuz", secretKey).toString() },
-       { username: "mirmuhammad_izatulloev", password: CryptoJS.AES.encrypt("mirmuhammad", secretKey).toString() },
-       { username: "elchibek_murodbekov", password: CryptoJS.AES.encrypt("elchibek", secretKey).toString() },
-       { username: "hisrav_rohbarov", password: CryptoJS.AES.encrypt("hisrav", secretKey).toString() },
-       { username: "nozim_goibov", password: CryptoJS.AES.encrypt("nozim", secretKey).toString() },
-       { username: "romish_asalzoda", password: CryptoJS.AES.encrypt("romish", secretKey).toString() },
-       { username: "munzifa_sultonova", password: CryptoJS.AES.encrypt("munzifa", secretKey).toString() },
-       { username: "", password: CryptoJS.AES.encrypt("", secretKey).toString() },
-       { username: "", password: CryptoJS.AES.encrypt("", secretKey).toString() }
-        ];
-
-        function decryptPassword(encryptedPassword) {
-            return CryptoJS.AES.decrypt(encryptedPassword, secretKey).toString(CryptoJS.enc.Utf8);
-        }
-
-        document.getElementById('loginForm').addEventListener('submit', function() {
-            event.preventDefault();
-
-            const loginUsername = document.getElementById('loginUsername').value.trim();
-            const loginPassword = document.getElementById('loginPassword').value.trim();
-
-            const user = usersData.find(u => u.username === loginUsername);
-
-            if (user && decryptPassword(user.password) === loginPassword) {
-                
-                window.location.href = "home.html";
-                localStorage.setItem('loggedInUser', loginUsername);
-                showProfile();
-            } else {
-                alert('Неверный логин или пароль');
-            }
-        });
-
-        function togglePassword(inputId) {
-            const input = document.getElementById(inputId);
-            input.type = input.type === "password" ? "text" : "password";
-        }
-
-        function showProfile() {
-            const user = localStorage.getItem('loggedInUser');
-            if (user) {
-                document.getElementById('userProfile').innerText = user;
-                document.getElementById('loginContainer').classList.add('');
-                document.getElementById('profileContainer').classList.remove('hidden');
-            }
-        }
-
-        function logout() {
-            localStorage.removeItem('loggedInUser');
-            document.getElementById('profileContainer').classList.add('hidden');
-            document.getElementById('loginContainer').classList.remove('hidden');
-        }
-
-        showProfile();
-    </script>
-
 </body>
 </html>
