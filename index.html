@@ -1,7 +1,7 @@
 <!DOCTYPE html>
 <html lang="ru">
 <head>
-    <meta charset="UTF-8">
+  <<meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <meta name="description" content="Komronbek">
     <meta name="keywords" content="1-40010101B">
@@ -10,122 +10,240 @@
         <link rel="manifest" href="manifest.json">
     <title>Вход в TUT</title>
     <link rel="manifest" href="manifest.json">
-    <script src="https://cdnjs.cloudflare.com/ajax/libs/crypto-js/4.1.1/crypto-js.min.js"></script>
-    <style>
-        
-
-       * {
-      margin: 0;
-      padding: 2px;
+    
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css">
+  <style>
+    * {
       box-sizing: border-box;
+      margin: 0;
+      padding: 0;
+      
     }
 
     body {
-      font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
-      background: linear-gradient(135deg, #00c6ff, #0072ff);
+      font-family: 'Segoe UI', sans-serif;
+      background: linear-gradient(120deg, rgba(186, 211, 255, 1) 0%, rgba(21, 55, 133, 1) 100%);
+      height: 100vh;
       display: flex;
       align-items: center;
       justify-content: center;
-      height: 100vh;
-          text-align: center;
+      text-align: center;
     }
+
     .container {
       background: white;
-      color: #1a237e;
-      padding: 40px;
-      border-radius: 20px;
-      box-shadow: 0 8px 30px rgba(0, 0, 0, 0.2);
-      width: 100%;
+      backdrop-filter: blur(15px);
+      padding: 45px;
+      border-radius: 16px;
+      width: 95%;
       max-width: 400px;
+      box-shadow: 0 10px 30px rgba(1, 2, 1, 0.25);
     }
 
-    h2 {
+    .container h2 {
       text-align: center;
-      margin-bottom: 30px;
+      margin-bottom: 20px;
+      color: black;
     }
 
-    input {
+    .input-group {
+      text-align: left;
+      position: relative;
+      margin-bottom: 20px;
+    }
+
+    .input-group input {
       width: 100%;
-      padding: 12px;
-      margin: 10px 0;
-      border-radius: 10px;
-      border: 1px solid #ccc;
+      padding: 12px 40px 12px 40px;
+      border-radius: 15px;
+      border: none;
+      background: linear-gradient(120deg, rgba(169, 171, 171, 1) 0%, rgba(225, 230, 230, 1) 0%, rgba(250, 252, 255, 1) 100%);
+      font-size: 15px;
+    }
+
+    .input-group .icon {
+      position: absolute;
+      top: 50%;
+      left: 12px;
+      transform: translateY(-50%);
+      color: #607d8b;
+    }
+
+    .input-group .toggle-password {
+      position: absolute;
+      top: 50%;
+      right: 12px;
+      transform: translateY(-50%);
+      cursor: pointer;
+      color: #607d8b;
+    }
+
+    .warning {
+      font-size: 13px;
+      color: red;
+      display: none;
+      text-align: left;
+      margin-top: 4px;
+    }
+
+    input:hover {
+      border: none;
+      box-shadow: 0px 0px 3px 4px rgba(111, 255, 38, 0.83);
     }
 
     button {
+      position: relative;
       width: 100%;
+      height: 48px;
       padding: 12px;
-      background: #1a237e;
+      background: linear-gradient(120deg, rgba(61, 177, 255, 1) 0%, rgba(44, 209, 176, 1) 100%);
       color: white;
       border: none;
-      border-radius: 10px;
-      margin-top: 15px;
+      border-radius: 20px;
+      font-size: 16px;
       cursor: pointer;
+      overflow: hidden;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      transition: background 0.5s ease;
+    }
+
+    button:hover {
+      background: linear-gradient(120deg, rgba(60, 207, 121, 1) 0%, rgba(48, 140, 252, 1) 100%);
+    }
+
+    button:disabled {
+      background: #adccdb;
+      cursor: not-allowed;
+    }
+
+    .btn-text {
+      transition: opacity 0.3s ease;
+    }
+
+    .btn-loader {
+      position: absolute;
+      top: 50%;
+      left: 50%;
+      width: 20px;
+      height: 20px;
+      border: 3px solid #f3f3f3;
+      border-top: 3px solid white;
+      border-radius: 50%;
+      transform: translate(-50%, -50%);
+      animation: spin 1s linear infinite;
+      display: none;
+      opacity: 0;
+      transition: opacity 0.3s ease;
+    }
+
+    @keyframes spin {
+      0% { transform: translate(-50%, -50%) rotate(0deg); }
+      100% { transform: translate(-50%, -50%) rotate(360deg); }
     }
 
     .toggle {
-      text-align: center;
       margin-top: 15px;
       font-size: 14px;
+      text-align: center;
       cursor: pointer;
       color: #3949ab;
     }
-      img{
-            width: 40%;
-            heigh: 40%;
-            border-radius: 50%;
-            text-align: center;
-      }
+  img{
+    width: 120px;
+    height: 120px;
+    text-align: center;
+    border-radius: 50%;
+  }
   </style>
 </head>
 <body>
+
   <div class="container">
-        <img src="logo.png">
-        <br>
-        <br>
+     <img src="logo.png">
     <h2 id="formTitle">Вход</h2>
-    <input type="email" id="email" placeholder="Email" />
-    <input type="password" id="password" placeholder="Пароль" />
-    <button id="authButton">Войти</button>
+
+    <div class="input-group">
+      <i class="fas fa-envelope icon"></i>
+      <input type="email" id="email" placeholder="Email">
+      <div class="warning" id="emailWarning">Введите email</div>
+    </div>
+
+    <div class="input-group">
+      <i class="fas fa-lock icon"></i>
+      <input type="password" id="password" placeholder="Пароль">
+      <i class="fas fa-eye toggle-password" id="togglePassword"></i>
+      <div class="warning" id="passwordWarning">Введите пароль</div>
+    </div>
+
+    <button id="authButton">
+      <span class="btn-text">Войти</span>
+      <span class="btn-loader"></span>
+    </button>
+
     <div class="toggle" id="toggleMode">Нет аккаунта? Зарегистрироваться</div>
   </div>
 
-  <!-- Firebase SDK -->
+  <!-- Firebase -->
   <script type="module">
     import { initializeApp } from "https://www.gstatic.com/firebasejs/10.10.0/firebase-app.js";
     import { getAuth, signInWithEmailAndPassword, createUserWithEmailAndPassword } from "https://www.gstatic.com/firebasejs/10.10.0/firebase-auth.js";
 
     const firebaseConfig = {
-  apiKey: "AIzaSyCAOfxPW5m2UqtulWzuh3egOjJ-ti-rDf8",
-  authDomain: "register-221e5.firebaseapp.com",
-  projectId: "register-221e5",
-  storageBucket: "register-221e5.firebasestorage.app",
-  messagingSenderId: "588640206529",
-  appId: "1:588640206529:web:b2abf5413387e251935e40",
-  measurementId: "G-XN40PT5PV2"
-};
+      apiKey: "AIzaSyCAOfxPW5m2UqtulWzuh3egOjJ-ti-rDf8",
+      authDomain: "register-221e5.firebaseapp.com",
+      projectId: "register-221e5",
+      storageBucket: "register-221e5.appspot.com",
+      messagingSenderId: "588640206529",
+      appId: "1:588640206529:web:b2abf5413387e251935e40"
+    };
 
     const app = initializeApp(firebaseConfig);
     const auth = getAuth(app);
 
-    let isLogin = true;
-
     const email = document.getElementById("email");
     const password = document.getElementById("password");
+    const emailWarning = document.getElementById("emailWarning");
+    const passwordWarning = document.getElementById("passwordWarning");
     const authButton = document.getElementById("authButton");
     const toggleMode = document.getElementById("toggleMode");
     const formTitle = document.getElementById("formTitle");
+    const btnText = document.querySelector(".btn-text");
+    const btnLoader = document.querySelector(".btn-loader");
+    const togglePassword = document.getElementById("togglePassword");
+
+    let isLogin = true;
 
     toggleMode.addEventListener("click", () => {
       isLogin = !isLogin;
       formTitle.textContent = isLogin ? "Вход" : "Регистрация";
-      authButton.textContent = isLogin ? "Войти" : "Зарегистрироваться";
+      btnText.textContent = isLogin ? "Войти" : "Зарегистрироваться";
       toggleMode.textContent = isLogin ? "Нет аккаунта? Зарегистрироваться" : "Уже есть аккаунт? Войти";
     });
 
     authButton.addEventListener("click", async () => {
-      const emailVal = email.value;
-      const passVal = password.value;
+      const emailVal = email.value.trim();
+      const passVal = password.value.trim();
+      let valid = true;
+
+      emailWarning.style.display = "none";
+      passwordWarning.style.display = "none";
+
+      if (!emailVal) {
+        emailWarning.style.display = "block";
+        valid = false;
+      }
+      if (!passVal) {
+        passwordWarning.style.display = "block";
+        valid = false;
+      }
+      if (!valid) return;
+
+      authButton.disabled = true;
+      btnText.style.opacity = "0";
+      btnLoader.style.display = "inline-block";
+      setTimeout(() => btnLoader.style.opacity = "1", 10);
 
       try {
         if (isLogin) {
@@ -133,13 +251,39 @@
         } else {
           await createUserWithEmailAndPassword(auth, emailVal, passVal);
         }
-        window.location.href = "home.html"; // личный кабинет
+        window.location.href = "home.html";
       } catch (err) {
-        alert("Ошибка: " + err.message);
+        alert("Ошибка: Неправильный email или пароль!");
+      } finally {
+        authButton.disabled = false;
+        btnText.style.opacity = "1";
+        btnLoader.style.opacity = "0";
+        setTimeout(() => btnLoader.style.display = "none", 300);
       }
     });
+
+    function checkInputs() {
+      authButton.disabled = !(email.value.trim() && password.value.trim());
+    }
+
+    email.addEventListener("input", () => {
+      emailWarning.style.display = "none";
+      checkInputs();
+    });
+
+    password.addEventListener("input", () => {
+      passwordWarning.style.display = "none";
+      checkInputs();
+    });
+
+    togglePassword.addEventListener("click", () => {
+      const type = password.getAttribute("type") === "password" ? "text" : "password";
+      password.setAttribute("type", type);
+      togglePassword.classList.toggle("fa-eye");
+      togglePassword.classList.toggle("fa-eye-slash");
+    });
+
+    checkInputs();
   </script>
-<script src="app.js"></script>
-    <script src="service-worker"></script>
 </body>
 </html>
