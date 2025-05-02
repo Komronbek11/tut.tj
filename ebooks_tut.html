@@ -1,103 +1,102 @@
-<!DOCTYPE html><html lang="ru">
+<!DOCTYPE html>
+<html lang="ru">
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Книги для скачивания</title>
-    <style>
-        body {
-            font-family: Arial, sans-serif;
-            margin: 0;
-            padding: 0;
-            background: linear-gradient(to right, #ff9966, #ff5e62);
-            color: white;
-            text-align: center;
-        }
-        .container {
-            max-width: 800px;
-            margin: 50px auto;
-            padding: 20px;
-            background: rgba(0, 0, 0, 0.6);
-            border-radius: 10px;
-            box-shadow: 0 0 10px rgba(0, 0, 0, 0.3);
-        }
-        h2 {
-            font-size: 24px;
-            margin-bottom: 20px;
-        }
-        .book-list {
-            display: flex;
-            flex-wrap: wrap;
-            justify-content: center;
-            gap: 15px;
-            padding: 0;
-            list-style: none;
-        }
-        .book-card {
-            background: rgba(255, 255, 255, 0.2);
-            border-radius: 10px;
-            padding: 20px;
-            width: 200px;
-            text-align: center;
-            transition: 0.3s;
-            box-shadow: 0 4px 6px rgba(0, 0, 0, 0.3);
-        }
-        .book-card:hover {
-            background: rgba(255, 255, 255, 0.4);
-            transform: scale(1.05);
-        }
-        .book-card img {
-            width: 100px;
-            height: 150px;
-            object-fit: cover;
-            border-radius: 5px;
-            margin-bottom: 10px;
-        }
-        .book-card a {
-            color: white;
-            text-decoration: none;
-            font-weight: bold;
-            display: block;
-            margin-top: 10px;
-            padding: 8px;
-            background: rgba(0, 0, 0, 0.5);
-            border-radius: 5px;
-        }
-        .book-card a:hover {
-            background: rgba(0, 0, 0, 0.7);
-        }
-    </style>
+    <title>Электронная библиотека</title>
+    <link href="https://cdn.jsdelivr.net/npm/tailwindcss@2.1.2/dist/tailwind.min.css" rel="stylesheet">
 </head>
-<body>
-    <div class="container">
-        <h2>Книги для скачивания</h2>
-        <ul id="book-list" class="book-list"></ul>
-    </div><script>
-    // Список книг (название, ссылка и изображение)
+<body class="bg-gray-50">
+
+<div class="max-w-7xl mx-auto p-4">
+    <h1 class="text-3xl font-semibold text-gray-900">Электронная библиотека</h1>
+    <div class="my-6 flex flex-col sm:flex-row sm:justify-between sm:items-center">
+        <div class="relative w-full sm:max-w-md">
+            <input
+                type="search"
+                placeholder="Поиск книг..."
+                id="searchInput"
+                class="pl-10 pr-4 py-2 rounded-lg border border-gray-300 shadow-sm focus:outline-none focus:ring-2 focus:ring-blue-500 w-full"
+            >
+            <div class="absolute left-3 top-2.5 text-gray-400">
+                <svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M10 18l6-6-6-6"></path>
+                </svg>
+            </div>
+        </div>
+        <div class="flex items-center gap-3 text-gray-600">
+            <span>Всего книг: <span id="bookCount">6</span></span>
+        </div>
+    </div>
+
+    <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-6">
+        <!-- Здесь будут карточки книг -->
+        <!-- Пример карточки книги -->
+        <div class="bg-white rounded-lg shadow-lg p-4">
+            <img src="/placeholder.svg" alt="Обложка книги" class="w-full h-48 object-cover rounded-md mb-4">
+            <h3 class="text-lg font-semibold text-gray-800">Основы программирования</h3>
+            <p class="text-sm text-gray-600">Иванов И.И., 2022</p>
+            <div class="flex flex-wrap gap-2 mt-3">
+                <span class="bg-blue-100 text-blue-800 text-xs py-1 px-2 rounded-full">PDF</span>
+                <span class="bg-gray-100 text-gray-800 text-xs py-1 px-2 rounded-full">5.2 МБ</span>
+                <span class="bg-gray-100 text-gray-800 text-xs py-1 px-2 rounded-full">320 стр.</span>
+            </div>
+            <p class="text-sm text-gray-500 mt-2">Учебник по основам программирования для начинающих</p>
+            <div class="mt-4 flex justify-between items-center">
+                <a href="#" class="bg-blue-500 text-white px-4 py-2 rounded-md hover:bg-blue-600 transition">Читать</a>
+                <button class="bg-gray-300 text-gray-700 px-4 py-2 rounded-md hover:bg-gray-400 transition">Скачать</button>
+            </div>
+        </div>
+    </div>
+</div>
+
+<script>
     const books = [
-        { title: "Введение в программирование", url: "books/programming.pdf", image: "book1.jpg" },
-        { title: "Алгоритмы и структуры данных", url: "books/algorithms.pdf", image: "algorithm.jpg" },
-        { title: "Математический анализ", url: "books/math.pdf", image: "math.jpg" }
+        { title: "Основы программирования", author: "Иванов И.И.", year: "2022", category: "programming", description: "Учебник по основам программирования для начинающих", coverUrl: "algorithm.jpg", format: "PDF", size: "5.2 МБ", pages: 320 },
+        { title: "Алгоритмы и структуры данных", author: "Петров П.П.", year: "2021", category: "programming", description: "Подробное руководство по алгоритмам и структурам данных", coverUrl: "/placeholder.svg", format: "PDF", size: "8.7 МБ", pages: 480 },
+        { title: "Базы данных: теория и практика", author: "Сидоров С.С.", year: "2023", category: "databases", description: "Современный подход к проектированию и использованию баз данных", coverUrl: "/placeholder.svg", format: "PDF", size: "6.5 МБ", pages: 360 },
+        { title: "Веб-разработка для начинающих", author: "Козлов К.К.", year: "2022", category: "web", description: "Введение в HTML, CSS и JavaScript", coverUrl: "/placeholder.svg", format: "PDF", size: "4.8 МБ", pages: 280 },
+        { title: "Машинное обучение: основы и алгоритмы", author: "Николаев Н.Н.", year: "2023", category: "ai", description: "Фундаментальные концепции и алгоритмы машинного обучения", coverUrl: "/placeholder.svg", format: "PDF", size: "9.3 МБ", pages: 520 },
+        { title: "Операционные системы", author: "Морозов М.М.", year: "2021", category: "os", description: "Принципы работы современных операционных систем", coverUrl: "/placeholder.svg", format: "PDF", size: "7.1 МБ", pages: 400 }
     ];
 
-    // Заполняем список книг
-    const bookList = document.getElementById("book-list");
-    books.forEach(book => {
-        let li = document.createElement("li");
-        li.classList.add("book-card");
-        let img = document.createElement("img");
-        img.src = book.image;
-        img.alt = book.title;
-        let title = document.createElement("h3");
-        title.textContent = book.title;
-        let a = document.createElement("a");
-        a.href = book.url;
-        a.textContent = "Скачать";
-        a.setAttribute("download", "");
-        li.appendChild(img);
-        li.appendChild(title);
-        li.appendChild(a);
-        bookList.appendChild(li);
+    const searchInput = document.getElementById('searchInput');
+    const bookCount = document.getElementById('bookCount');
+    const bookGrid = document.querySelector('.grid');
+
+    searchInput.addEventListener('input', () => {
+        const searchQuery = searchInput.value.toLowerCase();
+        const filteredBooks = books.filter(book => 
+            book.title.toLowerCase().includes(searchQuery) ||
+            book.author.toLowerCase().includes(searchQuery) ||
+            book.description.toLowerCase().includes(searchQuery)
+        );
+
+        bookCount.textContent = filteredBooks.length;
+        renderBooks(filteredBooks);
     });
+
+    function renderBooks(booksToRender) {
+        bookGrid.innerHTML = booksToRender.map(book => `
+            <div class="bg-white rounded-lg shadow-lg p-4">
+                <img src="${book.coverUrl}" alt="Обложка книги" class="w-full h-48 object-cover rounded-md mb-4">
+                <h3 class="text-lg font-semibold text-gray-800">${book.title}</h3>
+                <p class="text-sm text-gray-600">${book.author}, ${book.year}</p>
+                <div class="flex flex-wrap gap-2 mt-3">
+                    <span class="bg-blue-100 text-blue-800 text-xs py-1 px-2 rounded-full">${book.format}</span>
+                    <span class="bg-gray-100 text-gray-800 text-xs py-1 px-2 rounded-full">${book.size}</span>
+                    <span class="bg-gray-100 text-gray-800 text-xs py-1 px-2 rounded-full">${book.pages} стр.</span>
+                </div>
+                <p class="text-sm text-gray-500 mt-2">${book.description}</p>
+                <div class="mt-4 flex justify-between items-center">
+                    <a href="#" class="bg-blue-500 text-white px-4 py-2 rounded-md hover:bg-blue-600 transition">Читать</a>
+                    <button class="bg-gray-300 text-gray-700 px-4 py-2 rounded-md hover:bg-gray-400 transition">Скачать</button>
+                </div>
+            </div>
+        `).join('');
+    }
+
+    renderBooks(books);
 </script>
 
 </body>

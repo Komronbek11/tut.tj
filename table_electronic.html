@@ -1,0 +1,217 @@
+<!DOCTYPE html><html lang="ru">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Электронный журнал</title>
+      <link rel='stylesheet' href='https://cdn-uicons.flaticon.com/2.6.0/uicons-regular-rounded/css/uicons-regular-rounded.css'>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/xlsx/0.17.3/xlsx.full.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/FileSaver.js/2.0.5/FileSaver.min.js"></script>
+    <style>
+      body {
+            font-family: Arial, sans-serif;
+            background-color: #f4f4f4;
+            margin: 15px;
+            padding: 20px;
+        }
+        h1 {
+            text-align: center;
+            color: #333;
+        }
+        table {
+            width: 100%;
+            border-collapse: collapse;
+            margin-bottom: 20px;
+            background: #fff;
+            border-radius: 8px;
+            overflow: hidden;
+            box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
+        }
+        th, td {
+            padding: 12px;
+            text-align: none;
+            border: 1px solid #ddd;
+        }
+        th {
+            background: #007BFF;
+            color: white;
+        }
+        input[type="checkbox"] {
+              border-radius: 20px;
+            transform: scale(1.2);
+        }
+        button {
+            display: block;
+            width: 200px;
+            margin: 10px auto;
+            padding: 10px;
+            font-size: 16px;
+            border: none;
+            border-radius: 20px;
+            cursor: pointer;
+            color: white;
+            background-color: #007BFF;
+        }
+    .export{
+        background-color: green;
+    }
+        button:hover {
+            opacity: 0.9;
+        }
+        button:nth-child(1) { background: #28a745; }
+        button:nth-child(2) { background-color: gold; }
+        button:nth-child(3) { background: #17a2b8; }
+        
+        #datePicker {
+            display: block;
+            margin: 8px auto;
+            padding-right: 8px;
+            font-size: 16px;
+            border: 1px solid #ccc;
+            border-radius: 5px;
+        }
+    </style>
+</head>
+<body>
+    <h1>Электронный журнал</h1><label for="datePicker">Выберите дату:</label>
+<input type="date" id="datePicker" onchange="updateSchedule(); loadAttendance();">
+
+<table id="attendanceTable">
+    <thead>
+        <tr>
+            <th>Студент</th>
+            <th>Весь день</th>
+            <th id="lesson1_name"></th>
+            <th id="lesson2_name"></th>
+            <th id="lesson3_name"></th>
+            <th id="lesson4_name"></th>
+             <th id="lesson5_name"></th>
+             <th id="lesson6_name"></th>
+             <th id="lesson7_name"></th>
+        </tr>
+    </thead>
+    <tbody id="studentsBody"></tbody>
+</table>
+
+<button onclick="saveAttendance()"><i class="fi fi-rr-bookmark"> Сохранить</i></button>
+<button class="export" onclick="exportToExcel()"><i class="fi fi-sr-file-export">Экспорт в Excel</i></button>
+
+<script>
+    const schedule = {
+        "0": ["Выходной", "Выходной", "Выходной", "Выходной"], 
+        "1": ["Соати куратори", "Программирование в Java", "Программирование в Java", "Статистика и КОД", "Статистика и КОД ", "Статистика и КОД"],
+        "2": ["", "", "", "", "Статистика и КОД (лек)", "Статистика и КОД (лек)"],
+        "3": ["Программирование в Java", "Программирование в Java", "Программирование в Java", "Усул ва ВХИ", "Усул ва ВХИ", "Усул ва ВХИ"],
+        "4": ["База данных(лек)", "База данных(лек)", "База данных(срсп)", "База данных(срсп)"],
+        "5": ["", "", "Статистика и КОД (срсп)", "База данных(срсп)", "База данных(срсп)", "Программирование в Java(лек)"],
+        "6": ["Этика и эстетика(лек)", "Этика и эстетика(лек)", "Политология(лек)", "Политология(лек)", "Политология(лек)", "Этика и эстетика(срсп)", "Этика и эстетика(срсп)"]
+    };
+
+    const students = ["Азамов Авзалшо", "Айтиева Жазгул", "Асалзода Ромиш",
+    "Гулмуродзода Зиёвуддин", "Ғоибов Нозимҷон", "Изатуллоев Мирмуҳаммад",
+    "Качуров Фируз", "Қарақулов Амир", "Муродбеков Элчибек", "Набиев Набиҷон",
+    "Одиназода Раҷабалӣ", "Рафиқҷонзода Сафина", "Раҳимов Амирҷон",
+    "Роҳбаров Хисравҷон", "Файзуллоев Фаруҳрӯз", "Ҷуразода Муҳаммадшариф", "Шарипов Комронбек",
+    "Шамсуддинзода Фирдавс"];
+
+    function updateSchedule() {
+        const selectedDate = document.getElementById('datePicker').value;
+        if (!selectedDate) return;
+
+        const dayOfWeek = new Date(selectedDate).getDay();
+        const subjects = schedule[dayOfWeek];
+
+        document.getElementById('lesson1_name').textContent = subjects[0];
+        document.getElementById('lesson2_name').textContent = subjects[1];
+        document.getElementById('lesson3_name').textContent = subjects[2];
+        document.getElementById('lesson4_name').textContent = subjects[3];
+        document.getElementById('lesson5_name').textContent = subjects[4];
+        document.getElementById('lesson6_name').textContent = subjects[5];
+        document.getElementById('lesson7_name').textContent = subjects[6];
+
+        renderStudents();
+    }
+
+    function renderStudents() {
+        const tbody = document.getElementById('studentsBody');
+        tbody.innerHTML = "";
+
+        students.forEach(student => {
+            const row = document.createElement('tr');
+            row.innerHTML = `
+                <td>${student}</td>
+                <td><input type="checkbox" onclick="toggleAll(this, '${student}')"></td>
+                <td><input type="checkbox" id="${student}_1"></td>
+                <td><input type="checkbox" id="${student}_2"></td>
+                <td><input type="checkbox" id="${student}_3"></td>
+                <td><input type="checkbox" id="${student}_4"></td>
+             <td><input type="checkbox" id="${student}_5"></td>
+             <td><input type="checkbox" id="${student}_6"></td>
+             <td><input type="checkbox" id="${student}_7"></td>
+            `;
+            tbody.appendChild(row);
+        });
+    }
+
+    function toggleAll(checkbox, student) {
+        for (let i = 1; i <= 7; i++) {
+            document.getElementById(`${student}_${i}`).checked = checkbox.checked;
+        }
+    }
+
+    function saveAttendance() {
+        const selectedDate = document.getElementById('datePicker').value;
+        if (!selectedDate) return alert('Выберите дату!');
+
+        let data = JSON.parse(localStorage.getItem('attendanceData')) || {};
+        data[selectedDate] = {};
+
+        students.forEach(student => {
+            data[selectedDate][student] = {};
+            for (let i = 1; i <= 7; i++) {
+                data[selectedDate][student][`lesson${i}`] = document.getElementById(`${student}_${i}`).checked;
+            }
+        });
+
+        localStorage.setItem('attendanceData', JSON.stringify(data));
+        alert('Данные сохранены!');
+    }
+
+    function loadAttendance() {
+        const selectedDate = document.getElementById('datePicker').value;
+        if (!selectedDate) return;
+
+        const data = JSON.parse(localStorage.getItem('attendanceData')) || {};
+        if (!data[selectedDate]) return;
+
+        students.forEach(student => {
+            for (let i = 1; i <= 7; i++) {
+                document.getElementById(`${student}_${i}`).checked = data[selectedDate][student][`lesson${i}`] || false;
+            }
+        });
+    }
+
+    function exportToExcel() {
+        const data = JSON.parse(localStorage.getItem('attendanceData')) || {};
+        const sheet = [["Дата", "Студент", "Урок 1", "Урок 2", "Урок 3", "Урок 4", "Урок 5", "Урок 6", "Урок 7"]];
+
+        Object.keys(data).forEach(date => {
+            Object.keys(data[date]).forEach(student => {
+                sheet.push([date, student, ...Object.values(data[date][student]).map(v => v ? "ғ" : "")]);
+            });
+        });
+
+        const ws = XLSX.utils.aoa_to_sheet(sheet);
+        const wb = XLSX.utils.book_new();
+        XLSX.utils.book_append_sheet(wb, ws, "Посещаемость");
+        XLSX.writeFile(wb, "attendance.xlsx");
+    }
+
+    function exportToWord() {
+        const text = JSON.stringify(localStorage.getItem('attendanceData'), null, 4);
+        const blob = new Blob([text], { type: "application/msword" });
+        saveAs(blob, "attendance.doc");
+    }
+</script>
+
+</body>
+</html>

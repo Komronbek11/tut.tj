@@ -1,0 +1,548 @@
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Расписание преподавателей</title>
+    <style>
+        body { font-family: Arial, sans-serif; background: black; color: white; text-align: center; padding: 2px; margin: 10px; }
+        h2 { margin-bottom: 10px; }
+        .clock { font-size: 1.5em; margin-bottom: 20px; }
+        .filters, .days { margin-bottom: 10px; }
+        .filters select, .day-btn { padding: 5px 10px; border-radius: 5px; border: none; cursor: pointer; background: white; color: none; }
+        .day-btn.active { background: #007bff; font-weight: bold; }
+        .table-container { width: 100%; height: 1000vh; max-width: 800px; margin: auto; max-height: 300px; overflow-y: auto; }
+        table { width: 100%; border-collapse: collapse; background: #1e1e1e; }
+        th, td { padding: 10px; border: 1px solid #857676; text-align: left; }
+        thead { position: sticky; top: 0; background: #faf7f7; z-index: 10; }
+        th { cursor: pointer; }
+        th:hover { background: #444; }
+        .sorted-asc::after { content: " "; }
+        .sorted-desc::after { content: " "; }
+    label{
+        margin-bottom: 10px;
+    }
+    .table-container {
+    /* Ограничиваем высоту таблицы на 60% экрана */
+    overflow-y: auto; /* Добавляем вертикальный скролл при необходимости */
+    border: 1px solid #f6f7f4; /* Обводка */
+        height: none;
+}
+
+table {
+    width: 100%; /* Растягиваем таблицу на всю ширину контейнера */
+    border-collapse: collapse; /* Убираем лишние границы */
+}
+
+thead {
+    position: sticky;
+    top: 0;
+    background: #222; /* Цвет фона заголовков */
+    color: white; /* Белый текст */
+    z-index: 10;
+}
+
+th, td {
+    padding: 10px;
+    text-align: center;
+    border-bottom: 3px solid #70705a;
+}
+
+tr:nth-child(even) {
+    background: #2f2f30; /* Чередуем цвета строк */
+}
+
+tr:hover {
+    background: #1768aa; /* Подсветка строки при наведении */
+}
+
+@media (max-width: 768px) {
+    th, td {
+        padding: 8px;
+        font-size: 14px; /* Уменьшаем текст на мобильных */
+    }
+    .table-container {
+        max-height: 70vh;
+    }
+}
+
+    .highlight {
+    background: #51ff00 !important;  /* Желтый фон */
+    color: #000 !important;  /* Черный текст */
+    font-weight: bold;
+}
+     .back{
+    width: 35px;
+    height: 35px;
+    border-radius: 50%;
+  }
+header{
+    text-align: left;
+}
+    </style>
+</head>
+<body>
+    <header>
+    <img onclick="goBack()"  class="back"src="back.jpg">
+    </header>
+    <h2>Расписание преподавателей</h2>
+    <div class="clock" id="clock">00:00:00</div>
+
+    <div class="filters">Преподаватель:
+        <label><select id="teacherFilter"><option value="рр"> Все</option></select></label>
+        <br>
+         <br>Группа:
+        <label><select id="groupFilter"><option value=""> Все</option></select></label>
+        <br> <br>Аудитория:
+        <label><select id="roomFilter"><option value=""> Все</option></select></label>
+    </div>
+
+    <div class="days">
+        <button class="day-btn" data-day="Понедельник">Понедельник</button>
+        <button class="day-btn" data-day="Вторник">Вторник</button>
+        <button class="day-btn" data-day="Среда">Среда</button><br><br>
+        <button class="day-btn" data-day="Четверг">Четверг</button>
+        <button class="day-btn" data-day="Пятница">Пятница</button>
+        <button class="day-btn" data-day="Суббота">Суббота</button>
+    </div>
+
+    <div class="table-container">
+        <table>
+            <thead>
+                <tr>
+                    <th data-column="время">Время</th>
+                    <th data-column="преподаватель">Преподаватель</th>
+                    <th data-column="предмет">Предмет</th>
+                    <th data-column="группа">Группа</th>
+                    <th data-column="аудитория">Аудитория</th>
+                    
+                </tr>
+            </thead>
+            <tbody id="scheduleBody"></tbody>
+        </table>
+    </div>
+
+    <script>
+    function goBack() {
+      window.location.href = "home.html";
+    }
+        const schedule = {
+            "Понедельник": [
+                { 
+                    время: "08:00 - 08:50",
+                    преподаватель: "Лола Шарипова",
+                    предмет: "Соати куратори",
+                    группа: "1-40010101В",
+                    аудитория: "Китобхона" 
+                },
+            
+             { 
+                    время: "09:00 - 09:50",
+                    преподаватель: "Турсунов Р",
+                    предмет: "Програм. на Java",
+                    группа: "1-40010101В<br>1-40010102B",
+                    аудитория: "208" 
+                },
+                { 
+                    время: "10:00 - 10:50",
+                    преподаватель: "Турсунов Р",
+                    предмет: "Програм. на Java",
+                    группа: "1-40010101В",
+                    аудитория: "208" 
+                },
+                { 
+                    время: "11:00 - 11:50",
+                    преподаватель: "Хамидова Д",
+                    предмет: "Статистика и КОД",
+                    группа: "1-40010101В",
+                    аудитория: "208" 
+                },
+                { 
+                    время: "12:00 - 12:50",
+                    преподаватель: "Хамидова Д",
+                    предмет: "Статистика и КОД",
+                    группа: "1-40010101В",
+                    аудитория: "208" 
+                },
+                { 
+                    время: "13:00 - 13:50",
+                    преподаватель: "Хамидова Д",
+                    предмет: "Статистика и КОД",
+                    группа: "1-40010101В",
+                    аудитория: "406" 
+                },
+            ],
+            "Вторник": [
+            { 
+                    время: "12:00 - 12:50",
+                    преподаватель: "Хамидова Д",
+                    предмет: "Статистика и КОД",
+                    группа: "1-40010101В",
+                    аудитория: "208" 
+                },
+                { 
+                    время: "13:00 - 13:50",
+                    преподаватель: "Хамидова Д",
+                    предмет: "Статистика и КОД",
+                    группа: "1-40010101В",
+                    аудитория: "406" 
+                }, 
+            ],
+            "Среда": [
+                { 
+                    время: "08:00 - 08:50",
+                    преподаватель: "Турсунов Р",
+                    предмет: "Програм. на Java",
+                    группа: "1-40010101В",
+                    аудитория: "304" 
+                },
+             { 
+                    время: "09:00 - 09:50",
+                    преподаватель: "Турсунов Р",
+                    предмет: "Програм. на Java",
+                    группа: "1-40010101В",
+                    аудитория: "304" 
+                },
+                { 
+                    время: "10:00 - 10:50",
+                    преподаватель: "Турсунов Р",
+                    предмет: "Програм. на Java",
+                    группа: "1-40010101В",
+                    аудитория: "304" 
+                },
+                { 
+                    время: "11:00 - 11:50",
+                    преподаватель: "Насруллоева Д",
+                    предмет: "Усул ва ВХИ",
+                    группа: "1-40010101В",
+                    аудитория: "301" 
+                },
+                { 
+                    время: "12:00 - 12:50",
+                    преподаватель: "Насруллоева Д",
+                    предмет: "Усул ва ВХИ",
+                    группа: "1-40010101В",
+                    аудитория: "301" 
+                },
+                { 
+                    время: "13:00 - 13:50",
+                    преподаватель: "Насруллоева Д",
+                    предмет: "Усул ва ВХИ",
+                    группа: "1-40010101В",
+                    аудитория: "301" 
+                },
+            ],
+            "Четверг":  [ { 
+                    время: "10:00 - 10:50",
+                    преподаватель: "Аликулов А",
+                    предмет: "База данных(лек)",
+                    группа: "1-40010101В",
+                    аудитория: "206" 
+                },
+                { 
+                    время: "11:00 - 11:50",
+                    преподаватель: "Аликулов А",
+                    предмет: "База данных(лек)",
+                    группа: "1-40010101В",
+                    аудитория: "206" 
+                },
+                { 
+                    время: "12:00 - 12:50",
+                    преподаватель: "Парвонаева Х",
+                    предмет: "База данных(срсп)",
+                    группа: "1-40010101В",
+                    аудитория: "301" 
+                },
+                { 
+                    время: "13:00 - 13:50",
+                    преподаватель: "Парвонаева Х",
+                    предмет: "База данных(срсп)",
+                    группа: "1-40010101В",
+                    аудитория: "301" 
+                },
+            ],
+            "Пятница":  [  { 
+                    время: "10:00 - 10:50",
+                    преподаватель: "Ғуломсафдаров А",
+                    предмет: "Статистика и КОД(срсп)",
+                    группа: "1-40010101В",
+                    аудитория: "206" 
+                },
+                { 
+                    время: "11:00 - 11:50",
+                    преподаватель: "Парвонаева Х",
+                    предмет: "База данных(срсп)",
+                    группа: "1-40010101В",
+                    аудитория: "206" 
+                },
+                { 
+                    время: "12:00 - 12:50",
+                    преподаватель: "Парвонаева Х",
+                    предмет: "База данных(срсп)",
+                    группа: "1-40010101В",
+                    аудитория: "301" 
+                },
+                { 
+                    время: "13:00 - 13:50",
+                    преподаватель: "Турсунов Р",
+                    предмет: "Програм. на Java(срсп)",
+                    группа: "1-40010101В",
+                    аудитория: "301" 
+                },
+                ],
+                "Суббота":  [  
+                { 
+                    время: "08:00 - 08:50",
+                    преподаватель: " Орифҷонова Н",
+                    предмет: "Этика и этетика(лек)",
+                    группа: "1-40010101В",
+                    аудитория: "103" 
+                },
+             { 
+                    время: "09:00 - 09:50",
+                    преподаватель: " Орифҷонова Н",
+                    предмет: "Этика и этетика(лек)(хафтаи тоқ)",
+                    группа: "1-40010101В",
+                    аудитория: "103"
+                },
+                { 
+                    время: "09:00 - 09:50",
+                    преподаватель: " Мирзоён Р.Х",
+                    предмет: "Политология(лек)(хафтаи ҷуфт)",
+                    группа: "1-40010101В",
+                    аудитория: "103"
+                },
+                { 
+                    время: "10:00 - 10:50",
+                    преподаватель: " Мирзоён Р.Х",
+                    предмет: "Политология(лек)",
+                    группа: "1-40010101В",
+                    аудитория: "103"
+                },
+                { 
+                    время: "11:00 - 11:50",
+                    преподаватель: " Мирзоён Р.Х",
+                    предмет: "Политология(лек)",
+                    группа: "1-40010101В",
+                    аудитория: "101"
+                },
+                { 
+                    время: "12:00 - 12:50",
+                    преподаватель: " Мирзоён Р.Х",
+                    предмет: "Политология(лек)",
+                    группа: "1-40010101В",
+                    аудитория: "101"
+                },
+                { 
+                    время: "13:00 - 13:50",
+                    преподаватель: "Джураев Р",
+                    предмет: "Этика и этетика(срсп)",
+                    группа: "1-40010101В",
+                    аудитория: "205" 
+                },
+                { 
+                    время: "14:00 - 14:50",
+                    преподаватель: "Джураев Р",
+                    предмет: "Этика и этетика(срсп)",
+                    группа: "1-40010101В",
+                    аудитория: "205" 
+                },
+                ],
+        };
+
+        const scheduleBody = document.getElementById("scheduleBody");
+        const clock = document.getElementById("clock");
+        const filters = ["teacherFilter", "groupFilter", "roomFilter"].map(id => document.getElementById(id));
+        const dayButtons = document.querySelectorAll(".day-btn");
+        const tableHeaders = document.querySelectorAll("th");
+
+        let selectedDay = getTodayName();
+        let currentSortColumn = null;
+        let isAscending = true;
+
+        function getTodayName() {
+            const days = ["Воскресенье", "Понедельник", "Вторник", "Среда", "Четверг", "Пятница", "Суббота"];
+            return days[new Date().getDay()];
+        }
+
+        function updateClock() {
+            const now = new Date();
+            clock.textContent = now.toLocaleTimeString();
+            if (now.getHours() === 0 && now.getMinutes() === 0) {
+                selectedDay = getTodayName();
+                updateDayButtons();
+                renderSchedule();
+            }
+        }
+        setInterval(updateClock, 1000);
+        updateClock();
+
+        function populateFilters() {
+    let allItems = [];
+    
+    // Собираем данные со всех дней недели
+    Object.keys(schedule).forEach(day => {
+        allItems = allItems.concat(schedule[day]);
+    });
+
+    filters.forEach((filter, index) => {
+        const key = ["преподаватель", "группа", "аудитория"][index];
+        const values = [...new Set(allItems.map(s => s[key]))];
+        
+        // Очищаем фильтр и добавляем новые значения
+        filter.innerHTML = `<option value="">Все</option>` + 
+                           values.map(v => `<option value="${v}">${v}</option>`).join("");
+        
+        filter.addEventListener("change", renderSchedule);
+    });
+}
+
+
+        function renderSchedule() {
+            let todaySchedule = schedule[selectedDay] || [];
+            todaySchedule = todaySchedule.filter(s =>
+                (!filters[0].value || s.преподаватель === filters[0].value) &&
+                (!filters[1].value || s.группа === filters[1].value) &&
+                (!filters[2].value || s.аудитория === filters[2].value)
+            );
+
+            if (currentSortColumn) {
+                todaySchedule = sortSchedule(todaySchedule, currentSortColumn, isAscending);
+            }
+
+            scheduleBody.innerHTML = todaySchedule.map(s => `
+                <tr>
+                    <td>${s.время}</td>
+                    <td>${s.преподаватель}</td>
+                    <td>${s.предмет}</td>
+                    <td>${s.группа}</td>
+                    <td>${s.аудитория}</td>
+                 
+                </tr>
+            `).join("");
+        }
+
+        function sortSchedule(data, column, ascending) {
+            return data.slice().sort((a, b) => {
+                let valA = a[column];
+                let valB = b[column];
+
+                if (column === "время") {
+                    valA = parseInt(valA.split(":")[0]) * 60 + parseInt(valA.split(":")[1]);
+                    valB = parseInt(valB.split(":")[0]) * 60 + parseInt(valB.split(":")[1]);
+                }
+
+                return ascending ? valA.localeCompare(valB, undefined, { numeric: true }) : valB.localeCompare(valA, undefined, { numeric: true });
+            });
+        }
+
+        function updateDayButtons() {
+            dayButtons.forEach(btn => btn.classList.toggle("active", btn.dataset.day === selectedDay));
+        }
+
+        dayButtons.forEach(button => {
+            button.addEventListener("click", () => {
+                selectedDay = button.dataset.day;
+                updateDayButtons();
+                renderSchedule();
+            });
+        });
+
+        tableHeaders.forEach(header => {
+            header.addEventListener("click", () => {
+                const column = header.dataset.column;
+                isAscending = currentSortColumn === column ? !isAscending : true;
+                currentSortColumn = column;
+                tableHeaders.forEach(h => h.classList.remove("sorted-asc", "sorted-desc"));
+                header.classList.add(isAscending ? "sorted-asc" : "sorted-desc");
+                renderSchedule();
+            });
+        });
+
+        populateFilters();
+        updateDayButtons();
+        renderSchedule();
+
+        function highlightCurrentLesson() {
+    const now = new Date();
+    const currentMinutes = now.getHours() * 60 + now.getMinutes(); // Переводим текущее время в минуты
+
+    document.querySelectorAll("tbody tr").forEach(row => {
+        const timeText = row.cells[0].textContent.trim(); // Берем время из первой колонки
+        const [start, end] = timeText.split(" - ").map(t => {
+            const [hours, minutes] = t.split(":").map(Number);
+            return hours * 60 + minutes;
+        });
+
+        // Если текущее время в интервале урока — подсветка
+        if (currentMinutes >= start && currentMinutes < end) {
+            row.classList.add("highlight");
+        } else {
+            row.classList.remove("highlight");
+        }
+    });
+}
+
+// Добавляем вызов функции после обновления расписания
+function renderSchedule() {
+    let todaySchedule = schedule[selectedDay] || [];
+    
+    if (currentSortColumn) {
+        todaySchedule = sortSchedule(todaySchedule, currentSortColumn, isAscending);
+    }
+
+    // Применяем фильтрацию
+    const selectedTeacher = document.getElementById("teacherFilter").value;
+    const selectedGroup = document.getElementById("groupFilter").value;
+    const selectedRoom = document.getElementById("roomFilter").value;
+
+    todaySchedule = todaySchedule.filter(s =>
+        (!selectedTeacher || s.преподаватель === selectedTeacher) &&
+        (!selectedGroup || s.группа === selectedGroup) &&
+        (!selectedRoom || s.аудитория === selectedRoom)
+    );
+
+    scheduleBody.innerHTML = todaySchedule.map(s => `
+        <tr>
+            <td>${s.время}</td>
+            <td>${s.преподаватель}</td>
+            <td>${s.предмет}</td>
+            <td>${s.группа}</td>
+            <td>${s.аудитория}</td>
+        </tr>
+    `).join("");
+
+    highlightCurrentLesson(); // Подсветка активного урока
+}
+
+// Обновление расписания при изменении фильтров
+document.getElementById("teacherFilter").addEventListener("change", renderSchedule);
+document.getElementById("groupFilter").addEventListener("change", renderSchedule);
+document.getElementById("roomFilter").addEventListener("change", renderSchedule);
+  
+function highlightCurrentLesson() {
+    const now = new Date();
+    const currentMinutes = now.getHours() * 60 + now.getMinutes();
+
+    document.querySelectorAll("tbody tr").forEach(row => {
+        const timeText = row.cells[0].textContent.trim();
+        const [start, end] = timeText.split(" - ").map(t => {
+            const [hours, minutes] = t.split(":").map(Number);
+            return hours * 60 + minutes;
+        });
+
+        if (currentMinutes >= start && currentMinutes < end) {
+            row.classList.add("highlight");
+        } else {
+            row.classList.remove("highlight");
+        }
+    });
+}
+
+// Обновлять каждую минуту
+setInterval(highlightCurrentLesson, 60000);
+
+  </script>
+
+</body>
+</html>

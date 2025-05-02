@@ -1,0 +1,333 @@
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Заметки СРС</title>
+  <style>
+    * {
+      
+      box-sizing: border-box;
+    }
+
+    body {
+      font-family: 'Segoe UI', sans-serif;
+      margin: 0;
+      padding: 20px;
+      background: #f4f6f9;
+      color: #333;
+      
+    }
+
+    h2, h3 {
+      text-align: center;
+      margin-bottom: 20px;
+    }
+
+    select, textarea, button {
+      width: 100%;
+      padding: 12px;
+      margin-bottom: 15px;
+      border-radius: 12px;
+      border: 1px solid #ccc;
+      font-size: 16px;
+    }
+
+    button {
+      background: #007bff;
+      color: white;
+      border: none;
+      transition: 0.3s;
+      cursor: pointer;
+      border-radius: 25px;
+      width: 90%;
+      text-align: center;
+    }
+
+    button:hover {
+      background: #0056b3;
+    }
+
+    .card {
+      background: #fff;
+      border-radius: 16px;
+      box-shadow: 0 2px 6px rgba(0, 0, 0, 0.1);
+      padding: 16px;
+      margin-bottom: 15px;
+      transition: 0.3s ease-in-out;
+    }
+
+    .card strong {
+      display: block;
+      font-size: 18px;
+      margin-bottom: 8px;
+    }
+
+    .btn-group {
+      display: flex;
+      gap: 10px;
+      margin-top: 10px;
+    }
+
+    .edit-btn, .delete-btn {
+      flex: 1;
+      padding: 10px;
+      border-radius: 20px;
+      border: none;
+      color: white;
+      cursor: pointer;
+    }
+
+    .edit-btn {
+      background-color: #28a745;
+    }
+
+    .delete-btn {
+      background-color: red;
+    }
+
+    .edit-window {
+      display: none;
+      position: fixed;
+      top: 50%;
+      left: 50%;
+      transform: translate(-50%, -50%);
+      background: white;
+      padding: 20px;
+      border-radius: 12px;
+      box-shadow: 0 0 10px rgba(0,0,0,0.3);
+      z-index: 999;
+      width: 90%;
+      max-width: 400px;
+    }
+
+    .back-btn {
+      display: inline-block;
+      background: transparent;
+      border: none;
+      color: #007bff;
+      font-size: 16px;
+      margin-bottom: 10px;
+      cursor: pointer;
+    }
+
+    @media (min-width: 600px) {
+      .card {
+        padding: 20px;
+      }
+    }
+  .modal {
+    text-align: center;
+    display: none;
+    position: fixed;
+    z-index: 1000;
+    left: 0;
+    top: 0;
+    width: 100%;
+    height: 100%;
+    overflow: auto;
+    background-color: rgba(0,0,0,0.5);
+}
+
+.modal-content {
+    background-color: #fff;
+    margin: 10% auto;
+    padding: 20px;
+    border-radius: 15px;
+    width: 300px;
+    text-align: center;
+    box-shadow: 0 5px 15px rgba(0,0,0,0.3);
+}
+
+.close {
+    color: #aaa;
+    float: right;
+    font-size: 24px;
+    font-weight: bold;
+    cursor: pointer;
+}
+
+.close:hover {
+    color: black;
+}
+  #newSubjectInput{
+    text-align: center;
+    width: 250px;
+    height: 40px;
+    margin-bottom: 20px;
+    border-radius: 20px;
+  }
+  .back{
+    width: 35px;
+    height: 35px;
+    border-radius: 50%;
+  }
+  </style>
+</head>
+<body>
+  <img onclick="goBack()"  class="back"src="back.jpg">
+  <h2>Заметки СРС📄✍</h2>
+
+  <select id="subject" onchange="showInputField()">
+    <option value="">-- Выберите предмет --</option>
+    <option value="Политология">Политология</option>
+    <option value="База данных">База данных</option>
+    <option value="Усул ва ВХИ">Усул ва ВХИ</option>
+    <option value="Програм. на Java">Програм. на Java</option>
+    <option value="Этика и эстетика">Этика и эстетика</option>
+    <option value="Статистика и КОД">Статистика и КОД</option>
+  </select>
+<!-- Modal oynasi -->
+<div id="addSubjectModal" class="modal">
+  <div class="modal-content">
+    <span class="close" onclick="closeModal()">&times;</span>
+    <h3>+ Добавить предмет</h3>
+    <input type="text" id="newSubjectInput" placeholder="Введите название новом предмет...">
+    <button onclick="addNewSubject()">Добавить</button>
+  </div>
+</div>
+
+<!-- Fan qo‘shish tugmasi -->
+<button onclick="openModal()">+ Добавить предмет</button>
+  <div id="description-container" style="display: none;">
+    <textarea id="description" placeholder="Введите описание..."></textarea>
+    <button onclick="addDescription()">Добавить</button>
+  </div>
+
+  <h3>Список предметов:</h3>
+  <div id="items"></div>
+
+  <div id="editWindow" class="edit-window">
+    <h3>&#128397;Редактировать</h3>
+    <textarea id="editDescription"></textarea>
+    <button onclick="saveEdit()">Сохранить</button>
+    <button onclick="closeEditWindow()">Закрыть</button>
+  </div>
+
+  <script>
+  function openModal() {
+    document.getElementById("addSubjectModal").style.display = "block";
+}
+
+function closeModal() {
+    document.getElementById("addSubjectModal").style.display = "none";
+}
+
+function addNewSubject() {
+    const newSubject = document.getElementById("newSubjectInput").value.trim();
+    const select = document.getElementById("subject");
+
+    if (!newSubject) {
+        alert("Извините, пожалуйста введите название предмета");
+        return;
+    }
+
+    for (let i = 0; i < select.options.length; i++) {
+        if (select.options[i].value.toLowerCase() === newSubject.toLowerCase()) {
+            alert("Уже добавлен этот предмет.");
+            return;
+        }
+    }
+
+    const option = document.createElement("option");
+    option.value = newSubject;
+    option.textContent = newSubject;
+    select.appendChild(option);
+    select.value = newSubject;
+    showInputField();
+
+    document.getElementById("newSubjectInput").value = "";
+    closeModal();
+}
+    function goBack() {
+      window.location.href = "home.html";
+    }
+
+    let subjectsData = {};
+    let currentEditSubject = "";
+
+    window.onload = function () {
+      const saved = localStorage.getItem("subjectsData");
+      if (saved) {
+        subjectsData = JSON.parse(saved);
+        renderItems();
+      }
+    };
+
+    function saveToLocalStorage() {
+      localStorage.setItem("subjectsData", JSON.stringify(subjectsData));
+    }
+
+    function showInputField() {
+      const subject = document.getElementById("subject").value;
+      const container = document.getElementById("description-container");
+      if (subject) {
+        container.style.display = "block";
+        document.getElementById("description").value = subjectsData[subject] || "";
+      } else {
+        container.style.display = "none";
+      }
+    }
+
+    function addDescription() {
+      const subject = document.getElementById("subject").value;
+      const description = document.getElementById("description").value.trim();
+      if (!description) return alert("Введите описание!");
+
+      subjectsData[subject] = description;
+      saveToLocalStorage();
+      renderItems();
+      clearInput();
+    }
+
+    function renderItems() {
+      const container = document.getElementById("items");
+      container.innerHTML = "";
+
+      for (const subject in subjectsData) {
+        const card = document.createElement("div");
+        card.className = "card";
+        card.innerHTML = `
+          <strong>${subject}</strong>
+          <span>${subjectsData[subject]}</span>
+          <div class="btn-group">
+            <button class="edit-btn" onclick="openEditWindow('${subject}')">Редактировать</button>
+            <button class="delete-btn" onclick="deleteSubject('${subject}')">Удалить</button>
+          </div>`;
+        container.appendChild(card);
+      }
+    }
+
+    function openEditWindow(subject) {
+      currentEditSubject = subject;
+      document.getElementById("editDescription").value = subjectsData[subject];
+      document.getElementById("editWindow").style.display = "block";
+    }
+
+    function saveEdit() {
+      const newText = document.getElementById("editDescription").value.trim();
+      if (!newText) return alert("Введите описание!");
+
+      subjectsData[currentEditSubject] = newText;
+      saveToLocalStorage();
+      renderItems();
+      closeEditWindow();
+    }
+
+    function closeEditWindow() {
+      document.getElementById("editWindow").style.display = "none";
+    }
+
+    function deleteSubject(subject) {
+      delete subjectsData[subject];
+      saveToLocalStorage();
+      renderItems();
+    }
+
+    function clearInput() {
+      document.getElementById("description").value = "";
+      document.getElementById("description-container").style.display = "none";
+    }
+  </script>
+</body>
+</html>
