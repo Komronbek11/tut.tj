@@ -8,10 +8,16 @@
     <script src="https://cdn.jsdelivr.net/npm/alpinejs@2.8.2/dist/alpine.min.js" defer></script>
     <script src="https://cdnjs.cloudflare.com/ajax/libs/heroicons/1.0.6/outline/heroicons-outline.min.js"></script>
     <style>
+      @import url('https://fonts.googleapis.com/css2?family=DM+Sans:ital,opsz,wght@0,9..40,100..1000;1,9..40,100..1000&family=Lato:ital,wght@0,100;0,300;0,400;0,700;0,900;1,100;1,300;1,400;1,700;1,900&family=Manrope:wght@200..800&family=Poppins:ital,wght@0,100;0,200;0,300;0,400;0,500;0,600;0,700;0,800;0,900;1,100;1,200;1,300;1,400;1,500;1,600;1,700;1,800;1,900&family=Satisfy&display=swap');
+    *{
+        font-family: "DM Sans", sans-serif;
+    }
+    
     body{
         margin: 0;
-        padding: 0;
+        padding: 1px;
         overflow-x: hidden;
+        font-family: "Poppins", sans-serif;
     }
         /* Дополнительные стили для улучшения внешнего вида */
         .dropdown-content {
@@ -57,8 +63,9 @@
         .prev { left: 10px; }
         .next { right: 10px; }
     
-     .card{
+     .card1{
     justify-content: start;
+
     padding: 10px;
     margin: 10px;
     border: 1px solid black;
@@ -66,35 +73,50 @@
     height: 190px;
     border-radius: 20px;
     display: flex;
+
     flex-wrap: wrap;
+
     background: white;
   }
   p{
       font-size: 14px;
       text-align: center;
       color: black;
-    font-family: Times New Roman;
+    font-family: "Poppins", sans-serif;
     font-weight: bold;
     padding-bottom: -25px;
     margin: 0;
   }
     h2{
-        font-family: Times New Roman;
+        font-family: "Poppins", sans-serif;
     }
-   .course-info .container{
+   .course-info1 .container1{
+
         align-content: center;
+
         align-items: center;
+
         justify-content: center;
+
         justify-items: center;
+
         content: none;
+
         display: flex;
+
        padding: 10px;
+
        margin: 10px;
+
         flex-wrap: wrap;
+
 margin-right: 0px;
+
 margin-top: 20px;
+
            transition: 1.5s;
       }
+
      .footerr {
          height: none;
     background-color: none;
@@ -124,6 +146,66 @@ margin-top: 20px;
     .ffooter{
         color: white;
         padding-bottom: -500px;
+    }
+    .line-card{
+        width: 90%;
+        height: 120px;
+        background: #fcffed;
+background: linear-gradient(90deg, rgba(252, 255, 237, 1) 0%, rgba(255, 250, 219, 1) 50%, rgba(255, 253, 232, 1) 100%);
+        border-radius: 40px;
+    }
+    
+     .card {
+      border-radius: 20px;
+      padding: 20px;
+      margin-bottom: 20px;
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      box-shadow: 0 4px 10px rgba(0, 0, 0, 0.2);
+    }
+
+    .card img {
+      width: 80px;
+      height: auto;
+    }
+
+    .card.calories {
+      background-color: #e0ecff;
+    }
+
+    .card.distance {
+      background-color:  #f7f1e5;
+    }
+   .card.schedule {
+      background-color:  #d1ffdd;
+    }
+ .card.examcalc {
+   color: black;
+      background-color: #a3c0ff;
+    }
+
+    .text-content {
+      max-width: 70%;
+    }
+
+    .text-content h2 {
+      margin: 0 0 10px 0;
+      font-size: 1.2em;
+      color: #333;
+    }
+
+    .text-content p {
+      margin: 0;
+      font-size: 1.6em;
+      font-weight: bold;
+    }
+
+    .text-content small {
+         font-family: "DM Sans", sans-serif;
+      display: block;
+      font-size: 0.9em;
+      color: #666;
     }
     </style>
 </head>
@@ -155,12 +237,8 @@ margin-top: 20px;
                     </button>
                     <div x-show="dropdown" class="dropdown-content absolute left-0 mt-2 w-40 bg-gray-700 shadow-lg rounded-lg transition-all">
                         <a href="#" class="block px-4 py-2 hover:bg-gray-600 transition-all">ТИ ва ИС</a>
-                        <a href="#" class="block px-4 py-2 hover:bg-gray-600 transition-all">Муҳандисӣ-технологӣ</a>
-                        <a href="#" class="block px-4 py-2 hover:bg-gray-600 transition-all">Технология ва дизайн</a>
-                        <a href="#" class="block px-4 py-2 hover:bg-gray-600 transition-all">Менеҷмент ва маркетинги байналмиллалӣ</a>
-                        <a href="#" class="block px-4 py-2 hover:bg-gray-600 transition-all">Иқтисодиёт ва молия</a>
-                        <a href="#" class="block px-4 py-2 hover:bg-gray-600 transition-all">Телекоммуникатсия ва таълимоти касбӣ</a>
-                        <a href="#" class="block px-4 py-2 hover:bg-gray-600 transition-all">ФмДдПҶБ ва ДТТ</a>
+                        <a href="#" class="block px-4 py-2 hover:bg-gray-600 transition-all">Дизайн</a>
+                        <a href="#" class="block px-4 py-2 hover:bg-gray-600 transition-all">Маркетинг</a>
                     </div>
                 </div>
                 <a href="#" class="hover:text-gray-300 transition-all flex items-center">
@@ -196,14 +274,10 @@ margin-top: 20px;
                     </svg>
                 </button>
                 <div x-show="dropdown" class="ml-4 space-y-2 transition-all">
-                    <a href="#" class="block px-4 py-2 hover:bg-gray-600 transition-all">Технологияи иттилоотӣ ва интеллекти сунъӣ</a>
-                        <a href="#" class="block px-4 py-2 hover:bg-gray-600 transition-all">Муҳандисӣ-технологӣ</a>
-                        <a href="#" class="block px-4 py-2 hover:bg-gray-600 transition-all">Технология ва дизайн</a>
-                        <a href="#" class="block px-4 py-2 hover:bg-gray-600 transition-all">Менеҷмент ва маркетинги байналмиллалӣ</a>
-                        <a href="#" class="block px-4 py-2 hover:bg-gray-600 transition-all">Иқтисодиёт ва молия</a>
-                        <a href="#" class="block px-4 py-2 hover:bg-gray-600 transition-all">Телекоммуникатсия ва таълимоти касбӣ</a>
-                        <a href="#" class="block px-4 py-2 hover:bg-gray-600 transition-all">ФмДдПҶБ ва ДТТ</a>
-                     </div>
+                    <a href="#" class="block py-1 text-gray-400 hover:text-white transition-all">ТИ ва ИС</a>
+                    <a href="#" class="block py-1 text-gray-400 hover:text-white transition-all">Дизайн</a>
+                    <a href="#" class="block py-1 text-gray-400 hover:text-white transition-all">Маркетинг</a>
+                </div>
             </div>
             <a href="#" class="block py-2 hover:text-gray-300 transition-all">Контакты</a>
         </div>
@@ -218,30 +292,65 @@ margin-top: 20px;
         <button class="prev" onclick="prevSlide()">&#10094;</button>
         <button class="next" onclick="nextSlide()">&#10095;</button>
     </div>
-      <div class="course-info">
-    <div class="container">
-      <div class="card">
-        <a href="teachers_tut.html"><img src="teachers.gif" alt="teachers" width="165" height="150">
+      <div class="course-info1">
+    <div class="container1">
+      <div class="card1">
+        <img onclick="teachers()" src="teach.png" alt="teachers" width="160" height="140">
         </a>
         <p>Омӯзгорон</p>
       </div>
       
-       <div class="card">
+       <div class="card1">
          
-         <img onclick="raspisanie()"src="raspisanie.gif" alt="books" width="180" height="150">
+         <img onclick="raspisanie()"src="darsi.png" alt="books" width="180" height="150">
         
         <p>Ҷадвали дарсӣ</p>
       </div>
-       <div class="card">
-         <img onclick="books()" src="books.gif" width="180" height="150"></img>
+       <div class="card1">
+         <img onclick="books()" src="elearning.png" width="180" height="150"></img>
          <p>Китобҳои электронӣ</p>
          
        </div>
-      <div class="card">
-         <img onclick="exam()" src="exam.jpg" alt="books" width="180" height="150">
+      <div class="card1">
+         <img onclick="exam()" src="outcomes.png" alt="books" width="180" height="150">
          <p>Натиҷаи имтиҳонҳо</p>
          
        </div>
+          <br>
+          <br>
+             <br>
+          <br>
+         <div class="card calories" onclick="imtihon()">
+    <div class="text-content">
+      <h2>Ҷадвали имтиҳонҳо</h2>
+      <small>Вақт,сана ҷои баргузори имтиҳонҳо ба таври динамикӣ.</small>
+    </div>
+    <img src="exam.png" alt="Гамбургер">
+  </div>
+
+  <div class="card distance" onclick="srsp()">
+    <div class="text-content">
+      <h2>Қайдҳои КМД</h2>
+      <small>Донишҷӯён метавонад, корҳои маҷмуи (КМД) - и худро сабт кунад. </small>
+    </div>
+    <img class="image"src="diary.png" alt="Эйфелева башня">
+  </div>
+  
+   <div class="card schedule" onclick="schedule()">
+    <div class="text-content">
+      <h2>Ҷадвали дарсҳо барои омӯзгорон</h2>
+      <small>Ҷадвали дарсӣ имконият медиҳад, ки интихоб кардани аудитория,гурӯҳҳо,омӯзгорон ба таври динамикӣ нишон медиҳад.</small>
+    </div>
+    <img class="image"src="time.png" alt="Эйфелева башня">
+  </div>
+  
+   <div class="card examcalc" onclick="calcexam()">
+    <div class="text-content">
+      <h2>Ҳисобкунаки имтиҳон</h2>
+      <small>Шумо акнун имконият доред,ки натиҷаи имтиҳонҳои худро хисоб мекунед ва онро хамчун файли таёр дар Excel гирифта метавонед.</small>
+    </div>
+    <img class="image"src="studying.png" alt="Эйфелева башня">
+  </div>
     </div>
          <footer style="background: #111; color: white; padding: 20px; text-align: center;">
     <div style="max-width: 600px; margin: 20px; margin-bottom: -20px;">
@@ -257,7 +366,7 @@ margin-top: 20px;
     <p class="footerr"style="margin-top: 20px; font-size: 14px;">
         &copy; 1990 - 2025 Донишгоҳи технологияӣ <br>
         Тоҷикистон <br>
-        Разработчик:<a href="#" style="color: lightgreen;">Komron Sharipov</a>
+        Таҳиягар: <a href="#" style="color: lightgreen;">Komron Sharipov</a>
     </p>
 </div>
 
@@ -271,12 +380,27 @@ margin-top: 20px;
     function raspisanie() {
         window.location.href="raspisanie.html";
     }
+   function teachers() {
+       window.location.href="teachers_tut.html";
+   }
           function exam() {
               window.location.href="http://asu.tut.tj/?option=login";
           }
-        function books() {
-        window.location.href="ebooks_tut.html";
-        }
+    function books() {
+              window.location.href="ebooks_tut.html";
+          }
+    function imtihon(){
+    window.location.href="imtihon.html";
+  }
+  function srsp() {
+    window.location.href="zametki.html";
+  }
+  function schedule() {
+    window.location.href="teacher-raspisanie.html";
+  }
+  function calcexam() {
+    window.location.href="calculator.html";
+  }
     let index = 0;
     const images = document.querySelectorAll('.carousel img');
     const total = images.length;
