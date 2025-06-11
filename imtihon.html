@@ -1,4 +1,4 @@
- <!DOCTYPE html>
+<!DOCTYPE html>
 <html lang="ru">
 <head>
     <meta charset="UTF-8">
@@ -8,20 +8,27 @@
     <link rel="manifest" href="manifest.json">
     <style>
         :root {
-            --primary: #3b82f6;
-            --primary-light: #93c5fd;
+            --primary: #4f46e5;
+            --primary-light: #a5b4fc;
+            --primary-dark: #3730a3;
             --success: #10b981;
             --success-light: #d1fae5;
             --warning: #f59e0b;
+            --warning-light: #fef3c7;
             --error: #ef4444;
+            --error-light: #fee2e2;
             --text: #1e293b;
             --text-light: #64748b;
+            --text-lighter: #94a3b8;
             --bg: #f8fafc;
+            --bg-dark: #f1f5f9;
             --card-bg: #ffffff;
-            --radius: 16px;
-            --shadow: 0 4px 24px rgba(0,0,0,0.08);
-            --shadow-hover: 0 8px 32px rgba(0,0,0,0.12);
+            --radius: 12px;
+            --radius-lg: 16px;
+            --shadow: 0 4px 12px rgba(0,0,0,0.05);
+            --shadow-hover: 0 8px 24px rgba(0,0,0,0.1);
             --transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+            --skeleton: linear-gradient(90deg, #f1f5f9 25%, #e2e8f0 50%, #f1f5f9 75%);
         }
 
         * {
@@ -35,7 +42,7 @@
             background: var(--bg);
             color: var(--text);
             line-height: 1.6;
-            padding: 24px;
+            padding: 16px;
             max-width: 1200px;
             margin: 0 auto;
             min-height: 100vh;
@@ -46,12 +53,12 @@
             display: flex;
             align-items: center;
             gap: 16px;
-            margin-bottom: 32px;
+            margin-bottom: 24px;
         }
 
         .back-btn {
-            width: 48px;
-            height: 48px;
+            width: 40px;
+            height: 40px;
             border-radius: 50%;
             background: var(--card-bg);
             border: none;
@@ -60,12 +67,13 @@
             transition: var(--transition);
             display: grid;
             place-items: center;
+            flex-shrink: 0;
         }
 
         .back-btn:hover {
             transform: translateY(-2px);
             box-shadow: var(--shadow-hover);
-            background: #f1f5f9;
+            background: var(--bg-dark);
         }
 
         .header-content {
@@ -73,7 +81,7 @@
         }
 
         h1 {
-            font-size: 28px;
+            font-size: 24px;
             font-weight: 700;
             margin-bottom: 4px;
             letter-spacing: -0.5px;
@@ -89,24 +97,25 @@
         .filters {
             display: flex;
             gap: 8px;
-            margin-bottom: 24px;
+            margin-bottom: 20px;
             flex-wrap: wrap;
         }
 
         .filter-btn {
-            padding: 8px 16px;
+            padding: 8px 14px;
             border-radius: 20px;
             border: 1px solid #e2e8f0;
             background: var(--card-bg);
             color: var(--text-light);
             cursor: pointer;
             transition: var(--transition);
-            font-size: 14px;
+            font-size: 13px;
             font-weight: 500;
         }
 
         .filter-btn:hover {
             border-color: var(--primary-light);
+            color: var(--primary);
         }
 
         .filter-btn.active {
@@ -120,7 +129,7 @@
             background: var(--card-bg);
             padding: 16px;
             border-radius: var(--radius);
-            margin-bottom: 24px;
+            margin-bottom: 16px;
             box-shadow: var(--shadow);
             display: flex;
             align-items: center;
@@ -129,19 +138,20 @@
         }
 
         .time-badge {
-            width: 40px;
-            height: 40px;
+            width: 36px;
+            height: 36px;
             border-radius: 50%;
-            background: #e2e8f0;
+            background: #e0e7ff;
             display: grid;
             place-items: center;
             flex-shrink: 0;
+            color: var(--primary);
         }
 
         /* Notification */
         .notification-status {
-            padding: 16px;
-            margin-bottom: 24px;
+            padding: 14px 16px;
+            margin-bottom: 20px;
             background: #f0f9ff;
             border-radius: var(--radius);
             display: flex;
@@ -149,6 +159,7 @@
             gap: 12px;
             box-shadow: var(--shadow);
             border-left: 4px solid var(--primary);
+            font-size: 14px;
         }
 
         .notification-status svg {
@@ -156,7 +167,6 @@
         }
 
         #nextExamInfo {
-            font-size: 14px;
             font-weight: 500;
             color: var(--text);
         }
@@ -164,14 +174,14 @@
         /* Exam Cards */
         .exam-grid {
             display: grid;
-            gap: 20px;
-            grid-template-columns: repeat(auto-fill, minmax(300px, 1fr));
+            gap: 16px;
+            grid-template-columns: repeat(auto-fill, minmax(280px, 1fr));
         }
 
         .exam-card {
             background: var(--card-bg);
-            border-radius: var(--radius);
-            padding: 24px;
+            border-radius: var(--radius-lg);
+            padding: 20px;
             box-shadow: var(--shadow);
             position: relative;
             overflow: hidden;
@@ -210,7 +220,7 @@
         }
 
         .status-badge {
-            padding: 6px 12px;
+            padding: 5px 10px;
             border-radius: 20px;
             font-size: 12px;
             font-weight: 600;
@@ -237,15 +247,16 @@
 
         .info-row {
             display: flex;
-            align-items: center;
+            align-items: flex-start;
             gap: 10px;
         }
 
         .info-icon {
-            width: 20px;
-            height: 20px;
+            width: 18px;
+            height: 18px;
             color: var(--text-light);
             flex-shrink: 0;
+            margin-top: 2px;
         }
 
         .progress-container {
@@ -257,7 +268,7 @@
             justify-content: space-between;
             font-size: 12px;
             color: var(--text-light);
-            margin-bottom: 4px;
+            margin-bottom: 6px;
         }
 
         .progress-bar {
@@ -279,18 +290,17 @@
         .current {
             --status-color: var(--success);
             --status-bg: rgba(16, 185, 129, 0.1);
-            animation: subtlePulse 8s infinite;
         }
 
         .passed {
             --status-color: var(--text-light);
             --status-bg: #f8fafc;
-            opacity: 0.8;
+            opacity: 0.9;
         }
 
         .upcoming {
             --status-color: var(--primary);
-            --status-bg: rgba(59, 130, 246, 0.1);
+            --status-bg: rgba(79, 70, 229, 0.1);
         }
 
         /* Exam type colors */
@@ -342,15 +352,15 @@
         /* Settings */
         .settings-btn {
             position: fixed;
-            bottom: 24px;
-            right: 24px;
-            width: 56px;
-            height: 56px;
+            bottom: 20px;
+            right: 20px;
+            width: 52px;
+            height: 52px;
             border-radius: 50%;
             background: var(--primary);
             color: white;
             border: none;
-            box-shadow: 0 4px 16px rgba(59, 130, 246, 0.3);
+            box-shadow: 0 4px 16px rgba(79, 70, 229, 0.3);
             display: grid;
             place-items: center;
             cursor: pointer;
@@ -360,7 +370,8 @@
 
         .settings-btn:hover {
             transform: translateY(-2px) scale(1.05);
-            box-shadow: 0 8px 24px rgba(59, 130, 246, 0.4);
+            box-shadow: 0 8px 24px rgba(79, 70, 229, 0.4);
+            background: var(--primary-dark);
         }
 
         /* Modal */
@@ -378,6 +389,7 @@
             opacity: 0;
             pointer-events: none;
             transition: var(--transition);
+            backdrop-filter: blur(5px);
         }
 
         .modal.active {
@@ -387,14 +399,15 @@
 
         .modal-content {
             background: var(--card-bg);
-            border-radius: var(--radius);
+            border-radius: var(--radius-lg);
             width: 90%;
-            max-width: 500px;
+            max-width: 420px;
             max-height: 90vh;
             overflow-y: auto;
             padding: 24px;
             transform: translateY(20px);
             transition: var(--transition);
+            box-shadow: 0 10px 30px rgba(0,0,0,0.15);
         }
 
         .modal.active .modal-content {
@@ -409,7 +422,7 @@
         }
 
         .modal-title {
-            font-size: 20px;
+            font-size: 18px;
             font-weight: 600;
         }
 
@@ -419,6 +432,17 @@
             font-size: 24px;
             cursor: pointer;
             color: var(--text-light);
+            width: 36px;
+            height: 36px;
+            display: grid;
+            place-items: center;
+            border-radius: 50%;
+            transition: var(--transition);
+        }
+
+        .close-btn:hover {
+            background: var(--bg-dark);
+            color: var(--text);
         }
 
         .form-group {
@@ -439,12 +463,13 @@
             border-radius: 8px;
             font-size: 14px;
             transition: var(--transition);
+            background: var(--card-bg);
         }
 
         .form-control:focus {
             outline: none;
             border-color: var(--primary);
-            box-shadow: 0 0 0 3px rgba(59, 130, 246, 0.2);
+            box-shadow: 0 0 0 3px rgba(79, 70, 229, 0.2);
         }
 
         .btn {
@@ -463,7 +488,7 @@
         }
 
         .btn-primary:hover {
-            background: #2563eb;
+            background: var(--primary-dark);
         }
 
         .btn-block {
@@ -471,69 +496,240 @@
             width: 100%;
         }
 
-        /* Subtle Animation */
-        @keyframes subtlePulse {
-            0%, 100% {
-                background-color: var(--card-bg);
-            }
-            50% {
-                background-color: var(--success-light);
-            }
+        /* Skeleton Loading */
+        .skeleton {
+            background: var(--skeleton);
+            background-size: 200% 100%;
+            animation: shimmer 1.5s infinite linear;
+            border-radius: var(--radius);
+            color: transparent;
+            user-select: none;
+            pointer-events: none;
         }
 
+        .skeleton-text {
+            height: 14px;
+            width: 100%;
+            margin-bottom: 6px;
+        }
+
+        .skeleton-text.short {
+            width: 60%;
+        }
+
+        .skeleton-text.very-short {
+            width: 40%;
+        }
+
+        .skeleton-circle {
+            width: 36px;
+            height: 36px;
+            border-radius: 50%;
+        }
+
+        .skeleton-badge {
+            width: 70px;
+            height: 26px;
+            border-radius: 20px;
+        }
+
+        .skeleton-progress {
+            height: 6px;
+            width: 100%;
+            border-radius: 3px;
+        }
+
+        @keyframes shimmer {
+            0% { background-position: 200% 0; }
+            100% { background-position: -200% 0; }
+        }
+
+        /* Responsive */
         @media (max-width: 768px) {
             body {
-                padding: 16px;
+                padding: 12px;
             }
 
             h1 {
-                font-size: 24px;
+                font-size: 22px;
             }
 
             .exam-grid {
                 grid-template-columns: 1fr;
+            }
+
+            .current-time, .notification-status {
+                padding: 12px;
+            }
+        }
+
+        /* Dark mode */
+        @media (prefers-color-scheme: dark) {
+            :root {
+                --primary: #6366f1;
+                --primary-light: #818cf8;
+                --primary-dark: #4f46e5;
+                --text: #e2e8f0;
+                --text-light: #94a3b8;
+                --text-lighter: #64748b;
+                --bg: #0f172a;
+                --bg-dark: #1e293b;
+                --card-bg: #1e293b;
+                --shadow: 0 4px 12px rgba(0,0,0,0.2);
+                --shadow-hover: 0 8px 24px rgba(0,0,0,0.3);
+                --skeleton: linear-gradient(90deg, #1e293b 25%, #334155 50%, #1e293b 75%);
+            }
+
+            .filter-btn {
+                background: var(--bg-dark);
+                border-color: #334155;
+            }
+
+            .form-control {
+                background: var(--bg-dark);
+                border-color: #334155;
+                color: var(--text);
+            }
+
+            .time-badge {
+                background: #312e81;
+                color: #a5b4fc;
+            }
+
+            .notification-status {
+                background: #1e1b4b;
+                border-left-color: var(--primary);
+            }
+
+            .exam-card {
+                border-color: #334155;
+            }
+
+            .exam-type {
+                background: #334155;
+                color: var(--text-light);
+            }
+
+            .type-test {
+                background: #1e3a8a;
+                color: #bfdbfe;
+            }
+
+            .type-oral {
+                background: #831843;
+                color: #fbcfe8;
+            }
+
+            .type-written {
+                background: #365314;
+                color: #d9f99d;
+            }
+
+            .type-project {
+                background: #4c1d95;
+                color: #ddd6fe;
             }
         }
     </style>
 </head>
 <body>
     <div class="header">
-        <!-- <button class="back-btn" onclick="history.back()">
-            <svg class="info-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
-                <path stroke-linecap="round" stroke-linejoin="round" d="M15 19l-7-7 7-7"/>
-            </svg>
-        </button>--->
         <div class="header-content">
-            <h1>Экзаменационное расписание</h1>
-            <div class="subtitle">2024/2025</div>
+            <h1 id="titleSkeleton" class="skeleton skeleton-text short">Экзаменационное расписание</h1>
+            <div id="subtitleSkeleton" class="skeleton skeleton-text very-short" style="width: 120px">2024/2025</div>
         </div>
     </div>
 
     <div class="current-time">
-        <div class="time-badge">
-            <svg viewBox="0 0 24 24" width="20" height="20" fill="currentColor">
-                <path d="M12 2a10 10 0 1 0 0 20 10 10 0 0 0 0-20zm0 18a8 8 0 1 1 0-16 8 8 0 0 1 0 16zm1-8.5V7h-2v5h4v-2h-2z"/>
-            </svg>
-        </div>
-        <div id="currentTime"></div>
+        <div class="time-badge skeleton skeleton-circle"></div>
+        <div id="currentTime" class="skeleton skeleton-text" style="width: 200px"></div>
     </div>
 
     <div class="notification-status" id="notificationStatus">
-        <svg width="20" height="20" viewBox="0 0 24 24" fill="#2563eb">
+        <svg width="20" height="20" viewBox="0 0 24 24" fill="#6366f1">
             <path d="M12 2C6.48 2 2 6.48 2 12s4.48 10 10 10 10-4.48 10-10S17.52 2 12 2zm0 18c-4.41 0-8-3.59-8-8s3.59-8 8-8 8 3.59 8 8-3.59 8-8 8zm.5-13H11v6l4.25 2.53.77-1.28-3.52-2.09V7z"/>
         </svg>
-        <span id="nextExamInfo"></span>
+        <span id="nextExamInfo" class="skeleton skeleton-text" style="width: 100%"></span>
     </div>
 
     <div class="filters">
-        <button class="filter-btn active" data-filter="all">Все</button>
-        <button class="filter-btn" data-filter="upcoming">Предстоящие</button>
-        <button class="filter-btn" data-filter="current">Текущие</button>
-        <button class="filter-btn" data-filter="passed">Завершённые</button>
+        <button class="filter-btn skeleton skeleton-badge" data-filter="all">Все</button>
+        <button class="filter-btn skeleton skeleton-badge" data-filter="upcoming">Предстоящие</button>
+        <button class="filter-btn skeleton skeleton-badge" data-filter="current">Текущие</button>
+        <button class="filter-btn skeleton skeleton-badge" data-filter="passed">Завершённые</button>
     </div>
 
     <div class="exam-grid" id="examContainer">
-        <!-- Cards will be inserted here -->
+        <!-- Skeleton cards -->
+        <div class="exam-card">
+            <div class="card-header">
+                <div>
+                    <div class="exam-date skeleton skeleton-text short"></div>
+                    <span class="exam-type skeleton skeleton-text very-short" style="width: 80px"></span>
+                </div>
+                <div class="status-badge skeleton skeleton-text" style="width: 70px"></div>
+            </div>
+            <div class="card-body">
+                <div class="info-row">
+                    <div class="info-icon skeleton skeleton-circle" style="width: 18px; height: 18px"></div>
+                    <span class="skeleton skeleton-text" style="width: 120px"></span>
+                </div>
+                <div class="info-row">
+                    <div class="info-icon skeleton skeleton-circle" style="width: 18px; height: 18px"></div>
+                    <span class="skeleton skeleton-text" style="width: 180px"></span>
+                </div>
+                <div class="info-row">
+                    <div class="info-icon skeleton skeleton-circle" style="width: 18px; height: 18px"></div>
+                    <span class="skeleton skeleton-text" style="width: 150px"></span>
+                </div>
+                <div class="info-row">
+                    <div class="info-icon skeleton skeleton-circle" style="width: 18px; height: 18px"></div>
+                    <span class="skeleton skeleton-text" style="width: 140px"></span>
+                </div>
+                <div class="progress-container">
+                    <div class="progress-info">
+                        <span class="skeleton skeleton-text very-short"></span>
+                        <span class="skeleton skeleton-text very-short"></span>
+                    </div>
+                    <div class="progress-bar skeleton skeleton-progress"></div>
+                </div>
+            </div>
+        </div>
+        
+        <div class="exam-card">
+            <div class="card-header">
+                <div>
+                    <div class="exam-date skeleton skeleton-text short"></div>
+                    <span class="exam-type skeleton skeleton-text very-short" style="width: 80px"></span>
+                </div>
+                <div class="status-badge skeleton skeleton-text" style="width: 70px"></div>
+            </div>
+            <div class="card-body">
+                <div class="info-row">
+                    <div class="info-icon skeleton skeleton-circle" style="width: 18px; height: 18px"></div>
+                    <span class="skeleton skeleton-text" style="width: 120px"></span>
+                </div>
+                <div class="info-row">
+                    <div class="info-icon skeleton skeleton-circle" style="width: 18px; height: 18px"></div>
+                    <span class="skeleton skeleton-text" style="width: 180px"></span>
+                </div>
+                <div class="info-row">
+                    <div class="info-icon skeleton skeleton-circle" style="width: 18px; height: 18px"></div>
+                    <span class="skeleton skeleton-text" style="width: 150px"></span>
+                </div>
+                <div class="info-row">
+                    <div class="info-icon skeleton skeleton-circle" style="width: 18px; height: 18px"></div>
+                    <span class="skeleton skeleton-text" style="width: 140px"></span>
+                </div>
+                <div class="progress-container">
+                    <div class="progress-info">
+                        <span class="skeleton skeleton-text very-short"></span>
+                        <span class="skeleton skeleton-text very-short"></span>
+                    </div>
+                    <div class="progress-bar skeleton skeleton-progress"></div>
+                </div>
+            </div>
+        </div>
     </div>
 
     <button class="settings-btn" id="settingsBtn">
@@ -576,78 +772,78 @@
         const exams = [
             { 
                 id: 1,
-                date: "2025-06-02",
+                date: "2025-06-17",
                 start: "08:00", 
-                end: "08:30", 
+                end: "10:00", 
                 subject: "Базы данных", 
                 teacher: "доц. Аликулов А.", 
-                room: "8/304",
+                room: "8/208",
                 type: "written",
-                typeName: "Тестирование",
-                description: "Тест по основам реляционных баз данных и SQL",
-                //materials: ["SQL за 10 минут.pdf", "Примеры запросов.sql"]
+                typeName: "Устный и письменный",
+                description: "Экзамен по основам реляционных баз данных и SQL",
+               // materials: ["SQL за 10 минут.pdf", "Примеры запросов.sql"]
             },
             { 
                 id: 2,
-                date: "2025-06-02", 
-                start: "11:30", 
-                end: "12:00", 
+                date: "2025-06-18", 
+                start: "08:00", 
+                end: "10:00", 
                 subject: "Усул ва ВХИ", 
                 teacher: "доц. Насруллоева Д.", 
-                room: "8/302",
+                room: "8/203",
                 type: "written",
-                typeName: "Тестирование",
-                description: "Тест по методологии научных исследований",
+                typeName: "Устный и письменный",
+                description: "Экзамен по методологии научных исследований",
                // materials: ["Методичка ВХИ.pdf"]
             },
             { 
                 id: 3,
-                date: "2025-06-07", 
+                date: "2025-06-21", 
                 start: "08:00", 
                 end: "08:30", 
                 subject: "Этика и эстетика", 
                 teacher: "доц. Орифчонова Н", 
-                room: "8/304",
-                type: "written",
+                room: "8/303",
+                type: "test",
                 typeName: "Тестирование",
                 description: "Тест по основным понятиям этики и эстетики",
-              //  materials: ["Вопросы к экзамену.docx"]
+                //materials: ["Вопросы к экзамену.docx"]
             },
             { 
                 id: 4,
-                date: "2025-06-04", 
+                date: "2025-06-11", 
                 start: "08:00", 
-                end: "08:30", 
+                end: "10:00", 
                 subject: "Статистика и КОД", 
                 teacher: "доц. Гуломсафдаров А.", 
-                room: "8/304",
-                type: "written",
-                typeName: "Тестирование",
-                description: "Тест по статистическим методам",
+                room: "8/201",
+                type: "oral",
+                typeName: "Устный и письменный",
+                description: "Экзамен по статистическим методам",
               //  materials: ["Стат.методы.pdf", "Таблицы.xlsx"]
             },
             { 
                 id: 5,
-                date: "2025-06-05", 
-                start: "08:00", 
-                end: "08:30", 
+                date: "2025-06-14", 
+                start: "10:00", 
+                end: "12:00", 
                 subject: "Программирование на Java", 
                 teacher: "доц. Турсунов Р.", 
-                room: "8/304",
-                type: "written",
-                typeName: "Тестирование",
+                room: "8/205",
+                type: "project",
+                typeName: "Устный и письменный",
                 description: "Теории и задача по Java программированию",
                // materials: ["Требования к проекту.pdf"]
             },
             { 
                 id: 6,
-                date: "2025-06-04", 
+                date: "2025-06-20", 
                 start: "08:00", 
                 end: "08:30", 
                 subject: "Политология", 
                 teacher: "н.и.с. Мирзоён Р.Х.", 
                 room: "8/304",
-                type: "written",
+                type: "test",
                 typeName: "Тестирование",
                 description: "Тест по основам политологии",
                // materials: ["Вопросы к экзамену.pdf"]
@@ -658,7 +854,8 @@
         const state = {
             notificationTime: 15, // default 15 minutes before
             notificationsEnabled: true,
-            scheduledNotifications: []
+            scheduledNotifications: [],
+            isLoading: true
         };
 
         // DOM elements
@@ -672,17 +869,24 @@
             closeModal: document.getElementById('closeModal'),
             notificationsToggle: document.getElementById('notificationsToggle'),
             notificationTime: document.getElementById('notificationTime'),
-            saveSettings: document.getElementById('saveSettings')
+            saveSettings: document.getElementById('saveSettings'),
+            titleSkeleton: document.getElementById('titleSkeleton'),
+            subtitleSkeleton: document.getElementById('subtitleSkeleton')
         };
 
         // Initialize the app
         function init() {
-            updateCurrentTime();
-            renderExams();
+            // Simulate loading delay
+            setTimeout(() => {
+                state.isLoading = false;
+                updateCurrentTime();
+                renderExams();
+                loadSettings();
+                setupEventListeners();
+                checkNotificationSupport();
+            }, 1000);
+            
             setInterval(updateCurrentTime, 60000);
-            loadSettings();
-            setupEventListeners();
-            checkNotificationSupport();
         }
 
         // Set up event listeners
@@ -737,12 +941,34 @@
             loadSettings();
             elements.settingsModal.classList.remove('active');
             
+            // Show success feedback
+            showToast('Настройки сохранены', 'success');
+            
             // Reschedule notifications if needed
             if (state.notificationsEnabled) {
                 scheduleNotifications();
             } else {
                 clearAllNotifications();
             }
+        }
+
+        // Show toast notification
+        function showToast(message, type = 'info') {
+            const toast = document.createElement('div');
+            toast.className = `toast toast-${type}`;
+            toast.textContent = message;
+            document.body.appendChild(toast);
+            
+            setTimeout(() => {
+                toast.classList.add('show');
+            }, 10);
+            
+            setTimeout(() => {
+                toast.classList.remove('show');
+                setTimeout(() => {
+                    document.body.removeChild(toast);
+                }, 300);
+            }, 3000);
         }
 
         // Check browser notification support
@@ -890,36 +1116,53 @@
                 hour: '2-digit', 
                 minute: '2-digit' 
             };
-            elements.currentTime.textContent = 
-                `Сегодня: ${now.toLocaleDateString('ru-RU', options)}`;
+            
+            if (!state.isLoading) {
+                elements.currentTime.textContent = 
+                    `Сегодня: ${now.toLocaleDateString('ru-RU', options)}`;
                 
-            // Update cards and next exam info
-            const currentFilter = document.querySelector('.filter-btn.active').dataset.filter;
-            renderExams(currentFilter);
-            updateNextExamInfo();
+                // Remove skeleton class if still present
+                elements.currentTime.classList.remove('skeleton', 'skeleton-text');
+                document.querySelector('.time-badge').classList.remove('skeleton', 'skeleton-circle');
+                document.querySelector('.time-badge').innerHTML = `
+                    <svg viewBox="0 0 24 24" width="20" height="20" fill="currentColor">
+                        <path d="M12 2a10 10 0 1 0 0 20 10 10 0 0 0 0-20zm0 18a8 8 0 1 1 0-16 8 8 0 0 1 0 16zm1-8.5V7h-2v5h4v-2h-2z"/>
+                    </svg>
+                `;
+                
+                // Update cards and next exam info
+                const currentFilter = document.querySelector('.filter-btn.active')?.dataset.filter || 'all';
+                renderExams(currentFilter);
+                updateNextExamInfo();
+            }
         }
 
         // Update next exam info
         function updateNextExamInfo() {
             const nextExam = getNextExam();
             
-            if (nextExam) {
-                const examDate = new Date(`${nextExam.date}T${nextExam.start}`);
-                const now = new Date();
-                const diffDays = Math.floor((examDate - now) / (1000 * 60 * 60 * 24));
-                const diffHours = Math.floor((examDate - now) / (1000 * 60 * 60));
+            if (!state.isLoading) {
+                if (nextExam) {
+                    const examDate = new Date(`${nextExam.date}T${nextExam.start}`);
+                    const now = new Date();
+                    const diffDays = Math.floor((examDate - now) / (1000 * 60 * 60 * 24));
+                    const diffHours = Math.floor((examDate - now) / (1000 * 60 * 60));
+                    
+                    let timeText = 'сегодня';
+                    if (diffDays === 1) timeText = 'завтра';
+                    else if (diffDays > 1) timeText = `через ${diffDays} дня`;
+                    else if (diffHours < 24 && diffHours > 0) timeText = `через ${diffHours} часа`;
+                    
+                    elements.nextExamInfo.innerHTML = `
+                        Следующий экзамен <strong>${timeText}</strong>: 
+                        ${nextExam.subject} (${nextExam.typeName}) в ${nextExam.start}, ауд. ${nextExam.room}
+                    `;
+                } else {
+                    elements.nextExamInfo.textContent = 'Предстоящих экзаменов нет';
+                }
                 
-                let timeText = 'сегодня';
-                if (diffDays === 1) timeText = 'завтра';
-                else if (diffDays > 1) timeText = `через ${diffDays} дня`;
-                else if (diffHours < 24 && diffHours > 0) timeText = `через ${diffHours} часа`;
-                
-                elements.nextExamInfo.innerHTML = `
-                    Следующий экзамен <strong>${timeText}</strong>: 
-                    ${nextExam.subject} (${nextExam.typeName}) в ${nextExam.start}, ауд. ${nextExam.room}
-                `;
-            } else {
-                elements.nextExamInfo.textContent = 'Предстоящих экзаменов нет';
+                // Remove skeleton class if still present
+                elements.nextExamInfo.classList.remove('skeleton', 'skeleton-text');
             }
         }
 
@@ -954,6 +1197,15 @@
 
         // Render exams based on filter
         function renderExams(filter = 'all') {
+            if (state.isLoading) return;
+            
+            // Remove skeleton classes from header and filters
+            elements.titleSkeleton.classList.remove('skeleton', 'skeleton-text', 'short');
+            elements.subtitleSkeleton.classList.remove('skeleton', 'skeleton-text', 'very-short');
+            document.querySelectorAll('.filter-btn').forEach(btn => {
+                btn.classList.remove('skeleton', 'skeleton-badge');
+            });
+
             const filteredExams = exams
                 .sort((a, b) => new Date(`${a.date}T${a.start}`) - new Date(`${b.date}T${b.start}`))
                 .filter(exam => filter === 'all' || getStatus(exam) === filter);
