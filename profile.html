@@ -1,0 +1,298 @@
+<!DOCTYPE html>
+<html lang="ru" class="">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Профиль пользователя - ДТТ</title>
+    
+    <link href="https://cdn.jsdelivr.net/npm/tailwindcss@2.2.19/dist/tailwind.min.css" rel="stylesheet">
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800&display=swap" rel="stylesheet">
+    <script src="https://cdn.jsdelivr.net/npm/alpinejs@3.13.10/dist/cdn.min.js" defer></script>
+    <link rel="icon" type="image/png" href="logo.png">
+
+    <style>
+        :root {
+            --bg-light: #f8fafc; --bg-dark: #0b1120;
+            --card-light: rgba(255, 255, 255, 0.7); --card-dark: rgba(23, 37, 62, 0.6);
+            --border-light: rgba(0, 0, 0, 0.1); --border-dark: rgba(255, 255, 255, 0.1);
+            --text-light: #0f172a; --text-dark: #e2e8f0;
+            --primary: #4f46e5;
+            --input-bg-light: #f1f5f9; --input-bg-dark: #1e293b;
+        }
+        html { scroll-behavior: smooth; }
+        body {
+            font-family: 'Inter', sans-serif; background-color: var(--bg-light); color: var(--text-light);
+            transition: background-color 0.5s ease, color 0.5s ease;
+        }
+        .dark { background-color: var(--bg-dark); color: var(--text-dark); --primary: #6366f1; }
+        .aurora-container { position: fixed; top: 0; left: 0; width: 100%; height: 100vh; overflow: hidden; z-index: -1; pointer-events: none;}
+        @keyframes rotate { 0% { transform: rotate(0deg); } 100% { transform: rotate(360deg); } }
+        .aurora-shape { position: absolute; border-radius: 50%; filter: blur(100px); opacity: 0.3; animation: rotate 40s infinite linear; }
+        .dark .aurora-shape { opacity: 0.5; }
+        .aurora-1 { width: 500px; height: 500px; background: #3b82f6; top: -150px; left: -150px; }
+        .aurora-2 { width: 400px; height: 400px; background: #8b5cf6; bottom: -100px; right: -100px; animation-duration: 50s; }
+        .glass-card {
+            background-color: var(--card-light); border: 1px solid var(--border-light);
+            backdrop-filter: blur(20px); -webkit-backdrop-filter: blur(20px);
+            transition: all 0.3s ease;
+        }
+        .dark .glass-card { background-color: var(--card-dark); border: 1px solid var(--border-dark); }
+        [x-cloak] { display: none !important; }
+        .spinner { animation: spin 1s linear infinite; }
+        @keyframes spin { from { transform: rotate(0deg); } to { transform: rotate(360deg); } }
+        .modern-input {
+            background-color: var(--input-bg-light);
+            border: 2px solid transparent;
+            transition: all 0.2s ease-in-out;
+        }
+        .dark .modern-input { background-color: var(--input-bg-dark); }
+        .modern-input:focus {
+            background-color: transparent; border-color: var(--primary);
+            box-shadow: 0 0 0 3px rgba(79, 70, 229, 0.2); outline: none;
+        }
+    </style>
+</head>
+<body x-data="pageManager()" x-init="init()" :class="{ 'dark': isDark }" x-cloak>
+    
+    <div class="aurora-container"></div>
+
+    <div :class="{ 'filter blur-sm': mobileMenuOpen }" class="transition-filter duration-300">
+        <header class="sticky top-0 z-30">
+             </header>
+
+        <main class="container mx-auto p-4 min-h-screen">
+            <div class="max-w-2xl mx-auto" x-show="isLoggedIn">
+                
+                <div class="glass-card p-6 rounded-2xl">
+                    <div class="text-center border-b border-gray-500/10 pb-6">
+                        <div class="relative w-28 h-28 mx-auto group">
+                            <img id="profile-pic" class="rounded-full w-full h-full object-cover shadow-lg" :src="user.photoURL || 'placeholder-avatar.png'" alt="Фото профиля">
+                            <label for="file-upload" class="absolute inset-0 bg-black bg-opacity-60 flex items-center justify-center rounded-full cursor-pointer opacity-0 group-hover:opacity-100 transition-opacity" title="Загрузить фото с компьютера">
+                                <svg class="w-8 h-8 text-white" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M3 9a2 2 0 012-2h.93a2 2 0 001.664-.89l.812-1.22A2 2 0 0110.07 4h3.86a2 2 0 011.664.89l.812 1.22A2 2 0 0018.07 7H19a2 2 0 012 2v9a2 2 0 01-2 2H5a2 2 0 01-2-2V9z" /><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 13a3 3 0 11-6 0 3 3 0 016 0z" /></svg>
+                            </label>
+                            <input id="file-upload" type="file" class="hidden" @change="handleImageUpload($event)" accept="image/*">
+                             <div x-show="imageLoading" class="absolute inset-0 bg-black bg-opacity-70 flex items-center justify-center rounded-full">
+                                <svg class="w-8 h-8 text-white spinner" fill="none" viewBox="0 0 24 24"><circle class="opacity-25" cx="12" cy="12" r="10" stroke="currentColor" stroke-width="4"></circle><path class="opacity-75" fill="currentColor" d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4zm2 5.291A7.962 7.962 0 014 12H0c0 3.042 1.135 5.824 3 7.938l3-2.647z"></path></svg>
+                            </div>
+                        </div>
+                        <h2 class="text-2xl font-bold mt-4" x-text="user.displayName || 'Пользователь'"></h2>
+                        <p class="text-sm opacity-70" x-text="user.email"></p>
+                    </div>
+
+                    <div class="space-y-2 mt-6">
+                        <div x-data="{ open: true }">
+                            <button @click="open = !open" class="w-full flex justify-between items-center text-left py-2">
+                                <span class="font-semibold">Основная информация</span>
+                                <svg class="w-5 h-5 transition-transform" :class="{'transform rotate-180': open}" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 9l-7 7-7-7" /></svg>
+                            </button>
+                            <div x-show="open" x-collapse class="mt-2 grid grid-cols-1 md:grid-cols-2 gap-4">
+                                <div class="md:col-span-2">
+                                    <label for="name-input" class="block text-sm font-medium opacity-80">Имя пользователя</label>
+                                    <input type="text" id="name-input" x-model="profileData.displayName" class="modern-input mt-1 block w-full rounded-md shadow-sm p-3">
+                                </div>
+                                <div class="md:col-span-2">
+                                    <label for="url-input" class="block text-sm font-medium opacity-80">URL фотографии</label>
+                                    <input type="url" id="url-input" x-model="profileData.photoURL" placeholder="https://example.com/image.png" class="modern-input mt-1 block w-full rounded-md shadow-sm p-3">
+                                </div>
+                                <div>
+                                    <label for="phone-input" class="block text-sm font-medium opacity-80">Телефон</label>
+                                    <input type="tel" id="phone-input" x-model="profileData.phoneNumber" class="modern-input mt-1 block w-full rounded-md shadow-sm p-3">
+                                </div>
+                                <div>
+                                    <label for="faculty-input" class="block text-sm font-medium opacity-80">Факультет</label>
+                                    <input type="text" id="faculty-input" x-model="profileData.faculty" class="modern-input mt-1 block w-full rounded-md shadow-sm p-3">
+                                </div>
+                                <div class="md:col-span-2">
+                                    <button @click="updateProfileInfo" :disabled="loading" class="bg-green-500 text-white px-4 py-2 rounded-md hover:bg-green-600 flex items-center gap-2 disabled:opacity-50">
+                                        <span x-show="!loading">Сохранить информацию</span>
+                                        <svg x-show="loading" class="w-5 h-5 spinner" fill="none" viewBox="0 0 24 24"></svg>
+                                    </button>
+                                </div>
+                            </div>
+                        </div>
+
+                        <div class="border-t border-gray-500/10"></div>
+                        
+                        <div x-data="{ open: false, currentVisible: false, newVisible: false }">
+                             <button @click="open = !open" class="w-full flex justify-between items-center text-left py-2">
+                                <span class="font-semibold">Безопасность</span>
+                                <svg class="w-5 h-5 transition-transform" :class="{'transform rotate-180': open}" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 9l-7 7-7-7" /></svg>
+                            </button>
+                             <div x-show="open" x-collapse class="mt-2 space-y-4">
+                                <div class="relative">
+                                    <label for="current-password" class="block text-sm font-medium opacity-80">Текущий пароль</label>
+                                    <input :type="currentVisible ? 'text' : 'password'" id="current-password" class="modern-input mt-1 block w-full rounded-md shadow-sm p-3 pr-10">
+                                    <button @click="currentVisible = !currentVisible" class="absolute inset-y-0 right-0 top-7 px-3 flex items-center opacity-60 hover:opacity-100"></button>
+                                </div>
+                                <div class="relative">
+                                    <label for="new-password" class="block text-sm font-medium opacity-80">Новый пароль</label>
+                                    <input :type="newVisible ? 'text' : 'password'" id="new-password" class="modern-input mt-1 block w-full rounded-md shadow-sm p-3 pr-10">
+                                    <button @click="newVisible = !newVisible" class="absolute inset-y-0 right-0 top-7 px-3 flex items-center opacity-60 hover:opacity-100"></button>
+                                </div>
+                                <button @click="updateUserPassword" :disabled="loading" class="bg-blue-500 text-white px-4 py-2 rounded-md hover:bg-blue-600 flex items-center gap-2 disabled:opacity-50">
+                                    <span x-show="!loading">Сменить пароль</span>
+                                    <svg x-show="loading" class="w-5 h-5 spinner" fill="none" viewBox="0 0 24 24"></svg>
+                                </button>
+                            </div>
+                        </div>
+                    </div>
+                    
+                    <div class="mt-8 border-t border-gray-500/10 pt-6">
+                         <button @click="logout" class="bg-red-500/10 text-red-500 hover:bg-red-500 hover:text-white transition-colors w-full px-4 py-2 rounded-lg flex items-center justify-center gap-2">
+                             <svg class="w-5 h-5" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M17 16l4-4m0 0l-4-4m4 4H7m6 4v1a3 3 0 01-3 3H6a3 3 0 01-3-3V7a3 3 0 013-3h4a3 3 0 013 3v1" /></svg>
+                             <span>Выйти из аккаунта</span>
+                         </button>
+                    </div>
+                </div>
+
+            </div>
+        </main>
+    </div>
+    
+    <div x-show="$store.toast.visible" x-transition class="fixed bottom-5 right-5 px-5 py-3 rounded-lg shadow-lg text-white font-semibold z-50" :class="$store.toast.type === 'success' ? 'bg-green-500' : 'bg-red-500'">
+        <p x-text="$store.toast.message"></p>
+    </div>
+
+    <script src="https://www.gstatic.com/firebasejs/8.10.0/firebase-app.js"></script>
+    <script src="https://www.gstatic.com/firebasejs/8.10.0/firebase-auth.js"></script>
+    <script src="https://www.gstatic.com/firebasejs/8.10.0/firebase-storage.js"></script>
+    <script src="https://www.gstatic.com/firebasejs/8.10.0/firebase-firestore.js"></script>
+
+    <script>
+        const firebaseConfig = {
+            apiKey: "AIzaSyCAOfxPW5m2UqtulWzuh3egOjJ-ti-rDf8",
+            authDomain: "register-221e5.firebaseapp.com",
+            projectId: "register-221e5",
+            storageBucket: "register-221e5.appspot.com",
+            messagingSenderId: "588640206529",
+            appId: "1:588640206529:web:b2abf5413387e251935e40"
+        };
+        firebase.initializeApp(firebaseConfig);
+        const auth = firebase.auth();
+        const storage = firebase.storage();
+        const db = firebase.firestore();
+
+        document.addEventListener('alpine:init', () => {
+            Alpine.store('toast', {
+                visible: false, message: '', type: 'success', timer: null,
+                show(message, type = 'success') {
+                    this.message = message; this.type = type; this.visible = true;
+                    clearTimeout(this.timer);
+                    this.timer = setTimeout(() => this.visible = false, 4000);
+                }
+            });
+
+            Alpine.data('pageManager', () => ({
+                isDark: false, mobileMenuOpen: false, isLoggedIn: false,
+                user: {}, 
+                profileData: {
+                    displayName: '', photoURL: '', phoneNumber: '',
+                    faculty: '', course: '', group: ''
+                },
+                loading: false, imageLoading: false,
+
+                init() {
+                    this.isDark = localStorage.getItem('theme') === 'dark';
+                    this.setTheme();
+                    
+                    auth.onAuthStateChanged(currentUser => {
+                        if (currentUser) {
+                            this.isLoggedIn = true; 
+                            this.user = currentUser; 
+                            this.loadUserProfile(currentUser.uid);
+                        } else { window.location.href = 'auth.html'; }
+                    });
+                },
+
+                loadUserProfile(uid) {
+                    db.collection('users').doc(uid).get().then(doc => {
+                        const data = doc.exists ? doc.data() : {};
+                        this.profileData = {
+                            displayName: this.user.displayName || '',
+                            photoURL: this.user.photoURL || '',
+                            phoneNumber: data.phoneNumber || '',
+                            faculty: data.faculty || '',
+                            course: data.course || '',
+                            group: data.group || ''
+                        };
+                    });
+                },
+                
+                logout() { auth.signOut().then(() => { window.location.href = 'index.html'; }); },
+
+                updateProfileInfo() {
+                    if (this.loading) return;
+                    this.loading = true;
+                    const user = auth.currentUser;
+                    const updates = [];
+
+                    if (this.profileData.displayName !== user.displayName || this.profileData.photoURL !== user.photoURL) {
+                        updates.push(user.updateProfile({ 
+                            displayName: this.profileData.displayName,
+                            photoURL: this.profileData.photoURL
+                        }));
+                    }
+                    
+                    const firestoreData = {
+                        phoneNumber: this.profileData.phoneNumber,
+                        faculty: this.profileData.faculty,
+                        course: this.profileData.course,
+                        group: this.profileData.group
+                    };
+                    updates.push(db.collection('users').doc(user.uid).set(firestoreData, { merge: true }));
+
+                    Promise.all(updates)
+                        .then(() => { Alpine.store('toast').show('Информация успешно обновлена!', 'success'); })
+                        .catch(e => { Alpine.store('toast').show('Ошибка: ' + e.message, 'error'); })
+                        .finally(() => { this.loading = false; });
+                },
+
+                handleImageUpload(event) {
+                    const file = event.target.files[0];
+                    if (!file || this.imageLoading) return;
+                    this.imageLoading = true;
+                    const userId = auth.currentUser.uid;
+                    const storageRef = storage.ref(`profile_pictures/${userId}/${file.name}`);
+                    storageRef.put(file)
+                        .then(snapshot => snapshot.ref.getDownloadURL())
+                        .then(url => {
+                            this.profileData.photoURL = url; // Обновляем URL в форме
+                            return this.updateProfileInfo(); // Сохраняем все данные, включая новый URL
+                        })
+                        .catch(e => { Alpine.store('toast').show('Ошибка загрузки фото: ' + e.message, 'error'); })
+                        .finally(() => { this.imageLoading = false; });
+                },
+
+                 updateUserPassword() {
+                    if (this.loading) return;
+                    const currentPassword = document.getElementById('current-password').value;
+                    const newPassword = document.getElementById('new-password').value;
+                    if (!currentPassword || newPassword.length < 6) {
+                        Alpine.store('toast').show('Введите текущий и новый пароль (мин. 6 симв.).', 'error');
+                        return;
+                    }
+                    this.loading = true;
+                    const user = auth.currentUser;
+                    const credential = firebase.auth.EmailAuthProvider.credential(user.email, currentPassword);
+                    user.reauthenticateWithCredential(credential).then(() => {
+                        return user.updatePassword(newPassword);
+                    }).then(() => {
+                        Alpine.store('toast').show('Пароль успешно изменен!', 'success');
+                        document.getElementById('current-password').value = '';
+                        document.getElementById('new-password').value = '';
+                    }).catch(error => {
+                        let errorMessage = 'Произошла ошибка.';
+                        if (error.code == 'auth/wrong-password') errorMessage = 'Неверный текущий пароль.';
+                        Alpine.store('toast').show(errorMessage, 'error');
+                    }).finally(() => { this.loading = false; });
+                },
+
+
+                setTheme() { document.documentElement.classList.toggle('dark', this.isDark); },
+                toggleTheme() { this.isDark = !this.isDark; localStorage.setItem('theme', this.isDark ? 'dark' : 'light'); this.setTheme(); },
+                toggleMenu() { this.mobileMenuOpen = !this.mobileMenuOpen; },
+            }));
+        });
+    </script>
+</body>
+</html>
