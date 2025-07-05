@@ -1,0 +1,212 @@
+<!DOCTYPE html>
+<html lang="ru" class="">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Факултетҳо - ДТТ</title>
+
+    <link href="https://cdn.jsdelivr.net/npm/tailwindcss@2.2.19/dist/tailwind.min.css" rel="stylesheet">
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800&display=swap" rel="stylesheet">
+    <script src="https://cdn.jsdelivr.net/npm/alpinejs@3.13.10/dist/cdn.min.js" defer></script>
+    <link rel="icon" type="image/png" href="logo.png">
+
+    <style>
+        :root {
+            --bg-light: #f8fafc; --bg-dark: #0b1120;
+            --card-light: rgba(255, 255, 255, 0.6); --card-dark: rgba(23, 37, 62, 0.5);
+            --border-light: rgba(0, 0, 0, 0.1); --border-dark: rgba(255, 255, 255, 0.1);
+            --text-light: #0f172a; --text-dark: #e2e8f0;
+            --primary: #4f46e5;
+        }
+        html { scroll-behavior: smooth; }
+        body {
+            font-family: 'Inter', sans-serif; background-color: var(--bg-light); color: var(--text-light);
+            transition: background-color 0.5s ease, color 0.5s ease;
+        }
+        .dark {
+            background-color: var(--bg-dark); color: var(--text-dark);
+            --primary: #6366f1;
+        }
+        .aurora-container { position: fixed; top: 0; left: 0; width: 100%; height: 100vh; overflow: hidden; z-index: -1; pointer-events: none;}
+        @keyframes rotate { 0% { transform: rotate(0deg); } 100% { transform: rotate(360deg); } }
+        .aurora-shape { position: absolute; border-radius: 50%; filter: blur(100px); opacity: 0.3; animation: rotate 40s infinite linear; }
+        .dark .aurora-shape { opacity: 0.5; }
+        .aurora-1 { width: 500px; height: 500px; background: #3b82f6; top: -150px; left: -150px; }
+        .aurora-2 { width: 400px; height: 400px; background: #8b5cf6; bottom: -100px; right: -100px; animation-duration: 50s; }
+        .glass-card {
+            background-color: var(--card-light); border: 1px solid var(--border-light);
+            backdrop-filter: blur(20px); -webkit-backdrop-filter: blur(20px);
+            transition: all 0.3s ease;
+        }
+        .dark .glass-card { background-color: var(--card-dark); border: 1px solid var(--border-dark); }
+        .faculty-card {
+            transition: transform 0.3s ease, box-shadow 0.3s ease;
+        }
+        .faculty-card:hover {
+            transform: translateY(-8px);
+            box-shadow: 0 20px 40px rgba(0,0,0,0.1);
+        }
+        .dark .faculty-card:hover {
+            box-shadow: 0 20px 40px rgba(0, 123, 255, 0.15);
+        }
+    </style>
+</head>
+<body x-data="pageManager()" x-init="init()" :class="{ 'dark': isDark }" x-cloak>
+
+    <div class="aurora-container">
+        <div class="aurora-shape aurora-1"></div>
+        <div class="aurora-shape aurora-2"></div>
+    </div>
+
+    <div :class="{ 'filter blur-sm': mobileMenuOpen }" class="transition-filter duration-300">
+        <header class="sticky top-0 z-30">
+            <nav class="container mx-auto px-4 py-3 mt-4 glass-card rounded-2xl">
+                <div class="flex justify-between items-center">
+                    <a href="index.html" class="flex items-center space-x-3">
+                        <img src="logo.png" alt="Logo" class="w-10 h-10">
+                        <span class="text-lg font-bold hidden sm:inline">ДТТ</span>
+                    </a>
+                    <div class="flex items-center space-x-2">
+                        <button @click="toggleTheme()" class="p-2 rounded-full transition-colors hover:bg-black/10 dark:hover:bg-white/10" aria-label="Toggle theme">
+                            <svg x-show="!isDark" class="w-6 h-6" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 3v1m0 16v1m9-9h-1M4 12H3m15.364 6.364l-.707-.707M6.343 6.343l-.707-.707m12.728 0l-.707.707M6.343 17.657l-.707.707M16 12a4 4 0 11-8 0 4 4 0 018 0z"></path></svg>
+                            <svg x-show="isDark" class="w-6 h-6" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M20.354 15.354A9 9 0 018.646 3.646 9.003 9.003 0 0012 21a9.003 9.003 0 008.354-5.646z"></path></svg>
+                        </button>
+                        <button @click="toggleMenu()" class="md:hidden p-2 rounded-full transition-colors hover:bg-black/10 dark:hover:bg-white/10" aria-label="Open menu">
+                            <svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 6h16M4 12h16m-7 6h7"></path></svg>
+                        </button>
+                    </div>
+                </div>
+            </nav>
+        </header>
+
+        <main class="container mx-auto p-4 min-h-screen">
+            <h1 class="text-3xl font-bold mb-8 text-center">Факултетҳо</h1>
+
+            <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-6">
+                <a href="#" class="faculty-card glass-card p-6 rounded-xl flex flex-col text-center items-center">
+                    <div class="w-20 h-20 mb-4 flex items-center justify-center">
+                        <img src="https://cdn-icons-png.flaticon.com/512/3081/3081621.png" alt="Engineering" class="w-full h-full object-contain">
+                    </div>
+                    <h3 class="font-bold text-lg flex-grow">Факултети муҳандисӣ-технологӣ</h3>
+                </a>
+
+                <a href="#" class="faculty-card glass-card p-6 rounded-xl flex flex-col text-center items-center">
+                    <div class="w-20 h-20 mb-4 flex items-center justify-center">
+                        <img src="https://cdn-icons-png.flaticon.com/512/1055/1055683.png" alt="Design" class="w-full h-full object-contain">
+                    </div>
+                    <h3 class="font-bold text-lg flex-grow">Факултети технология ва дизайн</h3>
+                </a>
+
+                <a href="#" class="faculty-card glass-card p-6 rounded-xl flex flex-col text-center items-center">
+                    <div class="w-20 h-20 mb-4 flex items-center justify-center">
+                        <img src="https://cdn-icons-png.flaticon.com/512/8099/8099498.png" alt="AI" class="w-full h-full object-contain">
+                    </div>
+                    <h3 class="font-bold text-lg flex-grow">Факултети технологияҳои иттилоотӣ ва интеллекти сунъӣ</h3>
+                </a>
+
+                <a href="#" class="faculty-card glass-card p-6 rounded-xl flex flex-col text-center items-center">
+                    <div class="w-20 h-20 mb-4 flex items-center justify-center">
+                        <img src="https://cdn-icons-png.flaticon.com/512/2942/2942957.png" alt="Telecommunication" class="w-full h-full object-contain">
+                    </div>
+                    <h3 class="font-bold text-lg flex-grow">Факултети телекомуникатсия ва таълимоти касбӣ</h3>
+                </a>
+
+                <a href="#" class="faculty-card glass-card p-6 rounded-xl flex flex-col text-center items-center">
+                    <div class="w-20 h-20 mb-4 flex items-center justify-center">
+                        <img src="https://cdn-icons-png.flaticon.com/512/4340/4340683.png" alt="Finance" class="w-full h-full object-contain">
+                    </div>
+                    <h3 class="font-bold text-lg flex-grow">Факултети иқтисодиёт ва молия</h3>
+                </a>
+
+                <a href="#" class="faculty-card glass-card p-6 rounded-xl flex flex-col text-center items-center">
+                    <div class="w-20 h-20 mb-4 flex items-center justify-center">
+                        <img src="https://cdn-icons-png.flaticon.com/512/1256/1256650.png" alt="Marketing" class="w-full h-full object-contain">
+                    </div>
+                    <h3 class="font-bold text-lg flex-grow">Факултети менеҷмент ва маркетинги байналмилалӣ</h3>
+                </a>
+
+                <a href="#" class="faculty-card glass-card p-6 rounded-xl flex flex-col text-center items-center">
+                   <div class="w-20 h-20 mb-4 flex items-center justify-center">
+                        <img src="https://cdn-icons-png.flaticon.com/512/3388/3388876.png" alt="Partnership" class="w-full h-full object-contain">
+                    </div>
+                    <h3 class="font-bold text-lg flex-grow">Факултаи муштараки Донишгоҳи давлатии Полотск ва ДТТ</h3>
+                </a>
+
+                <a href="#" class="faculty-card glass-card p-6 rounded-xl flex flex-col text-center items-center">
+                    <div class="w-20 h-20 mb-4 flex items-center justify-center">
+                        <img src="https://cdn-icons-png.flaticon.com/512/2905/2905169.png" alt="Distance Learning" class="w-full h-full object-contain">
+                    </div>
+                    <h3 class="font-bold text-lg flex-grow">Факултети таҳсилоти фосилавӣ ва ғоибона</h3>
+                </a>
+
+            </div>
+        </main>
+
+        <footer class="mt-12 pb-24 md:pb-6">
+            <div class="container mx-auto px-4">
+                <div class="border-t opacity-20 pt-6 text-center text-sm">
+                    &copy; 2025 Донишгоҳи Технологии Тоҷикистон. Таҳиягар: Komron Sharipov.
+                </div>
+            </div>
+        </footer>
+    </div>
+
+    <nav class="md:hidden glass-card fixed bottom-4 left-4 right-4 z-40 rounded-2xl h-16">
+         <div class="flex justify-around items-center h-full">
+            <a href="index.html" class="flex flex-col items-center justify-center opacity-70 hover:opacity-100">
+                <svg class="w-6 h-6" viewBox="0 0 20 20" fill="currentColor"><path d="M10.707 2.293a1 1 0 00-1.414 0l-7 7a1 1 0 001.414 1.414L4 10.414V17a1 1 0 001 1h2a1 1 0 001-1v-2a1 1 0 011-1h2a1 1 0 011 1v2a1 1 0 001 1h2a1 1 0 001-1v-6.586l.293.293a1 1 0 001.414-1.414l-7-7z" /></svg>
+                <span class="text-xs font-medium">Асосӣ</span>
+            </a>
+            <a href="#" class="flex flex-col items-center justify-center text-blue-500 dark:text-blue-400">
+                <svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 21V5a2 2 0 00-2-2H7a2 2 0 00-2 2v16m14 0h2m-2 0h-5m-9 0H3m2 0h5M9 7h1m-1 4h1m-1 4h1m5-4h1m-1 4h1m-1-4h1m-1-4h1"></path></svg>
+                <span class="text-xs font-medium">Факултетҳо</span>
+            </a>
+         </div>
+    </nav>
+    <div x-show="mobileMenuOpen" @click.away="mobileMenuOpen = false" class="fixed inset-0 z-50 flex justify-end" style="display: none;">
+        <div x-show="mobileMenuOpen" x-transition:enter="transition-opacity ease-in-out duration-300" x-transition:leave="transition-opacity ease-in-out duration-300" class="absolute inset-0 bg-black/30 backdrop-blur-sm"></div>
+        <div x-show="mobileMenuOpen" @click.stop x-transition:enter="transition ease-in-out duration-300 transform" x-transition:enter-start="translate-x-full" x-transition:enter-end="translate-x-0" x-transition:leave="transition ease-in-out duration-300 transform" x-transition:leave-start="translate-x-0" x-transition:leave-end="translate-x-full" class="relative w-4/5 max-w-sm h-full glass-card flex flex-col p-6">
+            <div class="flex justify-between items-center mb-10">
+                <span class="text-lg font-bold">Меню</span>
+                <button @click="toggleMenu()" class="p-2 -mr-2 rounded-full hover:bg-white/10" aria-label="Close menu"><svg class="w-7 h-7" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M6 18L18 6M6 6l12 12"></path></svg></button>
+            </div>
+            <nav class="flex flex-col space-y-6">
+                 <a href="index.html" class="text-xl font-medium opacity-80 hover:opacity-100">Асосӣ</a>
+                 <a href="#" class="text-xl font-medium text-blue-500 dark:text-blue-400">Факултетҳо</a>
+            </nav>
+        </div>
+    </div>
+
+    <script>
+        function pageManager() {
+            return {
+                isDark: false,
+                mobileMenuOpen: false,
+
+                init() {
+                    const prefersDark = window.matchMedia('(prefers-color-scheme: dark)').matches;
+                    this.isDark = localStorage.getItem('theme') === 'dark' || (localStorage.getItem('theme') === null && prefersDark);
+                    this.setTheme();
+                },
+                toggleTheme() {
+                    this.isDark = !this.isDark;
+                    localStorage.setItem('theme', this.isDark ? 'dark' : 'light');
+                    this.setTheme();
+                },
+                setTheme() {
+                    if (this.isDark) {
+                        document.documentElement.classList.add('dark');
+                    } else {
+                        document.documentElement.classList.remove('dark');
+                    }
+                },
+                toggleMenu() {
+                    this.mobileMenuOpen = !this.mobileMenuOpen;
+                },
+            }
+        }
+    </script>
+</body>
+</html>
