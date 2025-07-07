@@ -1,0 +1,216 @@
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Уведомления</title>
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
+    <style>
+        :root {
+            --bg-gradient: linear-gradient(120deg, #f0f2f5 0%, #e6e9f0 100%);
+            --card-bg: #ffffff;
+            --primary-color: #007AFF;
+            --success-color: #34C759;
+            --warning-color: #FF9500;
+            --text-color: #1d1d1f;
+            --text-secondary-color: #6c757d;
+            --border-color: rgba(0, 0, 0, 0.08);
+            --shadow: 0 10px 35px rgba(0, 0, 0, 0.07);
+            --border-radius-lg: 24px;
+            --border-radius-md: 16px;
+            --font-family: 'Inter', sans-serif;
+        }
+
+        body {
+            font-family: var(--font-family);
+            background-image: var(--bg-gradient);
+            background-attachment: fixed;
+            color: var(--text-color);
+            margin: 0;
+            padding: 20px;
+            display: flex;
+            justify-content: center;
+            align-items: flex-start;
+            min-height: 100vh;
+        }
+
+        .container {
+            background: transparent;
+            width: 100%;
+            max-width: 900px;
+        }
+
+        h1 {
+            text-align: center;
+            color: var(--text-color);
+            margin-bottom: 30px;
+            font-weight: 700;
+        }
+
+        /* Сетка уведомлений */
+        #notifications-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fill, minmax(280px, 1fr));
+            gap: 25px;
+        }
+
+        .notification-card {
+            background: var(--card-bg);
+            border-radius: var(--border-radius-md);
+            box-shadow: var(--shadow);
+            padding: 25px;
+            display: flex;
+            flex-direction: column;
+            border-top: 4px solid;
+            animation: fadeIn 0.5s ease;
+            transition: transform 0.3s ease, box-shadow 0.3s ease;
+        }
+        
+        .notification-card:hover {
+            transform: translateY(-5px);
+            box-shadow: 0 15px 40px rgba(0, 0, 0, 0.1);
+        }
+
+        @keyframes fadeIn {
+            from { opacity: 0; transform: translateY(10px); }
+            to { opacity: 1; transform: translateY(0); }
+        }
+
+        /* Цвета для разных типов */
+        .notification-card.info { border-color: var(--primary-color); }
+        .notification-card.info .notification-icon { color: var(--primary-color); }
+
+        .notification-card.success { border-color: var(--success-color); }
+        .notification-card.success .notification-icon { color: var(--success-color); }
+
+        .notification-card.warning { border-color: var(--warning-color); }
+        .notification-card.warning .notification-icon { color: var(--warning-color); }
+        
+        .card-header {
+            display: flex;
+            align-items: flex-start;
+            gap: 15px;
+            margin-bottom: 15px;
+        }
+
+        .notification-icon {
+            width: 24px;
+            height: 24px;
+            flex-shrink: 0;
+            margin-top: 2px;
+        }
+        
+        .notification-content p {
+            margin: 0;
+            font-size: 1rem;
+            line-height: 1.6;
+            word-wrap: break-word;
+        }
+
+        .notification-meta {
+            font-size: 0.8rem;
+            color: var(--text-secondary-color);
+            border-top: 1px solid var(--border-color);
+            padding-top: 15px;
+            margin-top: auto; /* Прижимает мета-данные к низу */
+            line-height: 1.5;
+        }
+        .notification-meta span {
+            display: block;
+        }
+
+        .loader-container {
+            text-align: center;
+            padding: 50px;
+            font-size: 1.2rem;
+            color: var(--text-secondary-color);
+        }
+
+        @media (max-width: 600px) {
+            body { padding: 15px; }
+            #notifications-grid {
+                grid-template-columns: 1fr;
+                gap: 20px;
+            }
+        }
+    </style>
+</head>
+<body>
+
+    <div class="container">
+        <h1>Последние Уведомления</h1>
+        <div id="notifications-grid">
+            <div class="loader-container">Загрузка уведомлений...</div>
+        </div>
+    </div>
+
+    <script src="https://www.gstatic.com/firebasejs/8.10.1/firebase-app.js"></script>
+    <script src="https://www.gstatic.com/firebasejs/8.10.1/firebase-firestore.js"></script>
+    <script>
+        const firebaseConfig = {
+            apiKey: "AIzaSyDww__vYGLKmPz1z8nSnh_Tmry96sb-3OE",
+            authDomain: "srstudent-76914.firebaseapp.com",
+            projectId: "srstudent-76914",
+            storageBucket: "srstudent-76914.appspot.com",
+            messagingSenderId: "1066284112446",
+            appId: "1:1066284112446:web:e0c23b04c080ada2e74f6f",
+            measurementId: "G-J9CKGMR4QS"
+        };
+      
+        if (!firebase.apps.length) {
+            firebase.initializeApp(firebaseConfig);
+        }
+        const db = firebase.firestore();
+        const notificationsCollection = db.collection('notifications');
+        const notificationsGrid = document.getElementById('notifications-grid');
+
+        const icons = {
+            info: `<svg xmlns="http://www.w3.org/2000/svg" fill="currentColor" viewBox="0 0 24 24"><path d="M12 2C6.48 2 2 6.48 2 12s4.48 10 10 10 10-4.48 10-10S17.52 2 12 2zm1 15h-2v-6h2v6zm0-8h-2V7h2v2z"/></svg>`,
+            success: `<svg xmlns="http://www.w.org/2000/svg" fill="currentColor" viewBox="0 0 24 24"><path d="M12 2C6.48 2 2 6.48 2 12s4.48 10 10 10 10-4.48 10-10S17.52 2 12 2zm-2 15l-5-5 1.41-1.41L10 14.17l7.59-7.59L19 8l-9 9z"/></svg>`,
+            warning: `<svg xmlns="http://www.w3.org/2000/svg" fill="currentColor" viewBox="0 0 24 24"><path d="M1 21h22L12 2 1 21zm12-3h-2v-2h2v2zm0-4h-2v-4h2v4z"/></svg>`
+        };
+
+        function loadNotifications() {
+            notificationsCollection.orderBy('createdAt', 'desc').onSnapshot(snapshot => {
+                notificationsGrid.innerHTML = '';
+                if (snapshot.empty) {
+                    notificationsGrid.innerHTML = '<p style="text-align:center; color:#888;">Уведомлений пока нет.</p>';
+                    return;
+                }
+                snapshot.forEach(doc => {
+                    const data = doc.data();
+                    const card = document.createElement('div');
+                    card.className = `notification-card ${data.type}`;
+                    
+                    const timestamp = data.createdAt ? data.createdAt.toDate() : new Date();
+                    const formattedTime = timestamp.toLocaleTimeString('ru-RU', { hour: '2-digit', minute: '2-digit' });
+                    const formattedDate = timestamp.toLocaleDateString('ru-RU');
+
+                    card.innerHTML = `
+                        <div class="card-header">
+                            <div class="notification-icon">
+                                ${icons[data.type] || icons.info}
+                            </div>
+                            <div class="notification-content">
+                                <p>${data.message}</p>
+                            </div>
+                        </div>
+                        <div class="notification-meta">
+                            <span>Опубликовано: <strong>${data.author || 'Администрация'}</strong></span>
+                            <span>${formattedDate} в ${formattedTime}</span>
+                        </div>
+                    `;
+                    notificationsGrid.appendChild(card);
+                });
+            }, error => {
+                console.error("Ошибка получения уведомлений: ", error);
+                notificationsGrid.innerHTML = '<p style="text-align:center; color:red;">Ошибка загрузки данных.</p>';
+            });
+        }
+        
+        loadNotifications();
+    </script>
+</body>
+</html>
