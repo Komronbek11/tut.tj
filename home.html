@@ -119,7 +119,10 @@
                             <span x-show="currentLang === 'tj'" class="flag-icon flag-tj"></span>
                             <span x-show="currentLang === 'ru'" class="flag-icon flag-ru"></span>
                         </button>
-                        
+                                             <a href="notifications.html" @click="toggleMenu()" class="text-xl font-medium opacity-80 hover:opacity-100 flex items-center space-x-3">
+<svg class="w-6 h-6" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor" class="size-6">
+  <path stroke-linecap="round" stroke-linejoin="round" d="M14.857 17.082a23.848 23.848 0 0 0 5.454-1.31A8.967 8.967 0 0 1 18 9.75V9A6 6 0 0 0 6 9v.75a8.967 8.967 0 0 1-2.312 6.022c1.733.64 3.56 1.085 5.455 1.31m5.714 0a24.255 24.255 0 0 1-5.714 0m5.714 0a3 3 0 1 1-5.714 0M3.124 7.5A8.969 8.969 0 0 1 5.292 3m13.416 0a8.969 8.969 0 0 1 2.168 4.5" />
+</svg>
                         <button @click="toggleTheme()" class="p-2 rounded-full transition-colors hover:bg-black/10 dark:hover:bg-white/10 interactive-press" aria-label="Toggle theme">
                             <svg x-show="!isDark" class="w-6 h-6" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 3v1m0 16v1m9-9h-1M4 12H3m15.364 6.364l-.707-.707M6.343 6.343l-.707-.707m12.728 0l-.707.707M6.343 17.657l-.707.707M16 12a4 4 0 11-8 0 4 4 0 018 0z"></path></svg>
                             <svg x-show="isDark" class="w-6 h-6" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M20.354 15.354A9 9 0 018.646 3.646 9.003 9.003 0 0012 21a9.003 9.003 0 008.354-5.646z"></path></svg>
@@ -330,6 +333,12 @@
                     <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M3 5a2 2 0 012-2h3.28a1 1 0 01.948.684l1.498 4.493a1 1 0 01-.502 1.21l-2.257 1.13a11.042 11.042 0 005.516 5.516l1.13-2.257a1 1 0 011.21-.502l4.493 1.498a1 1 0 01.684.949V19a2 2 0 01-2 2h-1C9.716 21 3 14.284 3 6V5z"></path></svg>
                     <span data-translate="nav_contact">Тамос</span>
                 </a>
+                  <a href="notifications.html" @click="toggleMenu()" class="text-xl font-medium opacity-80 hover:opacity-100 flex items-center space-x-3">
+<svg class="w-6 h-6" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor" class="size-6">
+  <path stroke-linecap="round" stroke-linejoin="round" d="M14.857 17.082a23.848 23.848 0 0 0 5.454-1.31A8.967 8.967 0 0 1 18 9.75V9A6 6 0 0 0 6 9v.75a8.967 8.967 0 0 1-2.312 6.022c1.733.64 3.56 1.085 5.455 1.31m5.714 0a24.255 24.255 0 0 1-5.714 0m5.714 0a3 3 0 1 1-5.714 0M3.124 7.5A8.969 8.969 0 0 1 5.292 3m13.416 0a8.969 8.969 0 0 1 2.168 4.5" />
+</svg>
+                    <span data-translate="notifications">Уведомления</span>
+                </a>
                 <a href="index.html" @click="toggleMenu()" class="text-xl font-medium opacity-80 hover:opacity-100 flex items-center space-x-3">
 <svg class="w-5 h-5" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" strokeWidth={1.9} stroke="currentColor" className="size-6">
   <path strokeLinecap="round" strokeLinejoin="round" d="M8.25 9V5.25A2.25 2.25 0 0 1 10.5 3h6a2.25 2.25 0 0 1 2.25 2.25v13.5A2.25 2.25 0 0 1 16.5 21h-6a2.25 2.25 0 0 1-2.25-2.25V15m-3 0-3-3m0 0 3-3m-3 3H15" />
@@ -358,6 +367,7 @@
                     teachers: { tj: 'Омӯзгорон', ru: 'Преподаватели' },
                     fakultet: { tj: 'Факултетҳо', ru: 'Факультеты' },
                     logout: { tj: 'Баромадан', ru: 'Выйти' },
+                    notifications: { tj: 'Огоҳиномаҳо', ru: 'Уведомления' },
 
                     schedule: { tj: 'Ҷадвали дарсӣ', ru: 'Расписание занятий' },
                     ebooks: { tj: 'Китобҳои электронӣ', ru: 'Электронные книги' },
