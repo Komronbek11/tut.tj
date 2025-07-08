@@ -792,7 +792,7 @@
     }
     
     // ========= ОБРАБОТКА ГОЛОСОВЫХ КОМАНД =========
-    async function processVoiceCommand(command) { // Сделали async для получения расписания
+    async function processVoiceCommand(command) {
         let response = '';
         
         // Help Command
@@ -829,7 +829,7 @@
             
             if (foundOption) {
                 groupSelect.value = foundOption.value;
-                await updateSchedule(); // Ждем обновления расписания
+                await updateSchedule();
                 response = `Показываю расписание для группы ${foundOption.text}.`;
             } else {
                 response = `Не удалось найти группу "${requestedGroup}".`;
@@ -848,12 +848,12 @@
             const dayId = dayMapping[dayStr];
             
             if(classNum && dayId) {
-                const schedule = await getScheduleForGroupAndDay(currentGroup, dayId); // Получаем данные из Firestore
-                const nonEmptyClasses = schedule.filter(s => s[2] && s[2].trim());
+                const schedule = await getScheduleForGroupAndDay(currentGroup, dayId);
+                const nonEmptyClasses = schedule.filter(s => s.subject && s.subject.trim());
                 if (nonEmptyClasses.length > 0 && classNum <= nonEmptyClasses.length) {
-                    const lesson = nonEmptyClasses[classNum - 1];
-                    const subject = lesson[2].replace(/<br>/g, ', ');
-                    response = `${classNumStr} пара в ${dayStr} - это ${subject} в аудитории ${lesson[1]}.`;
+                    const lesson = nonEmptyClasses[classNum - 1]; // Corrected data access
+                    const subject = lesson.subject.replace(/<br>/g, ', ');
+                    response = `${classNumStr} пара в ${dayStr} - это ${subject} в аудитории ${lesson.aud}.`; // Corrected data access
                 } else {
                     response = `В ${dayStr} нет ${classNumStr} пары.`;
                 }
@@ -865,8 +865,6 @@
             return;
         }
 
-        // ... Другие голосовые команды могут быть добавлены сюда ...
-        
         // Show schedule for a day (default case)
         let dayToShow = '';
         for (const [key, value] of Object.entries(dayMapping)) {
@@ -883,88 +881,79 @@
             if(!response) response = 'Не поняла команду. Попробуйте сказать "помощь".';
         }
         speak(response);
-        updateVoiceStatus(`Команда: "Показать день"`, response);
+        updateVoiceStatus(`Команда: "${command}"`, response);
     }
 
     // ========= ФУНКЦИИ РАСПИСАНИЯ (🔥 ОБНОВЛЕНО ДЛЯ FIREBASE) =========
     function showSkeletonLoader() {
-  document.getElementById('scheduleContainer').innerHTML = `<div class="skeleton-loader"><div class="skeleton-header"></div><div class="skeleton-row"></div><div class="skeleton-row"></div><div class="skeleton-row"></div></div>`;
-}
-
-function getToday() {
-  const days = ['yakshanbe', 'Душанбе', 'Сешанбе', 'Чоршанбе', 'Панҷшанбе', 'Ҷумъа', 'Шанбе'];
-  return days[new Date().getDay()];
-}
-
-function showDay(dayId) {
-  if(dayId === 'yakshanbe') return;
-  currentDay = dayId;
-  updateSchedule();
-}
-
-async function updateSchedule() {
-  const group = document.getElementById('groupSelect').value;
-  currentGroup = group;
-  showSkeletonLoader();
-  const schedule = await getScheduleForGroupAndDay(group, currentDay);
-  setTimeout(() => {
-    if (!schedule || schedule.length === 0 || schedule.every(item => !item.subject || item.subject.trim() === '')) {
-        renderNoClasses();
-    } else {
-        renderSchedule(schedule);
+      document.getElementById('scheduleContainer').innerHTML = `<div class="skeleton-loader"><div class="skeleton-header"></div><div class="skeleton-row"></div><div class="skeleton-row"></div><div class="skeleton-row"></div></div>`;
     }
-    document.querySelectorAll('.buttons button').forEach(btn => {
-        btn.classList.toggle('active-day', btn.dataset.day === currentDay);
-    });
-  }, 300);
-}
 
-async function getScheduleForGroupAndDay(group, day) {
-  try {
-    const docRef = db.collection('schedules').doc(group);
-    const doc = await docRef.get();
-    if (doc.exists) {
-        return doc.data()[day] || [];
-    } else {
-        console.warn(`Документ для группы '${group}' не найден.`);
+    function getToday() {
+      const days = ['yakshanbe', 'Душанбе', 'Сешанбе', 'Чоршанбе', 'Панҷшанбе', 'Ҷумъа', 'Шанбе'];
+      return days[new Date().getDay()];
+    }
+
+    function showDay(dayId) {
+      if(dayId === 'yakshanbe') return;
+      currentDay = dayId;
+      updateSchedule();
+    }
+
+    async function updateSchedule() {
+      const group = document.getElementById('groupSelect').value;
+      currentGroup = group;
+      showSkeletonLoader();
+      const schedule = await getScheduleForGroupAndDay(group, currentDay);
+      setTimeout(() => {
+        if (!schedule || schedule.length === 0 || schedule.every(item => !item.subject || item.subject.trim() === '')) {
+            renderNoClasses();
+        } else {
+            renderSchedule(schedule);
+        }
+        document.querySelectorAll('.buttons button').forEach(btn => {
+            btn.classList.toggle('active-day', btn.dataset.day === currentDay);
+        });
+      }, 300);
+    }
+
+    async function getScheduleForGroupAndDay(group, day) {
+      try {
+        const docRef = db.collection('schedules').doc(group);
+        const doc = await docRef.get();
+        if (doc.exists) {
+            return doc.data()[day] || [];
+        } else {
+            console.warn(`Документ для группы '${group}' не найден.`);
+            return [];
+        }
+      } catch (error) {
+        console.error("Ошибка при загрузке расписания из Firestore: ", error);
+        alert("Не удалось загрузить расписание. Проверьте подключение к интернету.");
         return [];
+      }
     }
-  } catch (error) {
-    console.error("Ошибка при загрузке расписания из Firestore: ", error);
-    alert("Не удалось загрузить расписание. Проверьте подключение к интернету.");
-    return [];
-  }
-}
 
-function renderNoClasses() {
-  document.getElementById('scheduleContainer').innerHTML = `<div class="schedule-day active"><h2>${currentDay}</h2><p style="padding: 20px; text-align: center;">Дарсҳо нестанд</p></div>`;
-}
-
-function renderSchedule(schedule) {
-  const container = document.getElementById('scheduleContainer');
-  let html = `<div class="schedule-day active"><h2>${currentDay}</h2><table><thead><tr><th>Вақт</th><th>АУД</th><th>Фан</th></tr></thead><tbody>`;
-
-  // 🔥 ИЗМЕНЕНО: Читаем из объектов, а не из массивов
-  schedule.forEach(classInfo => {
-    if (classInfo.subject && classInfo.subject.trim()) {
-        html += `<tr><td>${classInfo.time || '---'}</td><td>${classInfo.aud || '---'}</td><td>${classInfo.subject}</td></tr>`;
+    function renderNoClasses() {
+      document.getElementById('scheduleContainer').innerHTML = `<div class="schedule-day active"><h2>${currentDay}</h2><p style="padding: 20px; text-align: center;">Дарсҳо нестанд</p></div>`;
     }
-  });
 
-  html += `</tbody></table></div>`;
-  container.innerHTML = html;
-}
+    function renderSchedule(schedule) {
+      const container = document.getElementById('scheduleContainer');
+      let html = `<div class="schedule-day active"><h2>${currentDay}</h2><table><thead><tr><th>Вақт</th><th>АУД</th><th>Фан</th></tr></thead><tbody>`;
 
-function initApp() {
-    // Эта функция остается без изменений
-    let today = getToday();
-    currentDay = (today === 'yakshanbe') ? 'Душанбе' : today;
-    updateSchedule();
-    // Здесь также могут быть вызовы для initVoiceRecognition() и applySamsungTheme()
-}
+      schedule.forEach(classInfo => {
+        if (classInfo.subject && classInfo.subject.trim()) {
+            html += `<tr><td>${classInfo.time || '---'}</td><td>${classInfo.aud || '---'}</td><td>${classInfo.subject}</td></tr>`;
+        }
+      });
 
-// ЗАПУСК
-window.onload = initApp; 
- </script>
+      html += `</tbody></table></div>`;
+      container.innerHTML = html;
+    }
+    
+    // ЗАПУСК
+    window.onload = initApp; 
+  </script>
 </body>
 </html>
