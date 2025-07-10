@@ -5,27 +5,27 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Список СРС</title>
     <link href="https://cdn.jsdelivr.net/npm/tailwindcss@2.2.19/dist/tailwind.min.css" rel="stylesheet">
-    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&display=swap" rel="stylesheet">
     <style>
-        /* НОВОЕ: Система переменных для темной/светлой темы */
         :root {
-            --bg-color: #f0f2f5;
-            --text-color-primary: #1a202c;
-            --text-color-secondary: #4a5568;
-            --card-bg: rgba(255, 255, 255, 0.65);
-            --border-color: rgba(0, 0, 0, 0.1);
-            --skeleton-bg: #e2e8f0;
-            --aurora-opacity: 0.25;
+            --bg-color: #f7f8fa;
+            --text-color-primary: #111827;
+            --text-color-secondary: #6b7280;
+            --card-bg: #ffffff;
+            --border-color: #e5e7eb;
+            --skeleton-bg: #e5e7eb;
+            --aurora-opacity: 0.15;
+            --accent-color: #2563eb;
         }
 
         html.dark {
-            --bg-color: #0b1120;
+            --bg-color: #0d1117;
             --text-color-primary: #e2e8f0;
-            --text-color-secondary: #a0aec0;
-            --card-bg: rgba(23, 37, 62, 0.5);
-            --border-color: rgba(255, 255, 255, 0.1);
-            --skeleton-bg: rgba(255, 255, 255, 0.1);
-            --aurora-opacity: 0.4;
+            --text-color-secondary: #94a3b8;
+            --card-bg: #161b22;
+            --border-color: #30363d;
+            --skeleton-bg: #21262d;
+            --aurora-opacity: 0.2;
         }
 
         html { scroll-behavior: smooth; }
@@ -33,152 +33,156 @@
             font-family: 'Inter', sans-serif; 
             background-color: var(--bg-color); 
             color: var(--text-color-primary);
-            transition: background-color 0.5s ease, color 0.5s ease;
+            transition: background-color 0.3s ease, color 0.3s ease;
         }
-        .aurora-container { position: fixed; top: 0; left: 0; width: 100%; height: 100vh; overflow: hidden; z-index: -1; }
-        @keyframes rotate { 0% { transform: rotate(0deg); } 100% { transform: rotate(360deg); } }
-        .aurora-shape { position: absolute; border-radius: 50%; filter: blur(120px); opacity: var(--aurora-opacity); animation: rotate 50s infinite linear; transition: opacity 0.5s ease; }
-        .aurora-1 { width: 600px; height: 600px; background: #10b981; top: -200px; right: -200px; }
-        .aurora-2 { width: 500px; height: 500px; background: #3b82f6; bottom: -150px; left: -150px; animation-duration: 55s; }
         
-        .assignment-card {
+        /* НОВЫЙ ДИЗАЙН ПОСТА В ЛЕНТЕ */
+        .assignment-post {
             background-color: var(--card-bg);
             border: 1px solid var(--border-color);
-            backdrop-filter: blur(15px);
-            -webkit-backdrop-filter: blur(15px);
+            border-radius: 1rem; /* 16px */
             transition: all 0.3s ease;
-            box-shadow: 0 4px 20px rgba(0, 0, 0, 0.05);
+            box-shadow: 0 1px 3px 0 rgba(0, 0, 0, 0.05);
         }
-        .assignment-card:hover { transform: translateY(-5px); box-shadow: 0 8px 25px rgba(0, 0, 0, 0.1); }
-        .card-image { height: 180px; background-size: cover; background-position: center; }
-        
-        /* Стили для таблиц внутри карточек */
-        .description-content table { width: 100%; margin-top: 1rem; border-collapse: collapse; }
-        .description-content th, .description-content td { 
-            border: 1px solid var(--border-color); 
-            padding: 8px; 
-            font-size: 0.875rem; 
+        .assignment-post:hover {
+            transform: translateY(-4px);
+            box-shadow: 0 10px 15px -3px rgba(0, 0, 0, 0.07), 0 4px 6px -2px rgba(0, 0, 0, 0.05);
         }
-        .description-content p { margin-bottom: 0.5rem; } /* Добавляем отступ для параграфов */
+        .post-content {
+            max-height: 100px; /* Высота свернутого текста */
+            overflow: hidden;
+            position: relative;
+            transition: max-height 0.5s ease-in-out;
+        }
+        .post-content.is-expanded {
+            max-height: 1000px; /* Высота развернутого текста */
+        }
+        /* Градиент для эффекта затухания */
+        .post-content::after {
+            content: '';
+            position: absolute;
+            bottom: 0;
+            left: 0;
+            right: 0;
+            height: 50px;
+            background: linear-gradient(to top, var(--card-bg), transparent);
+            pointer-events: none;
+            transition: opacity 0.3s;
+        }
+        .post-content.is-expanded::after {
+            opacity: 0;
+        }
 
-        /* Стили для Skeleton Loader */
-        @keyframes skeleton-pulse { 50% { opacity: 0.5; } }
-        .skeleton-pulse { animation: skeleton-pulse 2s cubic-bezier(0.4, 0, 0.6, 1) infinite; }
-        .skeleton-card .skeleton-img { height: 180px; background-color: var(--skeleton-bg); }
+        .post-content table { display: block; overflow-x: auto; white-space: nowrap; width: 100%; margin-top: 1rem; border-collapse: collapse; }
+        .post-content th, .post-content td { border: 1px solid var(--border-color); padding: 8px; font-size: 0.875rem; }
+
+        @keyframes skeleton-pulse { 50% { opacity: 0.7; } }
+        .skeleton-pulse { animation: skeleton-pulse 1.5s cubic-bezier(0.4, 0, 0.6, 1) infinite; }
         .skeleton-card .skeleton-text { height: 1rem; border-radius: 0.25rem; background-color: var(--skeleton-bg); }
+
     </style>
 </head>
-<body class="p-4 sm:p-6 lg:p-8">
+<body class="py-8 sm:py-12">
 
-    <div class="aurora-container">
-        <div class="aurora-shape aurora-1"></div>
-        <div class="aurora-shape aurora-2"></div>
+    <div class="container mx-auto px-4 max-w-5xl">
+        <header class="text-center mb-12">
+            <h1 class="text-4xl sm:text-5xl font-extrabold tracking-tight">Список СРС</h1>
+            <p class="text-lg mt-3 opacity-70 max-w-2xl mx-auto" style="color: var(--text-color-secondary);">
+                Актуальный список заданий для самостоятельной работы.
+            </p>
+        </header>
+
+        <main id="assignments-grid" class="grid grid-cols-1 lg:grid-cols-2 gap-8">
+            <div class="assignment-post p-6 space-y-4 skeleton-card">
+                <div class="flex items-center gap-3"><div class="w-10 h-10 rounded-full skeleton-pulse" style="background-color: var(--skeleton-bg);"></div><div class="w-1/2 h-4 skeleton-pulse skeleton-text"></div></div>
+                <div class="space-y-3 pt-2"><div class="h-4 skeleton-pulse skeleton-text"></div><div class="h-4 w-3/4 skeleton-pulse skeleton-text"></div></div>
+            </div>
+            <div class="assignment-post p-6 space-y-4 skeleton-card">
+                <div class="flex items-center gap-3"><div class="w-10 h-10 rounded-full skeleton-pulse" style="background-color: var(--skeleton-bg);"></div><div class="w-1/3 h-4 skeleton-pulse skeleton-text"></div></div>
+                <div class="space-y-3 pt-2"><div class="h-4 w-5/6 skeleton-pulse skeleton-text"></div><div class="h-4 skeleton-pulse skeleton-text"></div></div>
+            </div>
+        </main>
     </div>
-
-    <header class="text-center mb-10">
-        <h1 class="text-3xl sm:text-4xl font-bold">Задания для самостоятельной работы (СРС)</h1>
-        <p class="text-lg mt-2" style="color: var(--text-color-secondary);">Список актуальных заданий от преподавателей</p>
-    </header>
-
-    <main id="assignments-grid" class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-6">
-        <div class="assignment-card rounded-xl overflow-hidden skeleton-card">
-            <div class="skeleton-img skeleton-pulse"></div>
-            <div class="p-5 space-y-3">
-                <div class="skeleton-text w-3/4 skeleton-pulse"></div>
-                <div class="skeleton-text w-full skeleton-pulse"></div>
-                <div class="skeleton-text w-1/2 skeleton-pulse"></div>
-            </div>
-        </div>
-        <div class="assignment-card rounded-xl overflow-hidden skeleton-card">
-            <div class="skeleton-img skeleton-pulse"></div>
-            <div class="p-5 space-y-3">
-                <div class="skeleton-text w-3/4 skeleton-pulse"></div>
-                <div class="skeleton-text w-full skeleton-pulse"></div>
-                <div class="skeleton-text w-1/2 skeleton-pulse"></div>
-            </div>
-        </div>
-        <div class="hidden lg:block assignment-card rounded-xl overflow-hidden skeleton-card">
-            <div class="skeleton-img skeleton-pulse"></div>
-            <div class="p-5 space-y-3">
-                <div class="skeleton-text w-3/4 skeleton-pulse"></div>
-                <div class="skeleton-text w-full skeleton-pulse"></div>
-                <div class="skeleton-text w-1/2 skeleton-pulse"></div>
-            </div>
-        </div>
-        <div class="hidden xl:block assignment-card rounded-xl overflow-hidden skeleton-card">
-            <div class="skeleton-img skeleton-pulse"></div>
-            <div class="p-5 space-y-3">
-                <div class="skeleton-text w-3/4 skeleton-pulse"></div>
-                <div class="skeleton-text w-full skeleton-pulse"></div>
-                <div class="skeleton-text w-1/2 skeleton-pulse"></div>
-            </div>
-        </div>
-    </main>
 
     <script src="https://www.gstatic.com/firebasejs/8.10.1/firebase-app.js"></script>
     <script src="https://www.gstatic.com/firebasejs/8.10.1/firebase-database.js"></script>
     <script>
-        // НОВОЕ: Логика для автоматического переключения темы
-        const themeMatcher = window.matchMedia('(prefers-color-scheme: dark)');
-        const toggleDarkTheme = (isDark) => document.documentElement.classList.toggle('dark', isDark);
-        toggleDarkTheme(themeMatcher.matches);
-        themeMatcher.addEventListener('change', (e) => toggleDarkTheme(e.matches));
-
-        const firebaseConfig = {
-            apiKey: "AIzaSyCAOfxPW5m2UqtulWzuh3egOjJ-ti-rDf8",
-            authDomain: "register-221e5.firebaseapp.com",
-            projectId: "register-221e5",
-            storageBucket: "register-221e5.appspot.com",
-            messagingSenderId: "588640206529",
-            appId: "1:588640206529:web:b2abf5413387e251935e40"
-        };
-
-        firebase.initializeApp(firebaseConfig);
-        const db = firebase.database();
-        const assignmentsRef = db.ref('assignments');
+        const themeMatcher=window.matchMedia('(prefers-color-scheme: dark)');const toggleDarkTheme=isDark=>document.documentElement.classList.toggle('dark',isDark);toggleDarkTheme(themeMatcher.matches);themeMatcher.addEventListener('change',e=>toggleDarkTheme(e.matches));
+        const firebaseConfig={apiKey:"AIzaSyCAOfxPW5m2UqtulWzuh3egOjJ-ti-rDf8",authDomain:"register-221e5.firebaseapp.com",projectId:"register-221e5",storageBucket:"register-221e5.appspot.com",messagingSenderId:"588640206529",appId:"1:588640206529:web:b2abf5413387e251935e40"};firebase.initializeApp(firebaseConfig);
+        const db=firebase.database(),assignmentsRef=db.ref('assignments'),assignmentsGrid=document.getElementById('assignments-grid');
+        const pluralizeDays=number=>{const absNumber=Math.abs(number);if(absNumber%10===1&&absNumber%100!==11)return'день';if([2,3,4].includes(absNumber%10)&&![12,13,14].includes(absNumber%100))return'дня';return'дней'};
         
-        const assignmentsGrid = document.getElementById('assignments-grid');
+        const renderAssignments=assignments=>{
+            assignmentsGrid.innerHTML='';
+            if(assignments.length===0){assignmentsGrid.innerHTML=`<p class="col-span-full text-center py-12 opacity-70" style="color: var(--text-color-secondary);">✨ На данный момент нет активных заданий.</p>`;return}
+            
+            assignments.forEach(item=>{
+                const post=document.createElement('div');
+                post.className='assignment-post';
+                
+                const endDate=new Date(item.endDate),now=new Date(),daysLeft=Math.ceil((endDate-now)/(1e3*60*60*24));
+                let statusText,statusColorClass;
+                if(daysLeft<0){statusText='Срок истек';statusColorClass='text-red-600 dark:text-red-500'}
+                else if(daysLeft<=3){statusText=`Срок: ${daysLeft} ${pluralizeDays(daysLeft)}`;statusColorClass='text-yellow-600 dark:text-yellow-500'}
+                else{statusText=`Срок: ${daysLeft} ${pluralizeDays(daysLeft)}`;statusColorClass='text-green-600 dark:text-green-500'}
 
-        const renderAssignments = (assignments) => {
-            assignmentsGrid.innerHTML = '';
-            if (assignments.length === 0) {
-                assignmentsGrid.innerHTML = `<p class="col-span-full text-center py-10" style="color: var(--text-color-secondary);">На данный момент нет активных заданий.</p>`;
-                return;
-            }
+                // ГЕНЕРАЦИЯ АВАТАРА ПО ИНИЦИАЛАМ
+                const nameParts = item.teacherName.split(" ");
+                const initials = nameParts.length > 1 ? nameParts[0][0] + nameParts[1][0] : nameParts[0][0];
+                const avatarUrl = `https://ui-avatars.com/api/?name=${initials}&background=random&color=fff&font-size=0.5`;
 
-            assignments.forEach(item => {
-                const card = document.createElement('div');
-                // Класс flex и flex-col заставляют карточку растягиваться по высоте содержимого
-                card.className = 'assignment-card rounded-xl overflow-hidden flex flex-col'; 
-                const placeholderImg = 'https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcSUJTkdQF599AX8UYJq7VPnXMWi7dWjlCUecg&s';
-                const imageUrl = item.imageUrl || placeholderImg;
+                // НОВЫЙ ШАБЛОН ПОСТА
+                post.innerHTML=`
+                    <div class="p-6">
+                        <div class="flex items-center gap-4 mb-4">
+                            <img class="w-11 h-11 rounded-full" src="${avatarUrl}" alt="Аватар преподавателя">
+                            <div>
+                                <h3 class="text-lg font-bold leading-tight">${item.subject}</h3>
+                                <p class="text-sm" style="color: var(--text-color-secondary);">${item.teacherName}</p>
+                            </div>
+                        </div>
 
-                card.innerHTML = `
-                    <div class="card-image" style="background-image: url('${imageUrl}')"></div>
-                    <div class="p-5 flex-grow flex flex-col">
-                        <span class="text-sm font-semibold text-blue-500">${item.subject}</span>
+                        <div class="post-content text-sm space-y-3" style="color: var(--text-color-secondary);">
+                            ${item.description}
+                        </div>
                         
-                        <div class="description-content my-2 flex-grow">${item.description}</div>
-                        
-                        <p class="text-sm mt-3" style="color: var(--text-color-secondary);">Преподаватель: ${item.teacherName}</p>
-                        <div class="mt-4 text-xs font-semibold bg-gray-200 text-gray-700 rounded-full px-3 py-1 text-center dark:bg-gray-700 dark:text-gray-200">
-                            Сроки: ${new Date(item.startDate).toLocaleDateString()} - ${new Date(item.endDate).toLocaleDateString()}
+                        <div class="flex justify-between items-center mt-4">
+                            <button class="read-more-btn text-sm font-semibold" style="color: var(--accent-color);">Читать далее...</button>
+                            <span class="text-xs font-semibold ${statusColorClass}">${statusText}</span>
                         </div>
                     </div>
                 `;
-                assignmentsGrid.appendChild(card);
-            });
-        };
+                assignmentsGrid.appendChild(post);
 
-        assignmentsRef.on('value', (snapshot) => {
-            const data = snapshot.val();
-            const assignments = [];
-            if (data) {
-                for (let id in data) {
-                    assignments.push({ id, ...data[id] });
+                // ЛОГИКА КНОПКИ "ЧИТАТЬ ДАЛЕЕ"
+                const content = post.querySelector('.post-content');
+                const button = post.querySelector('.read-more-btn');
+                
+                // Проверяем, нужно ли вообще показывать кнопку
+                if (content.scrollHeight > content.clientHeight) {
+                    button.style.display = 'block';
+                } else {
+                    button.style.display = 'none';
+                    content.style.maxHeight = 'none'; // Убираем ограничение, если контента мало
+                    content.style.webkitMaskImage = 'none'; // Убираем маску
                 }
-            }
-            renderAssignments(assignments.reverse());
+
+                button.addEventListener('click', () => {
+                    content.classList.toggle('is-expanded');
+                    if (content.classList.contains('is-expanded')) {
+                        button.textContent = 'Свернуть';
+                    } else {
+                        button.textContent = 'Читать далее...';
+                    }
+                });
+            })
+        };
+        
+        assignmentsRef.on('value',snapshot=>{
+            const data=snapshot.val(),assignments=[];
+            if(data){for(let id in data){assignments.push({id,...data[id]})}}
+            assignments.sort((a,b)=>new Date(b.endDate)-new Date(a.endDate));
+            renderAssignments(assignments)
         });
     </script>
 </body>
