@@ -1,4 +1,4 @@
-<!DOCTYPE html>
+ <!DOCTYPE html>
 <html lang="ru">
 <head>
     <meta charset="UTF-8">
@@ -8,26 +8,15 @@
     <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&display=swap" rel="stylesheet">
     <style>
         :root {
-            --bg-color: #f7f8fa;
-            --text-color-primary: #111827;
-            --text-color-secondary: #6b7280;
-            --card-bg: #ffffff;
-            --border-color: #e5e7eb;
-            --skeleton-bg: #e5e7eb;
-            --aurora-opacity: 0.15;
-            --accent-color: #2563eb;
+            --bg-color: #f7f8fa; --text-color-primary: #111827; --text-color-secondary: #6b7280;
+            --card-bg: rgba(255, 255, 255, 0.65); --border-color: rgba(0, 0, 0, 0.08); 
+            --skeleton-bg: #e5e7eb; --aurora-opacity: 0.15; --accent-color: #2563eb;
         }
-
         html.dark {
-            --bg-color: #0d1117;
-            --text-color-primary: #e2e8f0;
-            --text-color-secondary: #94a3b8;
-            --card-bg: #161b22;
-            --border-color: #30363d;
-            --skeleton-bg: #21262d;
-            --aurora-opacity: 0.2;
+            --bg-color: #0d1117; --text-color-primary: #e2e8f0; --text-color-secondary: #94a3b8;
+            --card-bg: rgba(22, 27, 34, 0.5); --border-color: rgba(255, 255, 255, 0.1);
+            --skeleton-bg: #21262d; --aurora-opacity: 0.2;
         }
-
         html { scroll-behavior: smooth; }
         body { 
             font-family: 'Inter', sans-serif; 
@@ -35,71 +24,64 @@
             color: var(--text-color-primary);
             transition: background-color 0.3s ease, color 0.3s ease;
         }
+        .aurora-container { position: fixed; top: 0; left: 0; width: 100%; height: 100vh; overflow: hidden; z-index: -1; }
+        @keyframes rotate { 0% { transform: rotate(0deg); } 100% { transform: rotate(360deg); } }
+        .aurora-shape { position: absolute; border-radius: 50%; filter: blur(120px); opacity: var(--aurora-opacity); animation: rotate 50s infinite linear alternate; }
+        .glass-card { 
+            background-color: var(--card-bg); 
+            border: 1px solid var(--border-color); 
+            backdrop-filter: blur(25px); 
+            -webkit-backdrop-filter: blur(25px);
+            box-shadow: 0 8px 32px rgba(0, 0, 0, 0.07);
+        }
+        .modal { position: fixed; top: 0; left: 0; right: 0; bottom: 0; background: rgba(0,0,0,0.6); display: none; align-items: center; justify-content: center; z-index: 1000; backdrop-filter: blur(5px); }
+        .modal.active { display: flex; }
         
-        /* НОВЫЙ ДИЗАЙН ПОСТА В ЛЕНТЕ */
-        .assignment-post {
-            background-color: var(--card-bg);
-            border: 1px solid var(--border-color);
-            border-radius: 1rem; /* 16px */
-            transition: all 0.3s ease;
-            box-shadow: 0 1px 3px 0 rgba(0, 0, 0, 0.05);
-        }
-        .assignment-post:hover {
-            transform: translateY(-4px);
-            box-shadow: 0 10px 15px -3px rgba(0, 0, 0, 0.07), 0 4px 6px -2px rgba(0, 0, 0, 0.05);
-        }
-        .post-content {
-            max-height: 100px; /* Высота свернутого текста */
-            overflow: hidden;
-            position: relative;
-            transition: max-height 0.5s ease-in-out;
-        }
-        .post-content.is-expanded {
-            max-height: 1000px; /* Высота развернутого текста */
-        }
-        /* Градиент для эффекта затухания */
-        .post-content::after {
-            content: '';
-            position: absolute;
-            bottom: 0;
-            left: 0;
-            right: 0;
-            height: 50px;
-            background: linear-gradient(to top, var(--card-bg), transparent);
-            pointer-events: none;
-            transition: opacity 0.3s;
-        }
-        .post-content.is-expanded::after {
-            opacity: 0;
-        }
-
-        .post-content table { display: block; overflow-x: auto; white-space: nowrap; width: 100%; margin-top: 1rem; border-collapse: collapse; }
-        .post-content th, .post-content td { border: 1px solid var(--border-color); padding: 8px; font-size: 0.875rem; }
+        .assignment-post { transition: all 0.3s ease; }
+        .assignment-post:hover { transform: translateY(-5px); box-shadow: 0 10px 15px -3px rgba(0, 0, 0, 0.1), 0 4px 6px -2px rgba(0, 0, 0, 0.05); }
+        .post-content { max-height: 100px; overflow: hidden; position: relative; transition: max-height 0.5s ease-in-out; }
+        .post-content.is-expanded { max-height: 1000px; }
+        .post-content::after { content: ''; position: absolute; bottom: 0; left: 0; right: 0; height: 50px; background: linear-gradient(to top, var(--card-bg), transparent); pointer-events: none; transition: opacity 0.3s; }
+        .post-content.is-expanded::after { opacity: 0; }
 
         @keyframes skeleton-pulse { 50% { opacity: 0.7; } }
         .skeleton-pulse { animation: skeleton-pulse 1.5s cubic-bezier(0.4, 0, 0.6, 1) infinite; }
-        .skeleton-card .skeleton-text { height: 1rem; border-radius: 0.25rem; background-color: var(--skeleton-bg); }
-
     </style>
 </head>
 <body class="py-8 sm:py-12">
 
-    <div class="container mx-auto px-4 max-w-5xl">
+    <div class="aurora-container">
+        <div class="aurora-shape" style="width: 600px; height: 600px; background: #3b82f6; top: -20%; left: -10%;"></div>
+        <div class="aurora-shape" style="width: 500px; height: 500px; background: #8b5cf6; bottom: -20%; right: -10%; animation-duration: 55s;"></div>
+    </div>
+
+    <div id="selectionModal" class="modal">
+        <div class="modal-content glass-card rounded-2xl p-8">
+            <h2 class="text-2xl font-bold mb-6">Выберите вашу группу</h2>
+            <div class="space-y-4 text-left">
+                <div><label for="facultySelect" class="block text-sm font-medium mb-1" style="color: var(--text-color-secondary);">Факультет</label><select id="facultySelect" class="w-full p-3 rounded-lg border" style="background-color: var(--bg-color); border-color: var(--border-color);"></select></div>
+                <div><label for="courseSelect" class="block text-sm font-medium mb-1" style="color: var(--text-color-secondary);">Курс</label><select id="courseSelect" class="w-full p-3 rounded-lg border" style="background-color: var(--bg-color); border-color: var(--border-color);" disabled></select></div>
+                <div><label for="groupSelect" class="block text-sm font-medium mb-1" style="color: var(--text-color-secondary);">Группа</label><select id="groupSelect" class="w-full p-3 rounded-lg border" style="background-color: var(--bg-color); border-color: var(--border-color);" disabled></select></div>
+            </div>
+            <button id="saveSelectionBtn" class="w-full mt-6 py-3 px-4 text-white font-semibold rounded-lg transition-all duration-300" style="background-color: var(--accent-color);" disabled>Показать задания</button>
+        </div>
+    </div>
+
+    <div id="mainContent" class="container mx-auto px-4 max-w-5xl" style="display: none;">
         <header class="text-center mb-12">
             <h1 class="text-4xl sm:text-5xl font-extrabold tracking-tight">Список СРС</h1>
-            <p class="text-lg mt-3 opacity-70 max-w-2xl mx-auto" style="color: var(--text-color-secondary);">
-                Актуальный список заданий для самостоятельной работы.
-            </p>
+            <div id="group-info" class="text-lg mt-3 opacity-70 max-w-2xl mx-auto" style="color: var(--text-color-secondary);"></div>
+            <button id="changeGroupBtn" class="mt-4 text-sm font-semibold transition-opacity duration-300 hover:opacity-80" style="color: var(--accent-color);">Сменить группу</button>
         </header>
 
         <main id="assignments-grid" class="grid grid-cols-1 lg:grid-cols-2 gap-8">
-            <div class="assignment-post p-6 space-y-4 skeleton-card">
-                <div class="flex items-center gap-3"><div class="w-10 h-10 rounded-full skeleton-pulse" style="background-color: var(--skeleton-bg);"></div><div class="w-1/2 h-4 skeleton-pulse skeleton-text"></div></div>
-                <div class="space-y-3 pt-2"><div class="h-4 skeleton-pulse skeleton-text"></div><div class="h-4 w-3/4 skeleton-pulse skeleton-text"></div></div>
+            <div class="assignment-post glass-card p-6 space-y-4 rounded-2xl">
+                <div class="flex items-center gap-3"><div class="w-10 h-10 rounded-full skeleton-pulse" style="background-color: var(--skeleton-bg);"></div><div class="w-1/2 h-4 skeleton-pulse" style="background-color: var(--skeleton-bg); border-radius: 0.25rem;"></div></div>
+                <div class="space-y-3 pt-2"><div class="h-4 skeleton-pulse" style="background-color: var(--skeleton-bg); border-radius: 0.25rem;"></div><div class="h-4 w-3/4 skeleton-pulse" style="background-color: var(--skeleton-bg); border-radius: 0.25rem;"></div></div>
             </div>
-            <div class="assignment-post p-6 space-y-4 skeleton-card">
-                <div class="flex items-center gap-3"><div class="w-10 h-10 rounded-full skeleton-pulse" style="background-color: var(--skeleton-bg);"></div><div class="w-1/3 h-4 skeleton-pulse skeleton-text"></div></div>
-                <div class="space-y-3 pt-2"><div class="h-4 w-5/6 skeleton-pulse skeleton-text"></div><div class="h-4 skeleton-pulse skeleton-text"></div></div>
+             <div class="assignment-post glass-card p-6 space-y-4 rounded-2xl">
+                <div class="flex items-center gap-3"><div class="w-10 h-10 rounded-full skeleton-pulse" style="background-color: var(--skeleton-bg);"></div><div class="w-1/3 h-4 skeleton-pulse" style="background-color: var(--skeleton-bg); border-radius: 0.25rem;"></div></div>
+                <div class="space-y-3 pt-2"><div class="h-4 w-5/6 skeleton-pulse" style="background-color: var(--skeleton-bg); border-radius: 0.25rem;"></div><div class="h-4 skeleton-pulse" style="background-color: var(--skeleton-bg); border-radius: 0.25rem;"></div></div>
             </div>
         </main>
     </div>
@@ -107,83 +89,128 @@
     <script src="https://www.gstatic.com/firebasejs/8.10.1/firebase-app.js"></script>
     <script src="https://www.gstatic.com/firebasejs/8.10.1/firebase-database.js"></script>
     <script>
-        const themeMatcher=window.matchMedia('(prefers-color-scheme: dark)');const toggleDarkTheme=isDark=>document.documentElement.classList.toggle('dark',isDark);toggleDarkTheme(themeMatcher.matches);themeMatcher.addEventListener('change',e=>toggleDarkTheme(e.matches));
-        const firebaseConfig={apiKey:"AIzaSyCAOfxPW5m2UqtulWzuh3egOjJ-ti-rDf8",authDomain:"register-221e5.firebaseapp.com",projectId:"register-221e5",storageBucket:"register-221e5.appspot.com",messagingSenderId:"588640206529",appId:"1:588640206529:web:b2abf5413387e251935e40"};firebase.initializeApp(firebaseConfig);
-        const db=firebase.database(),assignmentsRef=db.ref('assignments'),assignmentsGrid=document.getElementById('assignments-grid');
-        const pluralizeDays=number=>{const absNumber=Math.abs(number);if(absNumber%10===1&&absNumber%100!==11)return'день';if([2,3,4].includes(absNumber%10)&&![12,13,14].includes(absNumber%100))return'дня';return'дней'};
+        const firebaseConfig={apiKey:"AIzaSyDww__vYGLKmPz1z8nSnh_Tmry96sb-3OE",authDomain:"srstudent-76914.firebaseapp.com",databaseURL:"https://srstudent-76914-default-rtdb.asia-southeast1.firebasedatabase.app",projectId:"srstudent-76914",storageBucket:"srstudent-76914.appspot.com",messagingSenderId:"1066284112446",appId:"1:1066284112446:web:e0c23b04c080ada2e74f6f"};
+        firebase.initializeApp(firebaseConfig);
+        const db=firebase.database();
+
+        let hierarchy = {}, assignmentsRef = null;
+        const $ = (selector) => document.querySelector(selector);
         
-        const renderAssignments=assignments=>{
-            assignmentsGrid.innerHTML='';
-            if(assignments.length===0){assignmentsGrid.innerHTML=`<p class="col-span-full text-center py-12 opacity-70" style="color: var(--text-color-secondary);">✨ На данный момент нет активных заданий.</p>`;return}
+        const themeMatcher = window.matchMedia('(prefers-color-scheme: dark)');
+        const toggleDarkTheme = (isDark) => document.documentElement.classList.toggle('dark', isDark);
+        toggleDarkTheme(themeMatcher.matches);
+        themeMatcher.addEventListener('change', e => toggleDarkTheme(e.matches));
+        
+        document.addEventListener('DOMContentLoaded', () => {
+            db.ref('hierarchy').once('value', snapshot => {
+                if (!snapshot.exists()) {
+                    document.body.innerHTML = '<h1 class="text-center text-red-500 p-10">Ошибка: Иерархия не найдена.</h1>';
+                    return;
+                }
+                hierarchy = snapshot.val();
+                populateFaculties();
+                const savedPath = localStorage.getItem('mySrsPath');
+                const savedInfo = localStorage.getItem('mySrsInfo');
+                if (savedPath && savedInfo) {
+                    loadAssignments(savedPath, savedInfo);
+                } else {
+                    $('#selectionModal').classList.add('active');
+                }
+            }, error => {
+                console.error("Firebase read error:", error);
+                document.body.innerHTML = '<h1 class="text-center text-red-500 p-10">Ошибка доступа к базе данных.</h1>';
+            });
+        });
+        
+        function populateFaculties(){const t=$("#facultySelect");for(const e in t.innerHTML="<option value=''>Выберите факультет</option>",hierarchy)t.add(new Option(hierarchy[e].name,e))}
+        $("#facultySelect").addEventListener("change",()=>{const t=$("#facultySelect").value,e=$("#courseSelect");e.innerHTML="<option value=''>Выберите курс</option>",$("#groupSelect").innerHTML="<option value=''>Выберите группу</option>",$("#groupSelect").disabled=!0,$("#saveSelectionBtn").disabled=!0,t?(e.disabled=!1,Object.keys(hierarchy[t].courses||{}).forEach(o=>{e.add(new Option(hierarchy[t].courses[o].name,o))})):e.disabled=!0});
+        $("#courseSelect").addEventListener("change",()=>{const t=$("#courseSelect").value,e=$("#groupSelect");e.innerHTML="<option value=''>Выберите группу</option>",$("#saveSelectionBtn").disabled=!0,t?(e.disabled=!1,Object.keys(hierarchy[$("#facultySelect").value].courses[t].groups||{}).forEach(o=>{e.add(new Option(hierarchy[$("#facultySelect").value].courses[t].groups[o].name,o))})):e.disabled=!0});
+        $("#groupSelect").addEventListener("change",()=>{$("#saveSelectionBtn").disabled=!$("#groupSelect").value});
+        $("#saveSelectionBtn").addEventListener("click",()=>{const t={f:$("#facultySelect").value,c:$("#courseSelect").value,g:$("#groupSelect").value};if(!t.f||!t.c||!t.g)return;const e=`assignments/${t.f}/${t.c}/${t.g}`,o=$("#facultySelect"),n=$("#courseSelect"),s=$("#groupSelect"),a=`${o.options[o.selectedIndex].text}, ${n.options[n.selectedIndex].text}, ${s.options[s.selectedIndex].text}`;localStorage.setItem("mySrsPath",e),localStorage.setItem("mySrsInfo",a),loadAssignments(e,a)});
+        $("#changeGroupBtn").addEventListener("click",()=>{$("#selectionModal").classList.add("active")});
+        
+        function loadAssignments(path, info) {
+            $('#selectionModal').classList.remove('active');
+            $('#mainContent').style.display = 'block';
+            $('#group-info').textContent = info;
+            if (assignmentsRef) assignmentsRef.off();
+            renderSkeletonCards();
+            assignmentsRef = db.ref(path);
+            assignmentsRef.on('value', snapshot => {
+                const data = snapshot.val();
+                const assignments = data ? Object.values(data).sort((a,b)=>b.timestamp-a.timestamp) : [];
+                renderAssignmentsHTML(assignments);
+            }, error => {
+                console.error("Ошибка чтения заданий:", error);
+                $('#assignments-grid').innerHTML = '<p class="col-span-full text-center">Не удалось загрузить задания.</p>';
+            });
+        }
+        
+        const pluralizeDays=n=>{const e=Math.abs(n);return e%10==1&&e%100!=11?"день":e%10>=2&&e%10<=4&&(e%100<10||e%100>=20)?"дня":"дней"};
+        
+        function renderAssignmentsHTML(assignments) {
+            const grid = $('#assignments-grid');
+            grid.innerHTML = '';
+            if (assignments.length === 0) {
+                grid.innerHTML = `<div class="lg:col-span-2 text-center py-12"><p class="opacity-70 text-lg" style="color: var(--text-color-secondary);">✨ На данный момент нет активных заданий.</p></div>`;
+                return;
+            }
             
-            assignments.forEach(item=>{
-                const post=document.createElement('div');
-                post.className='assignment-post';
-                
-                const endDate=new Date(item.endDate),now=new Date(),daysLeft=Math.ceil((endDate-now)/(1e3*60*60*24));
-                let statusText,statusColorClass;
-                if(daysLeft<0){statusText='Срок истек';statusColorClass='text-red-600 dark:text-red-500'}
-                else if(daysLeft<=3){statusText=`Срок: ${daysLeft} ${pluralizeDays(daysLeft)}`;statusColorClass='text-yellow-600 dark:text-yellow-500'}
-                else{statusText=`Срок: ${daysLeft} ${pluralizeDays(daysLeft)}`;statusColorClass='text-green-600 dark:text-green-500'}
+            assignments.forEach(item => {
+                const post = document.createElement('div');
+                post.className = 'assignment-post glass-card rounded-2xl';
+                const endDate = new Date(item.endDate), now = new Date();
+                const daysLeft = Math.ceil((endDate - now) / (1000 * 60 * 60 * 24));
+                let statusText, statusColorClass;
+                if (daysLeft < 0) { statusText = 'Срок истек'; statusColorClass = 'text-red-500'; } 
+                else if (daysLeft <= 3) { statusText = `Осталось: ${daysLeft} ${pluralizeDays(daysLeft)}`; statusColorClass = 'text-yellow-500'; }
+                else { statusText = `Осталось: ${daysLeft} ${pluralizeDays(daysLeft)}`; statusColorClass = 'text-green-500'; }
+                const nameParts = item.teacherName.split(" "), initials = nameParts.length > 1 ? nameParts[0][0] + nameParts[1][0] : nameParts[0][0];
+                const avatarUrl = `https://ui-avatars.com/api/?name=${encodeURIComponent(initials)}&background=random&color=fff&font-size=0.5`;
 
-                // ГЕНЕРАЦИЯ АВАТАРА ПО ИНИЦИАЛАМ
-                const nameParts = item.teacherName.split(" ");
-                const initials = nameParts.length > 1 ? nameParts[0][0] + nameParts[1][0] : nameParts[0][0];
-                const avatarUrl = `https://ui-avatars.com/api/?name=${initials}&background=random&color=fff&font-size=0.5`;
-
-                // НОВЫЙ ШАБЛОН ПОСТА
-                post.innerHTML=`
+                post.innerHTML = `
                     <div class="p-6">
                         <div class="flex items-center gap-4 mb-4">
-                            <img class="w-11 h-11 rounded-full" src="${avatarUrl}" alt="Аватар преподавателя">
+                            <img class="w-11 h-11 rounded-full" src="${avatarUrl}" alt="Аватар">
                             <div>
                                 <h3 class="text-lg font-bold leading-tight">${item.subject}</h3>
                                 <p class="text-sm" style="color: var(--text-color-secondary);">${item.teacherName}</p>
                             </div>
                         </div>
-
-                        <div class="post-content text-sm space-y-3" style="color: var(--text-color-secondary);">
-                            ${item.description}
-                        </div>
-                        
-                        <div class="flex justify-between items-center mt-4">
+                        <div class="prose prose-sm max-w-none post-content" style="color: var(--text-color-secondary);">${item.description}</div>
+                        <div class="flex justify-between items-center mt-4 pt-4 border-t" style="border-color: var(--border-color);">
                             <button class="read-more-btn text-sm font-semibold" style="color: var(--accent-color);">Читать далее...</button>
                             <span class="text-xs font-semibold ${statusColorClass}">${statusText}</span>
                         </div>
-                    </div>
-                `;
-                assignmentsGrid.appendChild(post);
+                    </div>`;
+                grid.appendChild(post);
 
-                // ЛОГИКА КНОПКИ "ЧИТАТЬ ДАЛЕЕ"
                 const content = post.querySelector('.post-content');
                 const button = post.querySelector('.read-more-btn');
                 
-                // Проверяем, нужно ли вообще показывать кнопку
-                if (content.scrollHeight > content.clientHeight) {
-                    button.style.display = 'block';
-                } else {
+                // Проверяем высоту контента ПОСЛЕ того, как он добавлен на страницу
+                if (content.scrollHeight <= 100) { 
                     button.style.display = 'none';
-                    content.style.maxHeight = 'none'; // Убираем ограничение, если контента мало
-                    content.style.webkitMaskImage = 'none'; // Убираем маску
+                    content.classList.add('is-expanded');
                 }
 
                 button.addEventListener('click', () => {
                     content.classList.toggle('is-expanded');
-                    if (content.classList.contains('is-expanded')) {
-                        button.textContent = 'Свернуть';
-                    } else {
-                        button.textContent = 'Читать далее...';
-                    }
+                    button.textContent = content.classList.contains('is-expanded') ? 'Свернуть' : 'Читать далее...';
                 });
-            })
-        };
-        
-        assignmentsRef.on('value',snapshot=>{
-            const data=snapshot.val(),assignments=[];
-            if(data){for(let id in data){assignments.push({id,...data[id]})}}
-            assignments.sort((a,b)=>new Date(b.endDate)-new Date(a.endDate));
-            renderAssignments(assignments)
-        });
+            });
+        }
+
+        function renderSkeletonCards() {
+            const grid = $('#assignments-grid');
+            grid.innerHTML = '';
+            for (let i = 0; i < 2; i++) {
+                const card = document.createElement('div');
+                card.className = 'assignment-post glass-card p-6 space-y-4 rounded-2xl';
+                card.innerHTML = `<div class="flex items-center gap-3"><div class="w-10 h-10 rounded-full skeleton-pulse" style="background-color: var(--skeleton-bg);"></div><div class="w-1/2 h-4 skeleton-pulse" style="background-color: var(--skeleton-bg); border-radius: 0.25rem;"></div></div><div class="space-y-3 pt-2"><div class="h-4 skeleton-pulse" style="background-color: var(--skeleton-bg); border-radius: 0.25rem;"></div><div class="h-4 w-3/4 skeleton-pulse" style="background-color: var(--skeleton-bg); border-radius: 0.25rem;"></div></div>`;
+                grid.appendChild(card);
+            }
+        }
     </script>
 </body>
 </html>
