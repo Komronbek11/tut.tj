@@ -1,4 +1,4 @@
-<!DOCTYPE html>
+ <!DOCTYPE html>
 <html lang="ru">
 <head>
     <meta charset="UTF-8">
@@ -32,8 +32,7 @@
             background: #121212;
             color: var(--text-color);
             margin: 0;
-            padding: 30px;
-            min-height: 100vh;
+            height: 100vh;
             overflow: hidden; /* Скрываем части фигур, выходящие за пределы */
             position: relative;
         }
@@ -45,6 +44,7 @@
             z-index: -1;
             border-radius: 50%;
             filter: blur(100px);
+            opacity: 0.7;
         }
 
         body::before {
@@ -75,6 +75,13 @@
             to { transform: translate(-80px, -40px) rotate(-180deg); }
         }
 
+        /* Новый класс-обертка для скроллинга */
+        .scroll-wrapper {
+            height: 100vh;
+            overflow-y: auto;
+            padding: 30px;
+        }
+
         .container {
             width: 100%;
             max-width: 1200px;
@@ -84,6 +91,7 @@
         h1 {
             text-align: center;
             color: #ffffff;
+            margin-top: 0;
             margin-bottom: 40px;
             font-weight: 700;
             font-size: 2.5rem;
@@ -95,6 +103,7 @@
             display: grid;
             grid-template-columns: repeat(auto-fill, minmax(320px, 1fr));
             gap: 30px;
+            padding-bottom: 30px; /* Добавим отступ снизу внутри скролл-области */
         }
 
         /* Стиль Glassmorphism для карточки */
@@ -186,7 +195,7 @@
         }
 
         @media (max-width: 768px) {
-            body { padding: 20px; }
+            .scroll-wrapper { padding: 20px; }
             h1 { font-size: 2rem; }
             #notifications-grid {
                 grid-template-columns: 1fr;
@@ -195,19 +204,20 @@
         }
 
         @media (max-width: 480px) {
-            body { padding: 15px; }
+            .scroll-wrapper { padding: 15px; }
             h1 { font-size: 1.8rem; }
         }
     </style>
 </head>
 <body>
-
-    <div class="container">
-        <h1>Последние Уведомления</h1>
-        <div id="notifications-grid">
-            <div class="loader-container">Загрузка уведомлений...</div>
+    <main class="scroll-wrapper">
+        <div class="container">
+            <h1>Огоҳиномаҳо</h1>
+            <div id="notifications-grid">
+                <div class="loader-container">Огоҳиномаҳо боргирӣ шудаистодаанд...</div>
+            </div>
         </div>
-    </div>
+    </main>
 
     <script src="https://www.gstatic.com/firebasejs/8.10.1/firebase-app.js"></script>
     <script src="https://www.gstatic.com/firebasejs/8.10.1/firebase-firestore.js"></script>
@@ -238,7 +248,7 @@
         function loadNotifications() {
             notificationsCollection.orderBy('createdAt', 'desc').onSnapshot(snapshot => {
                 if (snapshot.empty) {
-                    notificationsGrid.innerHTML = '<p style="text-align:center; color:#ccc; grid-column: 1 / -1;">Уведомлений пока нет.</p>';
+                    notificationsGrid.innerHTML = '<p style="text-align:center; color:#ccc; grid-column: 1 / -1;">Ҳанӯз огоҳинома нест.</p>';
                     return;
                 }
                 
@@ -266,15 +276,15 @@
                             </div>
                         </div>
                         <div class="notification-meta">
-                            <span>Опубликовано: <strong>${data.author || 'Администрация'}</strong></span>
+                            <span>Нашр шудааст: <strong>${data.author || 'Администрация'}</strong></span>
                             <span>${formattedDate} в ${formattedTime}</span>
                         </div>
                     `;
                     notificationsGrid.appendChild(card);
                 });
             }, error => {
-                console.error("Ошибка получения уведомлений: ", error);
-                notificationsGrid.innerHTML = '<p style="text-align:center; color:red; grid-column: 1 / -1;">Ошибка загрузки данных. Пожалуйста, проверьте консоль.</p>';
+                console.error("Хатогӣ ҳангоми қабули огоҳиномаҳо: ", error);
+                notificationsGrid.innerHTML = '<p style="text-align:center; color:red; grid-column: 1 / -1;">Хатогӣ ҳангоми боркунии маълумот.</p>';
             });
         }
         
