@@ -1,16 +1,12 @@
 <!DOCTYPE html>
-<html lang="en">
+<html lang="ru">
 <head>
-  <meta charset="UTF-8">
-  <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <meta name="description" content="jadvalidarsnew">
-  <meta name="keywords" content="1-40010101B">
-  <meta name="theme-color" content="#06c1db">
-  <title>Расписание</title>
-  <link rel="manifest" href="manifest.json">
-  <link rel="website icon" type="png" href="raspisanie.png">
-  <link rel="icon" type="png" href="raspisanie.png">
-  <style>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Расписание</title>
+    <link rel="manifest" href="manifest.json">
+    <style>
+
     @import url('https://fonts.googleapis.com/css2?family=DM+Sans:ital,opsz,wght@0,9..40,100..1000;1,9..40,100..1000&family=Lato:ital,wght@0,100;0,300;0,400;0,700;0,900;1,100;1,300;1,400;1,700;1,900&family=Manrope:wght@200..800&family=Poppins:ital,wght@0,100;0,200;0,300;0,400;0,500;0,600;0,700;0,800;0,900;1,100;1,200;1,300;1,400;1,500;1,600;1,700;1,800;1,900&family=Satisfy&display=swap');
     
     * {
@@ -53,6 +49,16 @@
       margin: 0 auto;
       padding: 0 1px;
     }
+.container { max-width: 1200px; margin: 0 auto; }
+.btn { padding: 10px 18px; border-radius: 12px; font-weight: 500; cursor: pointer; border: none; background: var(--primary); color: white; }
+.btn:disabled { background-color: #9ca3af; cursor: not-allowed; }
+.group-info { text-align: center; font-size: 1rem; color: var(--text-light); margin-bottom: 1rem; }
+.modal { position: fixed; top: 0; left: 0; width: 100%; height: 100%; background: rgba(0,0,0,0.7); backdrop-filter: blur(5px); z-index: 1000; display: none; align-items: center; justify-content: center; }
+.modal.active { display: flex; }
+.modal-content { background: var(--card-bg); padding: 30px; border-radius: 20px; width: 90%; max-width: 450px; text-align: center; border: var(--glass-border); }
+.modal-content h2 { margin-bottom: 20px; }
+.controls-modal { display: flex; flex-direction: column; gap: 15px; margin-bottom: 20px; }
+.controls-modal select { width: 100%; padding: 12px 20px; border-radius: 15px; border: 2px solid var(--primary); background-color: var(--card-bg); font-size: 16px; color: var(--text); font-weight: 500; }
 
     .back {
       width: 40px;
@@ -503,15 +509,28 @@
     .samsung-brown { background-color: #A2845E; }
     .samsung-gray { background-color: #8E8E93; }
     .glass-theme { background: linear-gradient(135deg, rgba(255,255,255,0.1), rgba(255,255,255,0.05)); border: 1px solid rgba(255,255,255,0.2); box-shadow: 0 8px 32px 0 rgba(31, 38, 135, 0.15); }
-  </style>
+ </style>
 </head>
 <body>
-  <div class="container">
-    <h1>Ҷадвали дарсҳо</h1>
+    <div id="selectionModal" class="modal">
+        <div class="modal-content glass-card">
+            <h2>Выберите ваше расписание</h2>
+            <div class="controls-modal">
+                <select id="facultySelect"></select>
+                <select id="courseSelect"></select>
+                <select id="groupSelect"></select>
+            </div>
+            <button id="saveSelectionBtn" class="btn" disabled>Показать расписание</button>
+        </div>
+    </div>
 
-    <div class="theme-card">
-      <h3>Палитра цветов Расписание UI</h3>
-      <div class="color-palette">
+    <div class="container" id="mainContent" style="display: none;">
+        <h1>Ҷадвали дарсҳо</h1>
+        <div id="group-info-display" class="group-info"></div>
+
+        <div class="theme-card">
+            <h3>Палитра цветов</h3>
+          <div class="color-palette">
           <div class="color-option glass-theme" data-theme="glass" onclick="applySamsungTheme('glass')">
           <span class="color-name">Glass</span>
         </div>
@@ -558,114 +577,56 @@
       </div>
     </div>
 
-    <div class="controls">
-      <select id="groupSelect" onchange="updateSchedule()">
-        <option value="guruh1">1-40010101B</option>
-        <option value="guruh2">1-40010102B</option>
-        <option value="guruh3">1-40010103B</option>
-        <option value="guruh4">1-40010104B</option>
-        <option value="guruh5">1-40010108B</option>
-        <option value="guruh6">1-40010108</option>
-      </select>
+        <div class="controls">
+             <button id="changeGroupBtn" class="btn">Сменить группу</button>
+        </div>
+
+        <div class="buttons">
+            <button data-day="Душанбе" onclick="showDay('Душанбе')">Душанбе</button>
+            <button data-day="Сешанбе" onclick="showDay('Сешанбе')">Сешанбе</button>
+            <button data-day="Чоршанбе" onclick="showDay('Чоршанбе')">Чоршанбе</button>
+            <button data-day="Панҷшанбе" onclick="showDay('Панҷшанбе')">Панҷшанбе</button>
+            <button data-day="Ҷумъа" onclick="showDay('Ҷумъа')">Ҷумъа</button>
+            <button data-day="Шанбе" onclick="showDay('Шанбе')">Шанбе</button>
+        </div>
+
+        <div id="scheduleContainer" class="schedule-container"></div>
+        <footer>
+            <p>© 2025. ДТТ. Душанбе.</p>
+        </footer>
     </div>
 
-    <div class="buttons">
-      <button data-day="Душанбе" onclick="showDay('Душанбе')">Душанбе</button>
-      <button data-day="Сешанбе" onclick="showDay('Сешанбе')">Сешанбе</button>
-      <button data-day="Чоршанбе" onclick="showDay('Чоршанбе')">Чоршанбе</button>
-      <button data-day="Панҷшанбе" onclick="showDay('Панҷшанбе')">Панҷшанбе</button>
-      <button data-day="Ҷумъа" onclick="showDay('Ҷумъа')">Ҷумъа</button>
-      <button data-day="Шанбе" onclick="showDay('Шанбе')">Шанбе</button>
+    <div class="voice-assistant">
+        <div class="voice-status" id="voiceStatus"></div>
+        <button class="voice-btn" id="voiceBtn" title="Голосовой помощник">
+            <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M12 1a3 3 0 0 0-3 3v8a3 3 0 0 0 6 0V4a3 3 0 0 0-3-3z"></path><path d="M19 10v2a7 7 0 0 1-14 0v-2"></path><line x1="12" y1="19" x2="12" y2="23"></line><line x1="8" y1="23" x2="16" y2="23"></line></svg>
+        </button>
     </div>
-
-    <div id="scheduleContainer" class="schedule-container">
-      <div class="skeleton-loader">
-        <div class="skeleton-header"></div>
-        <div class="skeleton-row"></div>
-        <div class="skeleton-row"></div>
-        <div class="skeleton-row"></div>
-        <div class="skeleton-row"></div>
-        <div class="skeleton-row"></div>
-      </div>
-    </div>
-
-    <footer>
-      <p>© 2025.ДТТ. Душанбе.<br>Факултети Технологияҳои иттилоотӣ ва интеллекти сунъӣ</p>
-      <p>Разработчик: Komron Sharipov™</p>
-    </footer>
-  </div>
-
-  <div class="voice-assistant">
-    <div class="voice-status" id="voiceStatus"></div>
-    <button class="voice-btn" id="voiceBtn" title="Голосовой помощник">
-      <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
-        <path d="M12 1a3 3 0 0 0-3 3v8a3 3 0 0 0 6 0V4a3 3 0 0 0-3-3z"></path>
-        <path d="M19 10v2a7 7 0 0 1-14 0v-2"></path>
-        <line x1="12" y1="19" x2="12" y2="23"></line>
-        <line x1="8" y1="23" x2="16" y2="23"></line>
-      </svg>
-    </button>
-  </div>
   
-  <script src="https://www.gstatic.com/firebasejs/8.10.1/firebase-app.js"></script>
-  <script src="https://www.gstatic.com/firebasejs/8.10.1/firebase-firestore.js"></script>
+    <script src="https://www.gstatic.com/firebasejs/8.10.1/firebase-app.js"></script>
+    <script src="https://www.gstatic.com/firebasejs/8.10.1/firebase-database.js"></script>
+    <script>
+const firebaseConfig = {
+    apiKey: "AIzaSyB3_Qs3pr6OK2JvyL7ViO09aFXjjt9qygQ",
+    authDomain: "tut-app-6aaae.firebaseapp.com",
+    databaseURL: "https://tut-app-6aaae-default-rtdb.asia-southeast1.firebasedatabase.app",
+    projectId: "tut-app-6aaae",
+    storageBucket: "tut-app-6aaae.firebasestorage.app",
+    messagingSenderId: "726613480112",
+    appId: "1:726613480112:web:6e55cfb767ec8f6c5d6175",
+    measurementId: "G-DZ0XNZR35S"
+  };
+if (!firebase.apps.length) firebase.initializeApp(firebaseConfig);
+const db = firebase.database();
 
-  <script>
-    // 🔥 ВАША КОНФИГУРАЦИЯ FIREBASE
-    // ЗАМЕНИТЕ ЭТО СВОИМИ ДАННЫМИ ИЗ FIREBASE CONSOLE
-  const firebaseConfig = {
-  apiKey: "AIzaSyCJy3eKFL23mIOVM2ruEdVhI1mIVsIp6cU",
-  authDomain: "university-chat-15114.firebaseapp.com",
-  projectId: "university-chat-15114",
-  storageBucket: "university-chat-15114.firebasestorage.app",
-  messagingSenderId: "109943351862",
-  appId: "1:109943351862:web:57cbecba075494a1f5c697",
-  measurementId: "G-44LH6764ET"
-};
-    // ИНИЦИАЛИЗАЦИЯ FIREBASE
-    if (!firebase.apps.length) {
-        firebase.initializeApp(firebaseConfig);
-    }
-    const db = firebase.firestore();
+let hierarchy = {}, currentSchedule = {}, currentDay = '', recognition;
+const $ = (selector) => document.querySelector(selector);
+const facultySelect = $('#facultySelect'), courseSelect = $('#courseSelect'), groupSelect = $('#groupSelect');
+const daysOfWeek = ['Душанбе', 'Сешанбе', 'Чоршанбе', 'Панҷшанбе', 'Ҷумъа', 'Шанбе'];
+const dayMapping = { 'понедельник': 'Душанбе', 'вторник': 'Сешанбе', 'среду': 'Чоршанбе', 'четверг': 'Панҷшанбе', 'пятницу': 'Ҷумъа', 'субботу': 'Шанбе' };
 
-    // ========= ГЛОБАЛЬНЫЕ ПЕРЕМЕННЫЕ =========
-    let currentDay = '';
-    let currentGroup = 'guruh1';
-    let recognition;
-    let speechSynthesis = window.speechSynthesis;
-    let isListening = false;
-    
-    // Day and theme mappings for voice commands
-    const dayMapping = {
-        'понедельник': 'Душанбе', 'вторник': 'Сешанбе', 'среду': 'Чоршанбе', 'четверг': 'Панҷшанбе', 'пятницу': 'Ҷумъa', 'субботу': 'Шанбе',
-        'сешанбе': 'Сешанбе', 'чоршанбе': 'Чоршанбе', 'панҷшанбе': 'Панҷшанбе', 'ҷумъа': 'Ҷумъа', 'шанбе': 'Шанбе'
-    };
-    const themeMapping = {
-        'красную': 'red', 'оранжевую': 'orange', 'желтую': 'yellow', 'зеленую': 'green', 'темную': 'mint', 'бирюзовую': 'teal',
-        'голубую': 'cyan', 'синюю': 'blue', 'фиолетовую': 'indigo', 'пурпурную': 'purple', 'розовую': 'pink', 'коричневую': 'brown',
-        'серую': 'gray', 'стеклянную': 'glass', 'тёмную': 'mint'
-    };
-    const classNumberMapping = { 'первая': 1, 'вторая': 2, 'третья': 3, 'четвертая': 4, 'пятая': 5, 'шестая': 6 };
-
-    
-    // ========= ИНИЦИАЛИЗАЦИЯ =========
-    function initApp() {
-      const savedTheme = localStorage.getItem("selectedTheme") || 'glass';
-      applySamsungTheme(savedTheme);
-      initVoiceRecognition();
-      
-      showSkeletonLoader();
-      let today = getToday();
-      currentDay = (today === 'yakshanbe') ? 'Душанбе' : today;
-      updateSchedule(); // Первая загрузка
-      
-      setTimeout(() => {
-        speak(`Здравствуйте! Я ваш голосовой помощник. Скажите "помощь", чтобы узнать, что я умею.`);
-      }, 1000);
-    }
-    
-    // ========= ФУНКЦИИ ТЕМЫ И UI =========
-    const samsungThemes = {
+// --- THEME LOGIC ---
+ const samsungThemes = {
         red: {"--bg": "#ffe0e0", "--text": "black", "--heading": "#1F040A", "--primary": "#FF3B30", "--accent": "#E0352B", "--button-bg": "#FF3B30", "--button-text": "black", "--button-hover": "#E0352B", "--card-bg": "#dbb4b4", "--border": "#FFD6D4", "--row-hover": "#FFEAE9", "--text-light": "black", "--skeleton-bg": "rgba(255, 214, 212, 0.5)", "--glass-blur": "none", "--glass-border": "none", "--bg-image": "none"},
         orange: {"--bg": "#FFF5ED", "--text": "black", "--heading": "black", "--primary": "#FF9500", "--accent": "#E08500", "--button-bg": "#FF9500", "--button-text": "black", "--button-hover": "#E08500", "--card-bg": "#e8d399", "--border": "#FFD9A6", "--row-hover": "#FFEDD3", "--text-light": "#8A5D3D", "--skeleton-bg": "rgba(255, 217, 166, 0.5)", "--glass-blur": "none", "--glass-border": "none", "--bg-image": "none"},
         yellow: {"--bg": "#d6c79f", "--text": "#3A3007", "--heading": "#1F1904", "--primary": "#FFCC00", "--accent": "#E0B800", "--button-bg": "#FFCC00", "--button-text": "#3A3007", "--button-hover": "#E0B800", "--card-bg": "#ffeebf", "--border": "#FFE680", "--row-hover": "#FFF2BF", "--text-light": "black", "--skeleton-bg": "rgba(255, 230, 128, 0.5)", "--glass-blur": "none", "--glass-border": "none", "--bg-image": "none"},
@@ -681,279 +642,182 @@
         gray: {"--bg": "#F2F2F7", "--text": "#1C1C1E", "--heading": "#0A0A0A", "--primary": "#8E8E93", "--accent": "#808085", "--button-bg": "#8E8E93", "--button-text": "#FFFFFF", "--button-hover": "#808085", "--card-bg": "#FFFFFF", "--border": "#C7C7CC", "--row-hover": "#E5E5EA", "--text-light": "#6C6C70", "--skeleton-bg": "rgba(199, 199, 204, 0.5)", "--glass-blur": "none", "--glass-border": "none", "--bg-image": "url('neon1.jpg')"},
         glass: {"--bg": "rgba(255,255,255,0.1)", "--text": "#ffffff", "--heading": "#ffffff", "--primary": "rgba(255,255,255,0.01)", "--accent": "rgba(255,255,255,0.7)", "--button-bg": "rgba(255,255,255,0.1)", "--button-text": "#ffffff", "--button-hover": "rgba(255,255,255,0.2)", "--card-bg": "rgba(255,255,255,0.1)", "--border": "rgba(255,255,255,0.1)", "--row-hover": "rgba(255,255,255,0.1)", "--text-light": "rgba(255,255,255,0.7)", "--skeleton-bg": "rgba(255,255,255,0.2)", "--glass-blur": "blur(13px)", "--glass-border": "1px solid rgba(255,255,255,0.2)", "--bg-image": "linear-gradient(rgba(0,0,0,0.5), rgba(0,0,0,0.5)), url('neon2.jpg')"}
     };
+function applySamsungTheme(t){if(!samsungThemes[t])return;const e=samsungThemes[t];Object.entries(e).forEach(([t,e])=>document.documentElement.style.setProperty(t,e)),localStorage.setItem("selectedTheme",t),document.querySelectorAll(".color-option").forEach(t=>t.classList.remove("selected"));const o=document.querySelector(`.color-option[data-theme="${t}"]`);o&&o.classList.add("selected")}
 
-    function applySamsungTheme(themeName) {
-      if (!samsungThemes[themeName]) return;
-      const theme = samsungThemes[themeName];
-      Object.entries(theme).forEach(([key, value]) => {
-        document.documentElement.style.setProperty(key, value);
-      });
-      localStorage.setItem("selectedTheme", themeName);
-      
-      document.querySelectorAll('.color-option').forEach(option => option.classList.remove('selected'));
-      const newSelected = document.querySelector(`.color-option[data-theme="${themeName}"]`);
-      if(newSelected) newSelected.classList.add('selected');
-    }
-
-    function capitalize(text) {
-      return text.charAt(0).toUpperCase() + text.slice(1);
-    }
-    
-    // ========= ЯДРО ГОЛОСОВОГО ПОМОЩНИКА =========
-    function initVoiceRecognition() {
-      const SpeechRecognition = window.SpeechRecognition || window.webkitSpeechRecognition;
-      if (!SpeechRecognition) {
-        console.error("Speech Recognition API not supported in this browser.");
-        document.getElementById('voiceBtn').style.display = 'none';
-        return;
-      }
-      recognition = new SpeechRecognition();
-      recognition.lang = 'ru-RU';
-      recognition.interimResults = false;
-      recognition.maxAlternatives = 1;
-      
-      document.getElementById('voiceBtn').addEventListener('click', toggleVoiceRecognition);
-      
-      recognition.onstart = () => {
-        isListening = true;
-        document.getElementById('voiceBtn').classList.add('listening');
-        updateVoiceStatus('Слушаю...', '');
-      };
-      
-      recognition.onresult = (event) => {
-        const command = event.results[event.results.length - 1][0].transcript.toLowerCase().trim();
-        updateVoiceStatus(`<div class="user-command">Вы сказали: "${command}"</div>`, '');
-        processVoiceCommand(command);
-      };
-      
-      recognition.onerror = (event) => {
-        let errorMessage = 'Ошибка распознавания.';
-        if (event.error === 'no-speech') errorMessage = 'Речь не распознана. Попробуйте еще раз.';
-        else if (event.error === 'audio-capture') errorMessage = 'Микрофон не доступен. Проверьте разрешения.';
-        else if (event.error === 'not-allowed') errorMessage = 'Доступ к микрофону запрещен.';
+// --- INITIALIZATION ---
+document.addEventListener('DOMContentLoaded', async () => {
+    applySamsungTheme(localStorage.getItem("selectedTheme") || 'glass');
+    showSkeletonLoader();
+    try {
+        const snapshot = await db.ref('hierarchy').once('value');
+        if (!snapshot.exists()) throw new Error("Hierarchy not found");
+        hierarchy = snapshot.val();
         
-        updateVoiceStatus(errorMessage, '');
-        speak(errorMessage);
-        stopVoiceRecognition();
-      };
-      
-      recognition.onend = () => {
-        stopVoiceRecognition();
-      };
-    }
-    
-    function toggleVoiceRecognition() {
-      if (isListening) {
-        stopVoiceRecognition();
-      } else {
-        startVoiceRecognition();
-      }
-    }
-    
-    function startVoiceRecognition() {
-      try {
-        recognition.start();
-      } catch (e) {
-        updateVoiceStatus('Не удалось запустить распознавание.', '');
-        speak('Не удалось запустить распознавание голоса. Возможно, оно уже активно.');
-      }
-    }
-    
-    function stopVoiceRecognition() {
-      isListening = false;
-      if (recognition) recognition.stop();
-      document.getElementById('voiceBtn').classList.remove('listening');
-      setTimeout(() => {
-          if(!isListening) document.getElementById('voiceStatus').style.display = 'none';
-      }, 5000);
-    }
-    
-    function updateVoiceStatus(status, response) {
-      const voiceStatus = document.getElementById('voiceStatus');
-      voiceStatus.innerHTML = status;
-      if (response) {
-        voiceStatus.innerHTML += `<div class="assistant-response">${response}</div>`;
-      }
-      voiceStatus.style.display = 'block';
-    }
-    
-    function speak(text) {
-      if (speechSynthesis.speaking) speechSynthesis.cancel();
-      const utterance = new SpeechSynthesisUtterance(text);
-      utterance.lang = 'ru-RU';
-      utterance.rate = 1.0;
-      utterance.pitch = 1.0;
-      
-      const voices = speechSynthesis.getVoices();
-      const russianVoice = voices.find(voice => voice.lang === 'ru-RU');
-      if (russianVoice) utterance.voice = russianVoice;
-      
-      speechSynthesis.speak(utterance);
-    }
-    
-    // ========= ОБРАБОТКА ГОЛОСОВЫХ КОМАНД =========
-    async function processVoiceCommand(command) {
-        let response = '';
-        
-        // Help Command
-        if (/^(помощь|справка|что ты умеешь)/.test(command)) {
-            response = `Я могу: показать расписание на любой день, например: "покажи среду". Переключить группу: "покажи группу 2". Сменить тему: "смени тему на синюю". Или задать вопрос: "какая первая пара в понедельник?".`;
-            speak(response);
-            updateVoiceStatus(`Команда: "Помощь"`, response);
-            return;
-        }
+        populateFaculties();
+        initVoiceRecognition();
 
-        // Change Theme
-        const themeMatch = command.match(/(смени|поставь|включи)\s+(тему|цвет)\s*(на)?\s*(.+)/);
-        if (themeMatch) {
-            const requestedTheme = themeMatch[4].trim();
-            if (themeMapping[requestedTheme]) {
-                const themeName = themeMapping[requestedTheme];
-                applySamsungTheme(themeName);
-                response = `Тема изменена на ${requestedTheme}.`;
-            } else {
-                response = `Извините, я не нашла тему "${requestedTheme}".`;
-            }
-            speak(response);
-            updateVoiceStatus(`Команда: "Сменить тему"`, response);
-            return;
-        }
-
-        // Change Group
-        const groupMatch = command.match(/(покажи|переключи|открой)\s+группу\s(.+)/);
-        if (groupMatch) {
-            const requestedGroup = groupMatch[2].trim();
-            const groupSelect = document.getElementById('groupSelect');
-            const options = Array.from(groupSelect.options);
-            const foundOption = options.find(opt => opt.text.toLowerCase().includes(requestedGroup));
-            
-            if (foundOption) {
-                groupSelect.value = foundOption.value;
-                await updateSchedule();
-                response = `Показываю расписание для группы ${foundOption.text}.`;
-            } else {
-                response = `Не удалось найти группу "${requestedGroup}".`;
-            }
-            speak(response);
-            updateVoiceStatus(`Команда: "Сменить группу"`, response);
-            return;
-        }
-
-        // Query Specific Class
-        const classQueryMatch = command.match(/(какая|какая у нас)\s+(первая|вторая|третья|четвертая|пятая|шестая)\s+пара\s+(в|на)\s+(понедельник|вторник|среду|четверг|пятницу|субботу)/);
-        if (classQueryMatch) {
-            const classNumStr = classQueryMatch[2];
-            const dayStr = classQueryMatch[5];
-            const classNum = classNumberMapping[classNumStr];
-            const dayId = dayMapping[dayStr];
-            
-            if(classNum && dayId) {
-                const schedule = await getScheduleForGroupAndDay(currentGroup, dayId);
-                const nonEmptyClasses = schedule.filter(s => s.subject && s.subject.trim());
-                if (nonEmptyClasses.length > 0 && classNum <= nonEmptyClasses.length) {
-                    const lesson = nonEmptyClasses[classNum - 1]; // Corrected data access
-                    const subject = lesson.subject.replace(/<br>/g, ', ');
-                    response = `${classNumStr} пара в ${dayStr} - это ${subject} в аудитории ${lesson.aud}.`; // Corrected data access
-                } else {
-                    response = `В ${dayStr} нет ${classNumStr} пары.`;
-                }
-            } else {
-                response = "Не смогла разобрать ваш вопрос о паре.";
-            }
-            speak(response);
-            updateVoiceStatus(`Команда: "Узнать о паре"`, response);
-            return;
-        }
-
-        // Show schedule for a day (default case)
-        let dayToShow = '';
-        for (const [key, value] of Object.entries(dayMapping)) {
-            if (command.includes(key)) {
-                dayToShow = value;
-                response = `Показываю расписание на ${key}.`;
-                break;
-            }
-        }
-        
-        if (dayToShow) {
-            showDay(dayToShow);
+        const savedPath = localStorage.getItem('schedulePath');
+        const savedInfo = localStorage.getItem('scheduleInfo');
+        if (savedPath) {
+            const pathIds = JSON.parse(savedPath);
+            facultySelect.value = pathIds.f;
+            populateCourses(pathIds.c);
+            populateGroups(pathIds.g);
+            $('#group-info-display').textContent = savedInfo;
+            $('#mainContent').style.display = 'block';
+            showTodayOrDefault();
         } else {
-            if(!response) response = 'Не поняла команду. Попробуйте сказать "помощь".';
+            $('#selectionModal').classList.add('active');
         }
-        speak(response);
-        updateVoiceStatus(`Команда: "${command}"`, response);
+    } catch(e) {
+        console.error(e);
+        document.body.innerHTML = '<h1>Ошибка загрузки данных</h1>';
     }
+});
 
-    // ========= ФУНКЦИИ РАСПИСАНИЯ (🔥 ОБНОВЛЕНО ДЛЯ FIREBASE) =========
-    function showSkeletonLoader() {
-      document.getElementById('scheduleContainer').innerHTML = `<div class="skeleton-loader"><div class="skeleton-header"></div><div class="skeleton-row"></div><div class="skeleton-row"></div><div class="skeleton-row"></div></div>`;
-    }
+// --- HIERARCHY & GROUP SELECTION ---
+function populateFaculties(){for(const e in facultySelect.innerHTML="<option value=''>Факультет</option>",hierarchy)facultySelect.add(new Option(hierarchy[e].name,e))}
+function populateCourses(e=null){const t=facultySelect.value;courseSelect.innerHTML="<option value=''>Курс</option>";if(!t)return void populateGroups();const o=hierarchy[t];o?.courses&&Object.keys(o.courses).forEach(t=>courseSelect.add(new Option(o.courses[t].name,t))),e&&(courseSelect.value=e)}
+function populateGroups(e=null){const t=facultySelect.value,o=courseSelect.value;groupSelect.innerHTML="<option value=''>Группа</option>";if(!o)return;const n=hierarchy[t]?.courses?.[o];n?.groups&&Object.keys(n.groups).forEach(t=>groupSelect.add(new Option(n.groups[t].name,t))),e&&(groupSelect.value=e)}
+facultySelect.addEventListener('change',()=>populateCourses());
+courseSelect.addEventListener('change',()=>populateGroups());
+groupSelect.addEventListener('change',()=>{$('#saveSelectionBtn').disabled=!groupSelect.value});
+$('#changeGroupBtn').addEventListener('click',()=>{ $('#selectionModal').classList.add('active');});
+$('#saveSelectionBtn').addEventListener('click',()=> {
+    const pathIds = { f: facultySelect.value, c: courseSelect.value, g: groupSelect.value };
+    if (!pathIds.f || !pathIds.c || !pathIds.g) return;
+    const info = `${facultySelect.options[facultySelect.selectedIndex].text}, ${courseSelect.options[courseSelect.selectedIndex].text}, ${groupSelect.options[groupSelect.selectedIndex].text}`;
+    localStorage.setItem('schedulePath', JSON.stringify(pathIds));
+    localStorage.setItem('scheduleInfo', info);
+    $('#selectionModal').classList.remove('active');
+    $('#mainContent').style.display = 'block';
+    $('#group-info-display').textContent = info;
+    showTodayOrDefault();
+});
 
-    function getToday() {
-      const days = ['yakshanbe', 'Душанбе', 'Сешанбе', 'Чоршанбе', 'Панҷшанбе', 'Ҷумъа', 'Шанбе'];
-      return days[new Date().getDay()];
-    }
-
-    function showDay(dayId) {
-      if(dayId === 'yakshanbe') return;
-      currentDay = dayId;
-      updateSchedule();
-    }
-
-    async function updateSchedule() {
-      const group = document.getElementById('groupSelect').value;
-      currentGroup = group;
-      showSkeletonLoader();
-      const schedule = await getScheduleForGroupAndDay(group, currentDay);
-      setTimeout(() => {
-        if (!schedule || schedule.length === 0 || schedule.every(item => !item.subject || item.subject.trim() === '')) {
+// --- SCHEDULE LOGIC ---
+function showTodayOrDefault(){let t=new Date().getDay();currentDay=daysOfWeek[0===t?6:t-1],updateSchedule()}
+function showDay(t){if("yakshanbe"===t)return;currentDay=t,updateSchedule()}
+async function updateSchedule() {
+    const pathIds = { f: facultySelect.value, c: courseSelect.value, g: groupSelect.value };
+    if (!pathIds.g) return renderNoGroupSelected();
+    showSkeletonLoader();
+    const schedulePath = `schedules/${pathIds.f}/${pathIds.c}/${pathIds.g}`;
+    const snapshot = await db.ref(schedulePath).get();
+    currentSchedule = snapshot.exists() ? snapshot.val() : {};
+    const daySchedule = currentSchedule[currentDay] || [];
+    setTimeout(() => {
+        if (daySchedule.length === 0 || daySchedule.every(item => !item.subject?.trim())) {
             renderNoClasses();
         } else {
-            renderSchedule(schedule);
+            renderSchedule(daySchedule);
         }
         document.querySelectorAll('.buttons button').forEach(btn => {
             btn.classList.toggle('active-day', btn.dataset.day === currentDay);
         });
-      }, 300);
-    }
-
-    async function getScheduleForGroupAndDay(group, day) {
-      try {
-        const docRef = db.collection('schedules').doc(group);
-        const doc = await docRef.get();
-        if (doc.exists) {
-            return doc.data()[day] || [];
-        } else {
-            console.warn(`Документ для группы '${group}' не найден.`);
-            return [];
+    }, 300);
+}
+function showSkeletonLoader(){$('#scheduleContainer').innerHTML=`<div class="skeleton-loader"><div class="skeleton-header"></div><div class="skeleton-row"></div></div>`}
+function renderNoGroupSelected(){$('#scheduleContainer').innerHTML=`<div class="schedule-day active" style="text-align: center; padding: 20px;">Пожалуйста, выберите группу.</div>`}
+function getToday(){const t=["yakshanbe","Душанбе","Сешанбе","Чоршанбе","Панҷшанбе","Ҷумъа","Шанбе"];return t[new Date().getDay()]}
+function renderNoClasses(){$('#scheduleContainer').innerHTML=`<div class="schedule-day active"><h2>${currentDay}</h2><p style="padding: 20px; text-align: center;">Дарсҳо нестанд</p></div>`}
+function renderSchedule(schedule) {
+    const container = $('#scheduleContainer');
+    let html = `<div class="schedule-day active"><h2>${currentDay}</h2><table><thead><tr><th>Вақт</th><th>АУД</th><th>Фан</th></tr></thead><tbody>`;
+    schedule.forEach(classInfo => {
+        if (classInfo.subject?.trim()) {
+            const time = classInfo.startTime && classInfo.endTime ? `${classInfo.startTime} - ${classInfo.endTime}` : (classInfo.time || '---');
+            html += `<tr><td>${time}</td><td>${classInfo.aud || '---'}</td><td>${classInfo.subject}</td></tr>`;
         }
-      } catch (error) {
-        console.error("Ошибка при загрузке расписания из Firestore: ", error);
-        alert("Не удалось загрузить расписание. Проверьте подключение к интернету.");
-        return [];
-      }
-    }
+    });
+    html += `</tbody></table></div>`;
+    container.innerHTML = html;
+}
 
-    function renderNoClasses() {
-      document.getElementById('scheduleContainer').innerHTML = `<div class="schedule-day active"><h2>${currentDay}</h2><p style="padding: 20px; text-align: center;">Дарсҳо нестанд</p></div>`;
-    }
+// --- VOICE ASSISTANT ---
+function initVoiceRecognition() {
+    const SpeechRecognition = window.SpeechRecognition || window.webkitSpeechRecognition;
+    if (!SpeechRecognition) return console.warn("Speech Recognition not supported.");
+    recognition = new SpeechRecognition();
+    recognition.lang = 'ru-RU';
+    recognition.interimResults = false;
+    recognition.onresult = (event) => processVoiceCommand(event.results[0][0].transcript.toLowerCase().trim());
+    recognition.onend = () => { $('#voiceBtn').classList.remove('listening'); };
+    $('#voiceBtn').addEventListener('click', () => { recognition.start(); $('#voiceBtn').classList.add('listening'); });
+}
+async function processVoiceCommand(command) {
+    const voiceStatus = $('#voiceStatus');
+    voiceStatus.innerHTML = `<p class="font-semibold">Вы сказали:</p><p class="italic">"${command}"</p>`;
+    voiceStatus.style.display = 'block';
+    let response = "Извините, я не поняла команду. Скажите 'помощь'.";
 
-    function renderSchedule(schedule) {
-      const container = document.getElementById('scheduleContainer');
-      let html = `<div class="schedule-day active"><h2>${currentDay}</h2><table><thead><tr><th>Вақт</th><th>АУД</th><th>Фан</th></tr></thead><tbody>`;
-
-      schedule.forEach(classInfo => {
-        if (classInfo.subject && classInfo.subject.trim()) {
-            html += `<tr><td>${classInfo.time || '---'}</td><td>${classInfo.aud || '---'}</td><td>${classInfo.subject}</td></tr>`;
+    if (/^(привет|здравствуй)/.test(command)) {
+        response = "Здравствуйте! Чем могу помочь с расписанием?";
+    } else if (/^(помощь|справка)/.test(command)) {
+        response = `Я могу показать расписание на день, например: "покажи среду", узнать погоду или найти следующую пару.`;
+    } else if (command.includes('погод')) {
+        voiceStatus.innerHTML += `<p class="mt-2 pt-2 border-t">Получаю данные о погоде...</p>`;
+        response = await getWeather();
+    } else if (command.includes('следующая пара')) {
+        response = findNextClass();
+    } else {
+        for (const [dayRussian, dayTajik] of Object.entries(dayMapping)) {
+            if (command.includes(dayRussian)) {
+                showDay(dayTajik);
+                response = `Показываю расписание на ${dayRussian}.`;
+                break;
+            }
         }
-      });
-
-      html += `</tbody></table></div>`;
-      container.innerHTML = html;
+        if (command.includes('завтра')) {
+            const tomorrowIndex = (new Date().getDay() % 7);
+            const dayToShow = daysOfWeek[tomorrowIndex];
+            showDay(dayToShow);
+            response = `Показываю расписание на завтра, ${dayToShow === 'Душанбе' ? 'понедельник' : 'следующий день'}.`;
+        }
     }
     
-    // ЗАПУСК
-    window.onload = initApp; 
-  </script>
+    speak(response);
+    voiceStatus.innerHTML += `<p class="mt-2 pt-2 border-t font-semibold">${response}</p>`;
+    setTimeout(() => { voiceStatus.style.display = 'none' }, 7000);
+}
+
+function findNextClass() {
+    const now = new Date();
+    const currentTime = `${String(now.getHours()).padStart(2,'0')}:${String(now.getMinutes()).padStart(2,'0')}`;
+    const todayIndex = now.getDay() === 0 ? 6 : now.getDay() - 1;
+    if (todayIndex >= daysOfWeek.length) return "Сегодня пар больше нет.";
+    
+    const todayName = daysOfWeek[todayIndex];
+    const todaySchedule = (currentSchedule[todayName] || []).sort((a,b) => (a.startTime || '').localeCompare(b.startTime || ''));
+    
+    for (const lesson of todaySchedule) {
+        if ((lesson.startTime || lesson.time) > currentTime) {
+            return `Следующая пара: ${lesson.subject}, начало в ${lesson.startTime || lesson.time}, в аудитории ${lesson.aud}.`;
+        }
+    }
+    return "На сегодня занятия уже закончились.";
+}
+
+async function getWeather() {
+    try {
+        const response = await fetch(`https://wttr.in/Dushanbe?format=j1`);
+        if (!response.ok) throw new Error('Weather service not available');
+        const data = await response.json();
+        const weather = data.current_condition[0];
+        return `Сейчас в Душанбе ${weather.temp_C}°C, ощущается как ${weather.FeelsLikeC}°C. ${weather.lang_ru[0].value}.`;
+    } catch (error) {
+        console.error("Weather fetch error:", error);
+        return "Не удалось получить данные о погоде.";
+    }
+}
+function speak(text) {
+    try {
+        speechSynthesis.cancel();
+        const utterance = new SpeechSynthesisUtterance(text);
+        utterance.lang = 'ru-RU';
+        speechSynthesis.speak(utterance);
+    } catch(e) { console.error("Speech synthesis error:", e); }
+}
+    </script>
 </body>
 </html>
