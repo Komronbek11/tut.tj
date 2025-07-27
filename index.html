@@ -50,7 +50,7 @@
             left: 0;
             width: 100%;
             height: 100%;
-            background: 
+            background:
                 radial-gradient(circle at 20% 30%, rgba(0, 212, 255, 0.1) 0%, transparent 20%),
                 radial-gradient(circle at 80% 70%, rgba(156, 39, 176, 0.1) 0%, transparent 20%),
                 radial-gradient(circle at 40% 60%, rgba(0, 255, 157, 0.1) 0%, transparent 20%);
@@ -492,6 +492,8 @@
             opacity: 0;
             pointer-events: none;
             transition: opacity 0.5s ease;
+            text-align: center;
+            padding: 1rem;
         }
 
         .welcome-container::before {
@@ -501,7 +503,7 @@
             left: 0;
             width: 100%;
             height: 100%;
-            background: 
+            background:
                 radial-gradient(circle at 20% 30%, rgba(0, 212, 255, 0.1) 0%, transparent 20%),
                 radial-gradient(circle at 80% 70%, rgba(156, 39, 176, 0.1) 0%, transparent 20%),
                 radial-gradient(circle at 40% 60%, rgba(0, 255, 157, 0.1) 0%, transparent 20%);
@@ -513,28 +515,7 @@
             pointer-events: all;
         }
 
-        .welcome-content {
-            text-align: center;
-            color: white;
-            transform: scale(0.5);
-            transition: transform 0.5s ease, opacity 0.5s ease;
-            opacity: 0;
-            z-index: 101;
-            max-width: 800px;
-            padding: 3rem;
-            background: rgba(2, 0, 36, 0.8);
-            border-radius: 20px;
-            box-shadow: 0 25px 45px rgba(0, 0, 0, 0.5);
-            border: 1px solid rgba(0, 212, 255, 0.3);
-            backdrop-filter: blur(10px);
-        }
-
-        .welcome-container.active .welcome-content {
-            transform: scale(1);
-            opacity: 1;
-        }
-
-        .welcome-content h1 {
+        .welcome-container h1 {
             font-size: 3.5rem;
             margin-bottom: 2rem;
             text-shadow: 0 0 15px rgba(0, 212, 255, 0.7);
@@ -543,6 +524,15 @@
             color: var(--light-color);
             position: relative;
             animation: textGlow 2s infinite alternate;
+            transition: transform 0.8s ease, opacity 0.8s ease;
+            transition-delay: 0.3s;
+            opacity: 0;
+            transform: translateY(20px);
+        }
+
+        .welcome-container.active h1 {
+            opacity: 1;
+            transform: translateY(0);
         }
 
         @keyframes textGlow {
@@ -550,7 +540,7 @@
             100% { text-shadow: 0 0 20px rgba(0, 212, 255, 0.9), 0 0 30px rgba(0, 255, 157, 0.7); }
         }
 
-        .welcome-content h1::after {
+        .welcome-container h1::after {
             content: "";
             position: absolute;
             bottom: -15px;
@@ -562,11 +552,22 @@
             border-radius: 3px;
         }
 
-        .welcome-content p {
+        .welcome-message {
             font-size: 1.5rem;
-            margin-bottom: 3rem;
+            margin-top: 2rem;
             line-height: 1.6;
+            color: var(--light-color);
+            max-width: 800px;
+            padding: 0 1rem;
+            transition: transform 0.8s ease, opacity 0.8s ease;
+            transition-delay: 0.5s;
+            opacity: 0;
+            transform: translateY(20px);
+        }
+        
+        .welcome-container.active .welcome-message {
             opacity: 0.9;
+            transform: translateY(0);
         }
 
         /* Binary code animation */
@@ -610,7 +611,7 @@
         .confetti:nth-child(1) {
             background-color: var(--primary-color);
             left: 10%;
-            animation-delay: 0;
+            animation-delay: 0s;
         }
 
         .confetti:nth-child(2) {
@@ -664,23 +665,7 @@
                 opacity: 0;
             }
         }
-
-        /* Loading spinner */
-        .spinner {
-            width: 70px;
-            height: 70px;
-            border: 8px solid rgba(0, 212, 255, 0.3);
-            border-radius: 50%;
-            border-top-color: var(--primary-color);
-            animation: spin 1s ease-in-out infinite;
-            margin: 2rem auto;
-            display: none;
-        }
-
-        @keyframes spin {
-            to { transform: rotate(360deg); }
-        }
-
+        
         /* Responsive */
         @media (max-width: 870px) {
             .container {
@@ -784,12 +769,11 @@
                 top: 5%;
                 transform: translate(-50%, 0);
             }
-
-            .welcome-content h1 {
+            
+            .welcome-container h1 {
                 font-size: 2.5rem;
             }
-
-            .welcome-content p {
+            .welcome-message {
                 font-size: 1.2rem;
             }
         }
@@ -825,15 +809,10 @@
                 font-size: 1.8rem;
             }
 
-            .welcome-content {
-                padding: 1.5rem;
-            }
-
-            .welcome-content h1 {
+            .welcome-container h1 {
                 font-size: 2rem;
             }
-
-            .welcome-content p {
+            .welcome-message {
                 font-size: 1rem;
                 padding: 0 10px;
             }
@@ -841,14 +820,11 @@
     </style>
 </head>
 <body>
-    <!-- Binary code animation -->
     <div class="binary-code" id="binary-code"></div>
 
-    <!-- Auth Container -->
     <div class="container" id="auth-container">
         <div class="forms-container">
             <div class="signin-signup">
-                <!-- Sign In Form -->
                 <form class="sign-in-form" id="signin-form">
                     <h2 class="title">Вход</h2>
                     <div class="input-field">
@@ -873,7 +849,6 @@
                     <p class="account-text">Нет аккаунта? <a href="#" id="sign-up-btn">Зарегистрироваться</a></p>
                 </form>
 
-                <!-- Sign Up Form -->
                 <form class="sign-up-form" id="signup-form">
                     <h2 class="title">Регистрация</h2>
                     <div class="input-field">
@@ -924,13 +899,9 @@
         </div>
     </div>
 
-    <!-- Welcome Container -->
     <div class="welcome-container" id="welcome-container">
-        <div class="welcome-content">
-            <h1 id="greeting-text">Добро пожаловать, <span id="username"></span>!</h1>
-            <p>Вы успешно вошли в систему факультета информационных технологий и искусственного интеллекта. Теперь у вас есть доступ ко всем ресурсам и возможностям нашего сообщества.</p>
-            <div class="spinner" id="spinner"></div>
-        </div>
+        <h1 id="greeting-text">Добро пожаловать, <span id="username"></span>!</h1>
+        <p class="welcome-message">Вы успешно вошли в систему факультета информационных технологий и искусственного интеллекта. Теперь у вас есть доступ ко всем ресурсам и возможностям нашего сообщества.</p>
         <div class="confetti"></div>
         <div class="confetti"></div>
         <div class="confetti"></div>
@@ -938,10 +909,9 @@
         <div class="confetti"></div>
     </div>
 
-    <!-- Firebase SDK -->
     <script src="https://www.gstatic.com/firebasejs/8.10.0/firebase-app.js"></script>
     <script src="https://www.gstatic.com/firebasejs/8.10.0/firebase-auth.js"></script>
-    
+
     <script>
         // Firebase configuration
         const firebaseConfig = {
@@ -978,30 +948,29 @@
         const githubSignIn = document.getElementById('github-signin');
         const githubSignUp = document.getElementById('github-signup');
         const binaryCodeContainer = document.getElementById('binary-code');
-        const spinner = document.getElementById('spinner');
 
         // Generate binary code animation
         function generateBinaryCode() {
             const binaryChars = '01';
             const linesCount = 20;
-            
+
             for (let i = 0; i < linesCount; i++) {
                 const line = document.createElement('div');
                 line.classList.add('binary-line');
-                
+
                 // Generate random binary string
                 let binaryString = '';
                 const length = Math.floor(Math.random() * 30) + 20;
                 for (let j = 0; j < length; j++) {
                     binaryString += binaryChars.charAt(Math.floor(Math.random() * binaryChars.length));
                 }
-                
+
                 line.textContent = binaryString;
                 line.style.left = `${Math.random() * 100}%`;
                 line.style.animationDuration = `${5 + Math.random() * 10}s`;
                 line.style.animationDelay = `${Math.random() * 5}s`;
                 line.style.opacity = Math.random() * 0.5 + 0.1;
-                
+
                 binaryCodeContainer.appendChild(line);
             }
         }
@@ -1047,14 +1016,14 @@
                 const rect = this.getBoundingClientRect();
                 const x = e.clientX - rect.left;
                 const y = e.clientY - rect.top;
-                
+
                 const ripple = document.createElement('span');
                 ripple.classList.add('ripple');
                 ripple.style.left = `${x}px`;
                 ripple.style.top = `${y}px`;
-                
+
                 this.appendChild(ripple);
-                
+
                 setTimeout(() => {
                     ripple.remove();
                 }, 1000);
@@ -1069,16 +1038,16 @@
         // Sign up function
         signUpForm.addEventListener('submit', (e) => {
             e.preventDefault();
-            
+
             const email = document.getElementById('signup-email').value;
             const password = document.getElementById('signup-password').value;
             const name = document.getElementById('signup-name').value;
-            
+
             auth.createUserWithEmailAndPassword(email, password)
                 .then((userCredential) => {
                     // Signed up successfully
                     const user = userCredential.user;
-                    
+
                     // Update user profile with display name
                     return user.updateProfile({
                         displayName: name
@@ -1087,7 +1056,7 @@
                 .then(() => {
                     // Show welcome message
                     showWelcomeMessage(auth.currentUser.displayName);
-                    
+
                     // Reset form
                     signUpForm.reset();
                 })
@@ -1099,18 +1068,18 @@
         // Sign in function
         signInForm.addEventListener('submit', (e) => {
             e.preventDefault();
-            
+
             const email = document.getElementById('signin-email').value;
             const password = document.getElementById('signin-password').value;
-            
+
             auth.signInWithEmailAndPassword(email, password)
                 .then((userCredential) => {
                     // Signed in successfully
                     const user = userCredential.user;
-                    
+
                     // Show welcome message
                     showWelcomeMessage(user.displayName || user.email.split('@')[0]);
-                    
+
                     // Reset form
                     signInForm.reset();
                 })
@@ -1122,12 +1091,12 @@
         // Google sign in
         function googleAuth() {
             const provider = new firebase.auth.GoogleAuthProvider();
-            
+
             auth.signInWithPopup(provider)
                 .then((result) => {
                     // Signed in with Google
                     const user = result.user;
-                    
+
                     // Show welcome message
                     showWelcomeMessage(user.displayName);
                 })
@@ -1139,12 +1108,12 @@
         // GitHub sign in
         function githubAuth() {
             const provider = new firebase.auth.GithubAuthProvider();
-            
+
             auth.signInWithPopup(provider)
                 .then((result) => {
                     // Signed in with GitHub
                     const user = result.user;
-                    
+
                     // Show welcome message
                     showWelcomeMessage(user.displayName || user.email.split('@')[0]);
                 })
@@ -1177,11 +1146,11 @@
         function showWelcomeMessage(username) {
             // Set username
             usernameElement.textContent = username;
-            
+
             // Get current time for greeting
             const hour = new Date().getHours();
             let greeting;
-            
+
             if (hour >= 5 && hour < 12) {
                 greeting = 'Доброе утро🏙️';
             } else if (hour >= 12 && hour < 18) {
@@ -1191,12 +1160,12 @@
             } else {
                 greeting = 'Доброй ночи🌙🌃';
             }
-            
+
             greetingText.textContent = `${greeting}, ${username}!`;
-            
+
             // Show welcome container
             welcomeContainer.classList.add('active');
-            
+
             // Start confetti animation after welcome message appears
             const confetti = document.querySelectorAll('.confetti');
             confetti.forEach((item, index) => {
@@ -1204,16 +1173,11 @@
                     item.style.opacity = '1';
                 }, index * 200);
             });
-            
-            // Show spinner after 2 seconds
+
+            // Redirect to home.html after 4 seconds
             setTimeout(() => {
-                spinner.style.display = 'block';
-                
-                // Redirect to home.html after 3 seconds
-                setTimeout(() => {
-                    window.location.href = 'home.html';
-                }, 2000);
-            }, 1000);
+                window.location.href = 'home.html';
+            }, 4000);
         }
 
         // Auth state observer
@@ -1227,32 +1191,32 @@
 
         // Add animation to input fields on focus
         const inputFields = document.querySelectorAll('.input-field');
-        
+
         inputFields.forEach(inputField => {
             const input = inputField.querySelector('input');
-            
+
             input.addEventListener('focus', () => {
                 inputField.style.transform = 'scale(1.02)';
                 inputField.style.boxShadow = '0 0 20px rgba(0, 212, 255, 0.4)';
                 inputField.style.borderColor = 'var(--neon-green)';
             });
-            
+
             input.addEventListener('blur', () => {
                 inputField.style.transform = 'scale(1)';
                 inputField.style.boxShadow = '0 0 10px rgba(0, 212, 255, 0.1)';
                 inputField.style.borderColor = 'rgba(0, 212, 255, 0.3)';
             });
         });
-        
+
         // Button hover effects
         const buttons = document.querySelectorAll('.btn');
-        
+
         buttons.forEach(button => {
             button.addEventListener('mouseenter', () => {
                 button.style.transform = 'translateY(-3px)';
                 button.style.boxShadow = '0 10px 20px rgba(0, 212, 255, 0.5)';
             });
-            
+
             button.addEventListener('mouseleave', () => {
                 button.style.transform = 'translateY(0)';
                 button.style.boxShadow = '0 5px 15px rgba(0, 0, 0, 0.3)';
