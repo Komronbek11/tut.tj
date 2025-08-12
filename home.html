@@ -41,48 +41,84 @@
         .card-hover:hover { transform: translateY(-8px) scale(1.02); box-shadow: 0 20px 40px rgba(0, 0, 0, 0.2); }
         .interactive-press { transition: transform 0.1s ease; }
         .interactive-press:active { transform: scale(0.96); }
-
-        .carousel-images { display: flex; transition: transform 0.5s ease-in-out; }
-        .carousel-images img { width: 100%; flex-shrink: 0; object-fit: cover; }
-
-        .fade-in-up {
-            opacity: 0;
-            transform: translateY(20px);
-            transition: opacity 0.5s ease-out, transform 0.5s ease-out;
-        }
-        .fade-in-up.is-visible {
-            opacity: 1;
-            transform: translateY(0);
-        }
-        #logo{
-            width: 50px;
-            height: 50px;
-            border-radius: 50%;
-        }
-        .skeleton {
-            background: linear-gradient(90deg, #f0f0f0 25%, #e0e0e0 50%, #f0f0f0 75%);
-            background-size: 200% 100%;
-            animation: loading 1.5s infinite;
-            border-radius: 0.5rem;
-        }
-        .dark .skeleton {
-            background: linear-gradient(90deg, #1e293b 25%, #334155 50%, #1e293b 75%);
-        }
-        @keyframes loading {
-            0% { background-position: 200% 0; }
-            100% { background-position: -200% 0; }
-        }
         
-        .flag-icon {
-            margin-bottom: -8px;
-            width: 25px; height: 25px; border-radius: 2px;
-            display: inline-block; background-size: cover;
-            box-shadow: 0 0 2px rgba(0,0,0,0.2);
+        /* --- Carousel Styles --- */
+        .carousel-images { 
+            display: flex; 
+            transition: transform 0.5s ease-in-out; /* The key for smooth transition */
+            height: 100%; /* Important for proper layout */
         }
+        .carousel-slide { 
+            width: 100%; 
+            flex-shrink: 0; 
+            position: relative; 
+            height: 100%;
+        }
+        .carousel-slide img { 
+            width: 100%; 
+            height: 100%; 
+            object-fit: cover; 
+            border-radius: 1.5rem; /* Matches the card's rounded corners */
+        }
+        .carousel-text {
+            position: absolute; bottom: 0; left: 0; right: 0;
+            padding: 1rem; color: white;
+            background: linear-gradient(to top, rgba(0,0,0,0.7), rgba(0,0,0,0));
+            opacity: 0; transform: translateY(10px);
+            transition: opacity 0.5s ease, transform 0.5s ease;
+        }
+        .carousel-slide.active .carousel-text {
+            opacity: 1; transform: translateY(0);
+        }
+        .carousel-dots {
+            position: absolute; bottom: 1rem; left: 50%;
+            transform: translateX(-50%); display: flex; gap: 8px;
+        }
+        .carousel-dot {
+            width: 8px; height: 8px; border-radius: 50%;
+            background-color: rgba(255, 255, 255, 0.5);
+            transition: background-color 0.3s ease; cursor: pointer;
+        }
+        .carousel-dot.active { background-color: white; }
+        .carousel-arrow {
+            position: absolute; top: 50%; transform: translateY(-50%);
+            background-color: rgba(0,0,0,0.3); color: white;
+            border-radius: 50%; width: 40px; height: 40px;
+            display: flex; align-items: center; justify-content: center;
+            cursor: pointer; transition: background-color 0.3s ease;
+        }
+        .carousel-arrow:hover { background-color: rgba(0,0,0,0.6); }
+        .arrow-left { left: 1rem; }
+        .arrow-right { right: 1rem; }
+
+        .fade-in-up { opacity: 0; transform: translateY(20px); transition: opacity 0.5s ease-out, transform 0.5s ease-out; }
+        .fade-in-up.is-visible { opacity: 1; transform: translateY(0); }
+        #logo{ width: 50px; height: 50px; border-radius: 50%; }
+        
+        .skeleton { background: linear-gradient(90deg, #f0f0f0 25%, #e0e0e0 50%, #f0f0f0 75%); background-size: 200% 100%; animation: loading 1.5s infinite; border-radius: 0.5rem; }
+        .dark .skeleton { background: linear-gradient(90deg, #1e293b 25%, #334155 50%, #1e293b 75%); }
+        @keyframes loading { 0% { background-position: 200% 0; } 100% { background-position: -200% 0; } }
+        
+        .flag-icon { margin-bottom: -8px; width: 25px; height: 25px; border-radius: 2px; display: inline-block; background-size: cover; box-shadow: 0 0 2px rgba(0,0,0,0.2); }
         .flag-tj { background-image: url('tajikistan.png'); }
         .flag-ru { background-image: url('russia.png'); }
+        
+        /* --- Notification Counter --- */
+        .notification-badge {
+            position: absolute; top: -5px; right: -5px;
+            background-color: #ef4444; /* red-500 */
+            color: white;
+            border-radius: 50%;
+            width: 20px; height: 20px;
+            font-size: 12px;
+            display: flex; align-items: center; justify-content: center;
+            font-weight: bold;
+            border: 2px solid var(--card-light);
+        }
+        .dark .notification-badge { border: 2px solid var(--card-dark); }
 
-        /* === СТИЛИ ДЛЯ ОБНОВЛЕННОЙ МОБИЛЬНОЙ НАВИГАЦИИ === */
+
+    /* === СТИЛИ ДЛЯ ОБНОВЛЕННОЙ МОБИЛЬНОЙ НАВИГАЦИИ === */
         .mobile-nav-link {
             position: relative;
             display: flex;
@@ -170,11 +206,14 @@
                     </div>
 
                     <div class="flex items-center space-x-2">
-                        <a href="notifications.html" class="p-2 rounded-full transition-colors hover:bg-black/10 dark:hover:bg-white/10 interactive-press" aria-label="Notifications">
-                            <svg class="w-6 h-6" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor">
-                                <path stroke-linecap="round" stroke-linejoin="round" d="M14.857 17.082a23.848 23.848 0 0 0 5.454-1.31A8.967 8.967 0 0 1 18 9.75V9A6 6 0 0 0 6 9v.75a8.967 8.967 0 0 1-2.312 6.022c1.733.64 3.56 1.085 5.455 1.31m5.714 0a24.255 24.255 0 0 1-5.714 0m5.714 0a3 3 0 1 1-5.714 0M3.124 7.5A8.969 8.969 0 0 1 5.292 3m13.416 0a8.969 8.969 0 0 1 2.168 4.5" />
-                            </svg>
-                        </a>
+                        <div class="relative">
+                            <a href="notifications.html" class="p-2 block rounded-full transition-colors hover:bg-black/10 dark:hover:bg-white/10 interactive-press" aria-label="Notifications">
+                                <svg class="w-6 h-6" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor">
+                                    <path stroke-linecap="round" stroke-linejoin="round" d="M14.857 17.082a23.848 23.848 0 0 0 5.454-1.31A8.967 8.967 0 0 1 18 9.75V9A6 6 0 0 0 6 9v.75a8.967 8.967 0 0 1-2.312 6.022c1.733.64 3.56 1.085 5.455 1.31m5.714 0a24.255 24.255 0 0 1-5.714 0m5.714 0a3 3 0 1 1-5.714 0M3.124 7.5A8.969 8.969 0 0 1 5.292 3m13.416 0a8.969 8.969 0 0 1 2.168 4.5" />
+                                </svg>
+                            </a>
+                            <span x-show="notificationCount > 0" x-text="notificationCount" class="notification-badge" x-cloak></span>
+                        </div>
                         <button @click="toggleLanguage()" class="p-2 rounded-full transition-colors hover:bg-black/10 dark:hover:bg-white/10 interactive-press" aria-label="Toggle language">
                             <span x-show="currentLang === 'tj'" class="flag-icon flag-tj"></span>
                             <span x-show="currentLang === 'ru'" class="flag-icon flag-ru"></span>
@@ -193,11 +232,52 @@
 
         <main class="container mx-auto p-4 md:p-6 lg:p-8">
             <div class="grid grid-cols-4 auto-rows-[180px] gap-4 md:gap-6">
+                
                 <div class="col-span-4 md:col-span-2 row-span-2 glass-card rounded-3xl p-0 overflow-hidden fade-in-up relative" :class="{'is-visible': contentLoaded}" style="transition-delay: 100ms;">
                     <div x-show="!imagesLoaded" class="skeleton absolute inset-0 rounded-3xl"></div>
-                    <div x-show="imagesLoaded" class="carousel h-full w-full" x-ref="carousel"><div class="carousel-images h-full">
-                        <img src="logo3.jpg" alt="Image 1" @load="imageLoaded()"><img src="logo1.jpg" alt="Image 2" @load="imageLoaded()"><img src="logo2.jpg" alt="Image 3" @load="imageLoaded()"><img src="TUT.jpg" alt="Image 4" @load="imageLoaded()">
-                    </div></div>
+                    <div x-show="imagesLoaded" class="h-full w-full" x-ref="carouselContainer" x-cloak>
+                        <div class="carousel-images h-full" :style="`transform: translateX(-${currentSlide * 100}%)`">
+                            <div class="carousel-slide" :class="{'active': currentSlide === 0}">
+                                <img src="logo3.jpg" alt="Студенческая жизнь" @load="imageLoaded()">
+                                <div class="carousel-text">
+                                    <h3 class="font-bold text-lg">Студенческая жизнь</h3>
+                                    <p class="text-sm opacity-90">Открытия, дружба и знания в самом сердце Таджикистана.</p>
+                                </div>
+                            </div>
+                            <div class="carousel-slide" :class="{'active': currentSlide === 1}">
+                                <img src="logo1.jpg" alt="Инновации и технологии" @load="imageLoaded()">
+                                <div class="carousel-text">
+                                    <h3 class="font-bold text-lg">Инновации и технологии</h3>
+                                    <p class="text-sm opacity-90">Современные лаборатории для будущих инженеров и учёных.</p>
+                                </div>
+                            </div>
+                            <div class="carousel-slide" :class="{'active': currentSlide === 2}">
+                                <img src="logo2.jpg" alt="День открытых дверей" @load="imageLoaded()">
+                                <div class="carousel-text">
+                                    <h3 class="font-bold text-lg">День открытых дверей</h3>
+                                    <p class="text-sm opacity-90">Приглашаем абитуриентов познакомиться с университетом.</p>
+                                </div>
+                            </div>
+                            <div class="carousel-slide" :class="{'active': currentSlide === 3}">
+                                <img src="TUT.jpg" alt="Главный корпус ДТТ" @load="imageLoaded()">
+                                <div class="carousel-text">
+                                    <h3 class="font-bold text-lg">Главный корпус ДТТ</h3>
+                                    <p class="text-sm opacity-90">Архитектурная жемчужина и центр знаний нашего города.</p>
+                                </div>
+                            </div>
+                        </div>
+                        <div @click="prevSlide()" class="carousel-arrow arrow-left">
+                            <svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 19l-7-7 7-7"></path></svg>
+                        </div>
+                        <div @click="nextSlide()" class="carousel-arrow arrow-right">
+                            <svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 5l7 7-7 7"></path></svg>
+                        </div>
+                        <div class="carousel-dots">
+                            <template x-for="(image, index) in totalImages" :key="index">
+                                <button @click="goToSlide(index)" class="carousel-dot" :class="{'active': currentSlide === index}"></button>
+                            </template>
+                        </div>
+                    </div>
                 </div>
                 
                 <a href="teachers_tut.html" class="col-span-2 md:col-span-1 row-span-1 glass-card card-hover interactive-press rounded-3xl p-4 flex flex-col justify-between group fade-in-up relative" :class="{'is-visible': contentLoaded}" style="transition-delay: 200ms;">
@@ -276,7 +356,7 @@
                         <img src="studying.png" class="w-16 h-18 transition-transform duration-300 group-hover:scale-110" alt="">
                         <div>
                             <h3 class="font-bold text-xl" data-translate="exam_calc">Ҳисобкунаки имтиҳон</h3>
-                            <p class="text-sm opacity-80" data-translate="exam_calc_desc">Донишҷӯён метавонад, корҳои маҷмуи (КМД) - и худро сабт кунад.</p>
+                            <p class="text-sm opacity-80" data-translate="exam_calc_desc">Шумо акнун имконият доред,ки натиҷаи имтиҳонҳои худро хисоб мекунед ва онро хамчун файли таёр дар Excel гирифта метавонед. </p>
                         </div>
                     </div>
                 </a>
@@ -286,8 +366,8 @@
                     <div x-show="contentLoaded" class="relative z-10 flex items-center space-x-4">
                         <img src="time.png" class="w-16 h-18 transition-transform duration-300 group-hover:scale-110" alt="">
                         <div>
-                            <h3 class="font-bold text-xl" data-translate="t_raspisanie">Қайдҳои КМД</h3>
-                            <p class="text-sm opacity-80" data-translate="t_raspisanie_desc">Донишҷӯён метавонад, корҳои маҷмуи (КМД) - и худро сабт кунад.</p>
+                            <h3 class="font-bold text-xl" data-translate="t_raspisanie">Ҷадвали дарсҳо барои омӯзгорон</h3>
+                            <p class="text-sm opacity-80" data-translate="t_raspisanie_desc">Ҷадвали дарсӣ имконият медиҳад, ки интихоб кардани аудитория,гурӯҳҳо,омӯзгорон ба таври динамикӣ нишон медиҳад. </p>
                         </div>
                     </div>
                 </a>
@@ -340,10 +420,10 @@
     </div>
     
     <nav class="md:hidden glass-card fixed bottom-4 left-4 right-4 z-40 rounded-2xl h-16" 
-       x-show="contentLoaded" 
-       x-transition:enter="transition ease-out duration-300 transform" 
-       x-transition:enter-start="translate-y-24" 
-       x-transition:enter-end="translate-y-0">
+        x-show="contentLoaded" 
+        x-transition:enter="transition ease-out duration-300 transform" 
+        x-transition:enter-start="translate-y-24" 
+        x-transition:enter-end="translate-y-0">
         <div class="flex justify-around items-center h-full text-sm">
             <a href="#" @click.prevent="activeMobileTab = 'home'" class="mobile-nav-link" :class="{ 'active': activeMobileTab === 'home' }">
                 <div class="icon-wrapper">
@@ -378,7 +458,7 @@
                     </template>
                     <template x-if="!isUserLoggedIn || !userProfileImageUrl" hieght="45px" class="h-10 w-7 tap-highlight-transparent">
                         <svg xmlns="http://www.w3.org/2000/svg" height="40px" class="h-10 w-7 tap-highlight-transparent" fill="currentColor" viewBox="0 0 24 24">
-                           <path d="M12 12c2.21 0 4-1.79 4-4s-1.79-4-4-4-4 1.79-4 4 1.79 4 4 4zm0 2c-2.67 0-8 1.34-8 4v2h16v-2c0-2.66-5.33-4-8-4z"/>
+                            <path d="M12 12c2.21 0 4-1.79 4-4s-1.79-4-4-4-4 1.79-4 4 1.79 4 4 4zm0 2c-2.67 0-8 1.34-8 4v2h16v-2c0-2.66-5.33-4-8-4z"/>
                         </svg>
                     </template>
                 </div>
@@ -386,8 +466,6 @@
             </a>
         </div>
     </nav>
-
-
     <div x-show="mobileMenuOpen" @click.away="mobileMenuOpen = false" class="fixed inset-0 z-50 flex justify-end" style="display: none;">
         <div x-show="mobileMenuOpen" x-transition:enter="transition-opacity ease-in-out duration-300" x-transition:leave="transition-opacity ease-in-out duration-300" class="absolute inset-0 bg-black/30"></div>
         <div x-show="mobileMenuOpen" @click.stop x-transition:enter="transition ease-in-out duration-300 transform" x-transition:enter-start="translate-x-full" x-transition:enter-end="translate-x-0" x-transition:leave="transition ease-in-out duration-300 transform" x-transition:leave-start="translate-x-0" x-transition:leave-end="translate-x-full" class="relative w-4/5 max-w-sm h-full glass-card flex flex-col p-6">
@@ -413,11 +491,18 @@
                     </button>
                     
                     <div x-show="open" x-collapse class="pl-8 space-y-3">
-                        <a href="#" @click="toggleMenu()" class="block opacity-80 hover:opacity-100">Факултети информатика</a>
-                        <a href="#" @click="toggleMenu()" class="block opacity-80 hover:opacity-100">Факултети энергетика</a>
-                        <a href="#" @click="toggleMenu()" class="block opacity-80 hover:opacity-100">Факултети механика</a>
-                        <a href="#" @click="toggleMenu()" class="block opacity-80 hover:opacity-100">Факултети иқтисод</a>
-                        <a href="#" @click="toggleMenu()" class="block opacity-80 hover:opacity-100">Факултети кишоварзӣ</a>
+                        <a href="#" @click="toggleMenu()" class="block opacity-80 hover:opacity-100">Факултети муҳандисӣ-технологӣ </a>
+                        <a href="#" @click="toggleMenu()" class="block opacity-80 hover:opacity-100">Факултети технология ва дизайн</a>
+                        <a href="#" @click="toggleMenu()" class="block opacity-80 hover:opacity-100">Факултети технологияҳои иттилооти ва интеллекти сунъӣ</a>
+                        <a href="#" @click="toggleMenu()" class="block opacity-80 hover:opacity-100">Факултети телекомуникатсия ва таълимоти касбӣ</a>
+                        <a href="#" @click="toggleMenu()" class="block opacity-80 hover:opacity-100">Факултети
+иқтисодиёт ва молия</a>
+                        <a href="#" @click="toggleMenu()" class="block opacity-80 hover:opacity-100">Факултети
+менеҷмент ва маркетинги байналмилалӣ</a>
+                        <a href="#" @click="toggleMenu()" class="block opacity-80 hover:opacity-100">Факултаи муштараки Донишгоҳи давлатии Полотск ва ДТТ</a>
+                        <a href="#" @click="toggleMenu()" class="block opacity-80 hover:opacity-100">Факултети
+таҳсилоти фосилавӣ</a>
+
                     </div>
                 </div>
                 
@@ -430,7 +515,7 @@
                     <svg class="w-5 h-5" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" strokeWidth={1.9} stroke="currentColor" className="size-6">
                         <path strokeLinecap="round" strokeLinejoin="round" d="M8.25 9V5.25A2.25 2.25 0 0 1 10.5 3h6a2.25 2.25 0 0 1 2.25 2.25v13.5A2.25 2.25 0 0 1 16.5 21h-6a2.25 2.25 0 0 1-2.25-2.25V15m-3 0-3-3m0 0 3-3m-3 3H15" />
                     </svg>
-                    <span data-translate="logout">Выйти</span>
+                    <span data-translate="logout" @click="logout">Выйти</span>
                 </a>
             </nav>
         </div>
@@ -438,7 +523,8 @@
     
     <script src="https://www.gstatic.com/firebasejs/8.10.1/firebase-app.js"></script>
     <script src="https://www.gstatic.com/firebasejs/8.10.1/firebase-auth.js"></script>
-    <script src="script.js"></script>
+    <script src="https://www.gstatic.com/firebasejs/8.10.1/firebase-database.js"></script>
+
     <script>
         document.addEventListener('alpine:init', () => {
             Alpine.data('pageManager', () => ({
@@ -449,10 +535,12 @@
                 imagesLoaded: false,
                 loadedImageCount: 0,
                 totalImages: 4,
-                // New properties for mobile nav and Firebase user
                 activeMobileTab: 'home',
                 isUserLoggedIn: false,
                 userProfileImageUrl: '',
+                notificationCount: 0,
+                currentSlide: 0,
+                carouselInterval: null,
 
                 translations: {
                     university_name: { tj: 'Донишгоҳи Технологии Тоҷикистон', ru: 'Технологический университет Таджикистана' },
@@ -474,10 +562,10 @@
                     t_raspisanie: { tj: 'Ҷадвали дарсҳо барои омӯзгорон', ru: 'Расписание уроков для преподавателей' },
                     t_raspisanie_desc: { tj: 'Ҷадвали дарсӣ имконият медиҳад, ки интихоб кардани аудитория,гурӯҳҳо,омӯзгорон ба таври динамикӣ нишон медиҳад. ', ru: 'Расписание урока позволяет динамически выбирать аудиторию, группы и преподавателей.' },
                     address: { tj: 'Адрес: Душанбе, ҳиёбони Неъмат Қарабоев<br>Телефон: +992 (37) 234-56-78<br>Email: info@tut.tj', ru: 'Адрес: Душанбе, проспект Неъмат Карабаев <br>Телефон: +992 (37) 234-56-78<br>Email: info@tut.tj' },
-                    nav_home: { tj: '', ru: '' },
-                    nav_schedule: { tj: '', ru: '' },
-                    nav_faculties: { tj: '', ru: '' },
-                    nav_contact: { tj: '', ru: '' },
+                    // nav_home: { tj: 'Асосӣ', ru: 'Главная' },
+                    // nav_schedule: { tj: 'Ҷадвал', ru: 'Расписание' },
+                    // nav_faculties: { tj: 'Факултетҳо', ru: 'Факультеты' },
+                    // nav_contact: { tj: 'Тамос', ru: 'Контакты' },
                     menu_title: { tj: 'Меню', ru: 'Меню' },
                 },
 
@@ -488,29 +576,30 @@
                     this.currentLang = localStorage.getItem('language') || 'tj';
                     this.translatePage();
                     
-                    this.initFirebase(); // Initialize Firebase logic
+                    this.initFirebase();
                     
                     setTimeout(() => { 
                         this.contentLoaded = true; 
                         this.$nextTick(() => {
                             document.querySelectorAll('.fade-in-up').forEach(el => el.classList.add('is-visible'));
                         });
-                    }, 1500); 
+                    }, 2500); 
 
+                    // Attach the carousel update to Alpine's reactivity
+                    this.$watch('currentSlide', () => this.updateCarousel());
                     this.startCarousel();
                 },
                 
-                // NEW: Initialize Firebase and check auth state
                 initFirebase() {
-                    // !!! ВАЖНО: ЗАМЕНИТЕ ЭТО СВОЕЙ КОНФИГУРАЦИЕЙ FIREBASE !!!
                     const firebaseConfig = {
-            apiKey: "AIzaSyCAOfxPW5m2UqtulWzuh3egOjJ-ti-rDf8",
-            authDomain: "register-221e5.firebaseapp.com",
-            projectId: "register-221e5",
-            storageBucket: "register-221e5.appspot.com",
-            messagingSenderId: "588640206529",
-            appId: "1:588640206529:web:b2abf5413387e251935e40"
-        };
+                        apiKey: "AIzaSyCAOfxPW5m2UqtulWzuh3egOjJ-ti-rDf8",
+                        authDomain: "register-221e5.firebaseapp.com",
+                        databaseURL: "https://register-221e5-default-rtdb.firebaseio.com",
+                        projectId: "register-221e5",
+                        storageBucket: "register-221e5.appspot.com",
+                        messagingSenderId: "588640206529",
+                        appId: "1:588640206529:web:b2abf5413387e251935e40"
+                    };
 
                     try {
                         if (!firebase.apps.length) {
@@ -519,19 +608,34 @@
                         
                         firebase.auth().onAuthStateChanged((user) => {
                             if (user) {
-                                // Пользователь вошел в систему
                                 this.isUserLoggedIn = true;
                                 this.userProfileImageUrl = user.photoURL;
+                                this.listenForNotifications(user.uid);
                             } else {
-                                // Пользователь вышел
                                 this.isUserLoggedIn = false;
                                 this.userProfileImageUrl = '';
+                                this.notificationCount = 0;
+                                if (this.lastUserId) {
+                                    firebase.database().ref('notifications/' + this.lastUserId).off();
+                                    this.lastUserId = null;
+                                }
                             }
                         });
-                    } catch (e) {
-                        console.error("Ошибка инициализации Firebase:", e);
-                        console.log("Пожалуйста, убедитесь, что вы заменили конфигурацию Firebase на свою.");
-                    }
+                    } catch (e) { console.error("Ошибка инициализации Firebase:", e); }
+                },
+
+                listenForNotifications(userId) {
+                    this.lastUserId = userId;
+                    const notificationsRef = firebase.database().ref('notifications/' + userId);
+                    notificationsRef.on('value', (snapshot) => {
+                        const notifications = snapshot.val();
+                        if (notifications) {
+                            const unreadCount = Object.values(notifications).filter(n => !n.read).length;
+                            this.notificationCount = unreadCount;
+                        } else {
+                            this.notificationCount = 0;
+                        }
+                    });
                 },
 
                 imageLoaded() {
@@ -541,20 +645,27 @@
                     }
                 },
 
+                // --- Carousel Logic ---
+                updateCarousel() {
+                    if (this.$refs.carouselContainer) {
+                        let carouselImages = this.$refs.carouselContainer.querySelector('.carousel-images');
+                        carouselImages.style.transform = `translateX(-${this.currentSlide * 100}%)`;
+                    }
+                },
                 startCarousel() {
-                    this.$nextTick(() => {
-                        let carouselContainer = this.$refs.carousel.querySelector('.carousel-images');
-                        if (carouselContainer) {
-                            let currentIndex = 0;
-                            const total = carouselContainer.querySelectorAll('img').length;
-                            if (total > 0) {
-                                setInterval(() => {
-                                    currentIndex = (currentIndex + 1) % total;
-                                    carouselContainer.style.transform = `translateX(-${currentIndex * 100}%)`;
-                                }, 4000);
-                            }
-                        }
-                    });
+                    clearInterval(this.carouselInterval);
+                    this.carouselInterval = setInterval(() => {
+                        this.nextSlide();
+                    }, 8000);
+                },
+                nextSlide() {
+                    this.currentSlide = (this.currentSlide + 1) % this.totalImages;
+                },
+                prevSlide() {
+                    this.currentSlide = (this.currentSlide - 1 + this.totalImages) % this.totalImages;
+                },
+                goToSlide(index) {
+                    this.currentSlide = index;
                 },
 
                 toggleTheme() { 
@@ -576,6 +687,7 @@
                     });
                     document.documentElement.lang = this.currentLang;
                 },
+                logout() { auth.signOut().then(() => { window.location.href = 'index.html'; }); },
                 toggleMenu() { this.mobileMenuOpen = !this.mobileMenuOpen; },
                 updateHtmlClass() { document.documentElement.classList.toggle('dark', this.isDark); },
             }));
