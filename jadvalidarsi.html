@@ -5,515 +5,207 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Расписание</title>
     <link rel="manifest" href="manifest.json">
+    <link href="https://cdn.jsdelivr.net/npm/tailwindcss@2.2.19/dist/tailwind.min.css" rel="stylesheet">
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=DM+Sans:ital,opsz,wght@0,9..40,100..1000;1,9..40,100..1000&family=Lato:ital,wght@0,100;0,300;0,400;0,700;0,900;1,100;1,300;1,400;1,700;1,900&family=Manrope:wght@200..800&family=Poppins:ital,wght@0,100;0,200;0,300;0,400;0,500;0,600;0,700;0,800;0,900;1,100;1,200;1,300;1,400;1,500;1,600;1,700;1,800;1,900&family=Satisfy&display=swap" rel="stylesheet">
+    <script src="https://cdn.jsdelivr.net/npm/alpinejs@3.13.10/dist/cdn.min.js" defer></script>
     <style>
+        :root {
+            --primary: #5856D6;
+            --accent: #007AFF;
+            --bg: #F5F5FF;
+            --text: #1C1C1E;
+            --heading: #12073A;
+            --button-bg: #5856D6;
+            --button-text: #FFFFFF;
+            --button-hover: #4F4DC2;
+            --card-bg: #FFFFFF;
+            --border: #BAB9EB;
+            --row-hover: #DCDCF5;
+            --text-light: #5A588A;
+            --skeleton-bg: rgba(186, 185, 235, 0.5);
+            --glass-blur: none;
+            --glass-border: none;
+            --bg-image: none;
+        }
 
-    @import url('https://fonts.googleapis.com/css2?family=DM+Sans:ital,opsz,wght@0,9..40,100..1000;1,9..40,100..1000&family=Lato:ital,wght@0,100;0,300;0,400;0,700;0,900;1,100;1,300;1,400;1,700;1,900&family=Manrope:wght@200..800&family=Poppins:ital,wght@0,100;0,200;0,300;0,400;0,500;0,600;0,700;0,800;0,900;1,100;1,200;1,300;1,400;1,500;1,600;1,700;1,800;1,900&family=Satisfy&display=swap');
-    
-    * {
-      padding: 0;
-      margin: 0;
-      box-sizing: border-box;
-      transition: all 0.2s ease;
-    }
+        body {
+            font-family: 'Poppins', sans-serif;
+            background-color: var(--bg);
+            color: var(--text);
+            padding: 15px;
+            width: 100%;
+            overflow-x: hidden;
+            min-height: 100vh;
+            background-image: var(--bg-image);
+            background-size: cover;
+            background-position: center;
+            background-attachment: fixed;
+            transition: all 0.3s ease;
+        }
+        
+        h1 {
+            font-family: 'DM Sans', sans-serif;
+            text-align: center;
+            margin-bottom: 20px;
+            font-size: 2rem;
+            color: var(--heading);
+        }
 
-    body {
-      font-family: 'Poppins', sans-serif;
-      background-color: var(--bg);
-      padding: 15px;
-      color: var(--text);
-      width: 100%;
-      overflow-x: hidden;
-      min-height: 100vh;
-      background-image: var(--bg-image);
-      background-size: cover;
-      background-position: center;
-      background-attachment: fixed;
-    }
+        .btn {
+            padding: 10px 18px;
+            border-radius: 12px;
+            font-weight: 500;
+            cursor: pointer;
+            border: none;
+            background: var(--primary);
+            color: white;
+        }
+        .back {
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            width: 40px;
+            height: 40px;
+            border-radius: 50%;
+            background-color: var(--card-bg);
+            box-shadow: 0 2px 5px rgba(0,0,0,0.1);
+            cursor: pointer;
+            backdrop-filter: var(--glass-blur);
+            -webkit-backdrop-filter: var(--glass-blur);
+        }
 
-    h1, h2, h3 {
-      font-family: 'DM Sans', sans-serif;
-      color: var(--heading);
-    }
+        .back:hover { transform: translateY(-2px); }
 
-    h1 {
-      text-align: center;
-      margin-bottom: 20px;
-      font-size: 2rem;
-      background: linear-gradient(90deg, var(--primary), var(--accent));
-      -webkit-background-clip: text;
-      -webkit-text-fill-color: transparent;
-    }
+        .group-info { text-align: center; font-size: 1rem; color: var(--text-light); margin-bottom: 1rem; }
+        .modal { position: fixed; top: 0; left: 0; width: 100%; height: 100%; background: rgba(0,0,0,0.7); backdrop-filter: blur(5px); z-index: 1000; display: none; align-items: center; justify-content: center; }
+        .modal.active { display: flex; }
+        .modal-content { background: var(--card-bg); padding: 30px; border-radius: 20px; width: 90%; max-width: 450px; text-align: center; border: var(--glass-border); }
+        .modal-content h2 { margin-bottom: 20px; }
+        .controls-modal { display: flex; flex-direction: column; gap: 15px; margin-bottom: 20px; }
+        .controls-modal select { width: 100%; padding: 12px 20px; border-radius: 15px; border: 2px solid var(--primary); background-color: var(--card-bg); font-size: 16px; color: var(--text); font-weight: 500; }
+        .voice-assistant { position: fixed; bottom: 20px; right: 20px; z-index: 1000; }
+        .voice-btn { width: 60px; height: 60px; border-radius: 50%; background-color: var(--primary); color: white; display: flex; align-items: center; justify-content: center; box-shadow: 0 4px 12px rgba(0,0,0,0.2); cursor: pointer; border: none; transition: all 0.3s ease; backdrop-filter: var(--glass-blur); -webkit-backdrop-filter: var(--glass-blur); }
+        .voice-btn:hover { transform: scale(1.1); box-shadow: 0 6px 16px rgba(0,0,0,0.3); }
+        .voice-btn.listening { animation: pulse 1.5s infinite; background-color: var(--accent); }
+        @keyframes pulse { 0% { transform: scale(1); } 50% { transform: scale(1.1); } 100% { transform: scale(1); } }
+        .voice-status { position: absolute; bottom: 70px; right: 0; background-color: var(--card-bg); padding: 15px; border-radius: 12px; box-shadow: 0 4px 12px rgba(0,0,0,0.1); width: 280px; display: none; font-size: 14px; color: var(--text); backdrop-filter: var(--glass-blur); -webkit-backdrop-filter: var(--glass-blur); border: var(--glass-border); }
+        .voice-status .user-command { font-weight: bold; margin-bottom: 8px; }
+        .voice-status.listening { display: block; animation: fadeIn 0.3s ease; }
+        .voice-status .assistant-response { margin-top: 10px; padding-top: 10px; border-top: 1px solid var(--border); font-style: italic; color: var(--primary); }
+        .skeleton-loader { width: 100%; margin-top: 20px; animation: fadeIn 0.5s ease; }
+        .skeleton-header { height: 60px; background-color: var(--skeleton-bg); border-radius: 16px 16px 0 0; margin-bottom: 1px; animation: shimmer 1.5s infinite linear; }
+        .skeleton-row { height: 60px; background-color: var(--skeleton-bg); margin-bottom: 1px; animation: shimmer 1.5s infinite linear; }
+        @keyframes shimmer { 0% { opacity: 0.5; } 50% { opacity: 0.8; } 100% { opacity: 0.5; } }
+        .controls { display: flex; flex-wrap: wrap; justify-content: center; margin-bottom: 20px; gap: 15px; }
+        .controls select { padding: 12px 20px; border-radius: 20px; border: 2px solid var(--primary); background-color: var(--card-bg); font-size: 16px; color: var(--text); font-weight: 500; box-shadow: 0 3px 6px rgba(0, 0, 0, 0.05); appearance: none; background-image: url("data:image/svg+xml;charset=UTF-8,%3csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24' fill='none' stroke='currentColor' stroke-width='2' stroke-linecap='round' stroke-linejoin='round'%3e%3cpolyline points='6 9 12 15 18 9'%3e%3c/polyline%3e%3c/svg%3e"); background-repeat: no-repeat; background-position: right 15px center; background-size: 15px; min-width: 250px; backdrop-filter: var(--glass-blur); -webkit-backdrop-filter: var(--glass-blur); border: var(--glass-border); }
+        .buttons { display: flex; flex-wrap: wrap; justify-content: center; gap: 10px; margin-bottom: 20px; }
+        .buttons button { font-family: 'Poppins', sans-serif; padding: 12px 20px; background-color: var(--button-bg); color: var(--button-text); border: none; border-radius: 19px; font-weight: 600; font-size: 15px; cursor: pointer; box-shadow: 0 4px 8px rgba(0,0,0,0.1); flex-grow: 1; min-width: 90px; transition: all 0.3s ease; backdrop-filter: var(--glass-blur); -webkit-backdrop-filter: var(--glass-blur); border: var(--glass-border); }
+        .buttons button:hover { background-color: var(--button-hover); transform: translateY(-2px); box-shadow: 0 6px 12px rgba(0,0,0,0.15); }
+        .buttons button.active-day { background-color: var(--accent); color: white; transform: translateY(-2px); box-shadow: 0 6px 12px rgba(0,0,0,0.15); }
+        .buttons button:active { transform: translateY(0); }
+        .schedule-container { width: 100%; margin-top: 10px; }
+        .schedule-day { width: 100%; display: none; background-color: var(--card-bg); color: var(--text); border-radius: 20px; box-shadow: 0 10px 25px rgba(0,0,0,0.08); animation: fadeIn 0.5s ease-in-out; overflow: hidden; backdrop-filter: var(--glass-blur); -webkit-backdrop-filter: var(--glass-blur); border: var(--glass-border); }
+        .active { display: block; }
+        .schedule-day h2 { padding: 20px; background-color: var(--primary); color: white; margin: 0; border-radius: 16px 16px 0 0; backdrop-filter: var(--glass-blur); -webkit-backdrop-filter: var(--glass-blur); }
+        table { width: 100%; border-collapse: collapse; backdrop-filter: var(--glass-blur); -webkit-backdrop-filter: var(--glass-blur); }
+        th, td { padding: 12px 16px; text-align: left; border-bottom: 1px solid var(--border); }
+        th { background-color: var(--primary); color: white; font-weight: 600; position: sticky; top: 0; backdrop-filter: var(--glass-blur); -webkit-backdrop-filter: var(--glass-blur); }
+        tr:hover { background-color: var(--row-hover); }
+        @keyframes fadeIn { from { opacity: 0; transform: translateY(20px); } to { opacity: 1; transform: translateY(0); } }
+        .theme-card { background-color: var(--card-bg); padding: 15px; margin: 20px 0; border-radius: 20px; box-shadow: 0 4px 15px rgba(0,0,0,0.08); backdrop-filter: var(--glass-blur); -webkit-backdrop-filter: var(--glass-blur); border: var(--glass-border); }
+        .theme-card h3 { margin-bottom: 15px; color: var(--heading); text-align: center; }
+        .color-palette { display: flex; overflow-x: auto; gap: 10px; padding: 10px 5px; scrollbar-width: thin; scrollbar-color: var(--primary) var(--card-bg); }
+        .color-palette::-webkit-scrollbar { height: 6px; }
+        .color-palette::-webkit-scrollbar-track { background: var(--card-bg); border-radius: 3px; }
+        .color-palette::-webkit-scrollbar-thumb { background-color: var(--primary); border-radius: 10px; }
+        .color-option { flex: 0 0 60px; height: 60px; border-radius: 50%; cursor: pointer; transition: all 0.3s ease; position: relative; overflow: hidden; box-shadow: 0 3px 6px rgba(0,0,0,0.1); }
+        .color-option::after { content: '✔'; font-size: 24px; color: white; text-shadow: 0 1px 2px rgba(0,0,0,0.5); position: absolute; top: 50%; left: 50%; transform: translate(-50%, -50%); opacity: 0; transition: opacity 0.3s ease; }
+        .color-option.selected::after { opacity: 1; }
+        .color-option:hover { transform: translateY(-5px); box-shadow: 0 8px 15px rgba(0,0,0,0.2); }
+        .color-name { position: absolute; bottom: 5px; left: 0; right: 0; text-align: center; font-size: 10px; font-weight: 500; color: white; text-shadow: 0 1px 2px rgba(0,0,0,0.5); z-index: 1; }
+        footer { text-align: center; margin-top: 40px; padding: 20px; color: var(--text-light); font-size: 14px; backdrop-filter: var(--glass-blur); -webkit-backdrop-filter: var(--glass-blur); border-radius: 20px; background-color: var(--card-bg); border: var(--glass-border); }
 
-    .container {
-      max-width: 1200px;
-      margin: 0 auto;
-      padding: 0 1px;
-    }
-.container { max-width: 1200px; margin: 0 auto; }
-.btn { padding: 10px 18px; border-radius: 12px; font-weight: 500; cursor: pointer; border: none; background: var(--primary); color: white; }
-.btn:disabled { background-color: #9ca3af; cursor: not-allowed; }
-.group-info { text-align: center; font-size: 1rem; color: var(--text-light); margin-bottom: 1rem; }
-.modal { position: fixed; top: 0; left: 0; width: 100%; height: 100%; background: rgba(0,0,0,0.7); backdrop-filter: blur(5px); z-index: 1000; display: none; align-items: center; justify-content: center; }
-.modal.active { display: flex; }
-.modal-content { background: var(--card-bg); padding: 30px; border-radius: 20px; width: 90%; max-width: 450px; text-align: center; border: var(--glass-border); }
-.modal-content h2 { margin-bottom: 20px; }
-.controls-modal { display: flex; flex-direction: column; gap: 15px; margin-bottom: 20px; }
-.controls-modal select { width: 100%; padding: 12px 20px; border-radius: 15px; border: 2px solid var(--primary); background-color: var(--card-bg); font-size: 16px; color: var(--text); font-weight: 500; }
+        /* Samsung One UI 6 Color Classes */
+        .samsung-red { background: linear-gradient(150deg, rgba(255, 217, 217, 1) 0%, rgba(255, 0, 0, 1) 100%); }
+        .samsung-orange { background: linear-gradient(150deg, rgba(245, 210, 149, 1) 0%, rgba(230, 145, 9, 1) 100%); }
+        .samsung-yellow { background: linear-gradient(150deg, rgba(242, 230, 206, 1) 0%, rgba(217, 206, 2, 1) 100%); }
+        .samsung-green { background: linear-gradient(150deg, rgba(222, 240, 216, 1) 0%, rgba(2, 217, 2, 1) 100%); }
+        .samsung-mint { background: linear-gradient(150deg, rgba(121, 125, 128, 1) 0%, rgba(0, 0, 0, 1) 100%); }
+        .samsung-teal { background-color: #30B0C7; }
+        .samsung-cyan { background-color: #32ADE6; }
+        .samsung-blue { background-color: #007AFF; }
+        .samsung-indigo { background-color: #5856D6; }
+        .samsung-purple { background-color: #AF52DE; }
+        .samsung-pink { background-color: #FF2D55; }
+        .samsung-brown { background-color: #A2845E; }
+        .samsung-gray { background-color: #8E8E93; }
+        .glass-theme { background: linear-gradient(135deg, rgba(255,255,255,0.1), rgba(255,255,255,0.05)); border: 1px solid rgba(255,255,255,0.2); box-shadow: 0 8px 32px 0 rgba(31, 38, 135, 0.15); }
 
-    .back {
-      width: 40px;
-      height: 40px;
-      border-radius: 50%;
-      background-color: var(--card-bg);
-      display: flex;
-      align-items: center;
-      justify-content: center;
-      margin-bottom: 20px;
-      box-shadow: 0 2px 5px rgba(0,0,0,0.1);
-      cursor: pointer;
-      backdrop-filter: var(--glass-blur);
-      -webkit-backdrop-filter: var(--glass-blur);
-    }
-
-    .back:hover {
-      transform: translateY(-2px);
-    }
-
-    /* Voice Assistant Styles */
-    .voice-assistant {
-      position: fixed;
-      bottom: 20px;
-      right: 20px;
-      z-index: 1000;
-    }
-
-    .voice-btn {
-      width: 60px;
-      height: 60px;
-      border-radius: 50%;
-      background-color: var(--primary);
-      color: white;
-      display: flex;
-      align-items: center;
-      justify-content: center;
-      box-shadow: 0 4px 12px rgba(0,0,0,0.2);
-      cursor: pointer;
-      border: none;
-      transition: all 0.3s ease;
-      backdrop-filter: var(--glass-blur);
-      -webkit-backdrop-filter: var(--glass-blur);
-    }
-
-    .voice-btn:hover {
-      transform: scale(1.1);
-      box-shadow: 0 6px 16px rgba(0,0,0,0.3);
-    }
-
-    .voice-btn.listening {
-      animation: pulse 1.5s infinite;
-      background-color: var(--accent);
-    }
-
-    @keyframes pulse {
-      0% { transform: scale(1); }
-      50% { transform: scale(1.1); }
-      100% { transform: scale(1); }
-    }
-
-    .voice-status {
-      position: absolute;
-      bottom: 70px;
-      right: 0;
-      background-color: var(--card-bg);
-      padding: 15px;
-      border-radius: 12px;
-      box-shadow: 0 4px 12px rgba(0,0,0,0.1);
-      width: 280px;
-      display: none;
-      font-size: 14px;
-      color: var(--text);
-      backdrop-filter: var(--glass-blur);
-      -webkit-backdrop-filter: var(--glass-blur);
-      border: var(--glass-border);
-    }
-    
-    .voice-status .user-command {
-        font-weight: bold;
-        margin-bottom: 8px;
-    }
-
-    .voice-status.listening {
-      display: block;
-      animation: fadeIn 0.3s ease;
-    }
-
-    .voice-status .assistant-response {
-      margin-top: 10px;
-      padding-top: 10px;
-      border-top: 1px solid var(--border);
-      font-style: italic;
-      color: var(--primary);
-    }
-
-    /* Skeleton Loader */
-    .skeleton-loader {
-      width: 100%;
-      margin-top: 20px;
-      animation: fadeIn 0.5s ease;
-    }
-
-    .skeleton-header {
-      height: 60px;
-      background-color: var(--skeleton-bg);
-      border-radius: 16px 16px 0 0;
-      margin-bottom: 1px;
-      animation: shimmer 1.5s infinite linear;
-    }
-
-    .skeleton-row {
-      height: 60px;
-      background-color: var(--skeleton-bg);
-      margin-bottom: 1px;
-      animation: shimmer 1.5s infinite linear;
-    }
-
-    @keyframes shimmer {
-      0% { opacity: 0.5; }
-      50% { opacity: 0.8; }
-      100% { opacity: 0.5; }
-    }
-
-    .controls {
-      display: flex;
-      flex-wrap: wrap;
-      justify-content: center;
-      margin-bottom: 20px;
-      gap: 15px;
-    }
-
-    .controls select {
-      padding: 12px 20px;
-      border-radius: 20px;
-      border: 2px solid var(--primary);
-      background-color: var(--card-bg);
-      font-size: 16px;
-      color: var(--text);
-      font-weight: 500;
-      box-shadow: 0 3px 6px rgba(0, 0, 0, 0.05);
-      appearance: none;
-      background-image: url("data:image/svg+xml;charset=UTF-8,%3csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24' fill='none' stroke='currentColor' stroke-width='2' stroke-linecap='round' stroke-linejoin='round'%3e%3cpolyline points='6 9 12 15 18 9'%3e%3c/polyline%3e%3c/svg%3e");
-      background-repeat: no-repeat;
-      background-position: right 15px center;
-      background-size: 15px;
-      min-width: 250px;
-      backdrop-filter: var(--glass-blur);
-      -webkit-backdrop-filter: var(--glass-blur);
-      border: var(--glass-border);
-    }
-
-    .buttons {
-      display: flex;
-      flex-wrap: wrap;
-      justify-content: center;
-      gap: 10px;
-      margin-bottom: 20px;
-    }
-
-    .buttons button {
-      font-family: 'Poppins', sans-serif;
-      padding: 12px 20px;
-      background-color: var(--button-bg);
-      color: var(--button-text);
-      border: none;
-      border-radius: 19px;
-      font-weight: 600;
-      font-size: 15px;
-      cursor: pointer;
-      box-shadow: 0 4px 8px rgba(0,0,0,0.1);
-      flex-grow: 1;
-      min-width: 90px;
-      transition: all 0.3s ease;
-      backdrop-filter: var(--glass-blur);
-      -webkit-backdrop-filter: var(--glass-blur);
-      border: var(--glass-border);
-    }
-
-    .buttons button:hover {
-      background-color: var(--button-hover);
-      transform: translateY(-2px);
-      box-shadow: 0 6px 12px rgba(0,0,0,0.15);
-    }
-    
-    .buttons button.active-day {
-        background-color: var(--accent);
-        color: white;
-        transform: translateY(-2px);
-        box-shadow: 0 6px 12px rgba(0,0,0,0.15);
-    }
-
-    .buttons button:active {
-      transform: translateY(0);
-    }
-
-    .schedule-container {
-      width: 100%;
-      margin-top: 10px;
-    }
-
-    .schedule-day {
-      width: 100%;
-      display: none;
-      background-color: var(--card-bg);
-      color: var(--text);
-      border-radius: 20px;
-      box-shadow: 0 10px 25px rgba(0,0,0,0.08);
-      animation: fadeIn 0.5s ease-in-out;
-      overflow: hidden;
-      backdrop-filter: var(--glass-blur);
-      -webkit-backdrop-filter: var(--glass-blur);
-      border: var(--glass-border);
-    }
-
-    .active {
-      display: block;
-    }
-
-    .schedule-day h2 {
-      padding: 20px;
-      background-color: var(--primary);
-      color: white;
-      margin: 0;
-      border-radius: 16px 16px 0 0;
-      backdrop-filter: var(--glass-blur);
-      -webkit-backdrop-filter: var(--glass-blur);
-    }
-
-    table {
-      width: 100%;
-      border-collapse: collapse;
-      backdrop-filter: var(--glass-blur);
-      -webkit-backdrop-filter: var(--glass-blur);
-    }
-
-    th, td {
-      padding: 12px 16px;
-      text-align: left;
-      border-bottom: 1px solid var(--border);
-    }
-
-    th {
-      background-color: var(--primary);
-      color: white;
-      font-weight: 600;
-      position: sticky;
-      top: 0;
-      backdrop-filter: var(--glass-blur);
-      -webkit-backdrop-filter: var(--glass-blur);
-    }
-
-    tr:hover {
-      background-color: var(--row-hover);
-    }
-
-    @keyframes fadeIn {
-      from {
-        opacity: 0;
-        transform: translateY(20px);
-      }
-      to {
-        opacity: 1;
-        transform: translateY(0);
-      }
-    }
-
-    /* Horizontal Color Palette - Samsung One UI 6 Style */
-    .theme-card {
-      background-color: var(--card-bg);
-      padding: 15px;
-      margin: 20px 0;
-      border-radius: 20px;
-      box-shadow: 0 4px 15px rgba(0,0,0,0.08);
-      backdrop-filter: var(--glass-blur);
-      -webkit-backdrop-filter: var(--glass-blur);
-      border: var(--glass-border);
-    }
-
-    .theme-card h3 {
-      margin-bottom: 15px;
-      color: var(--heading);
-      text-align: center;
-    }
-
-    .color-palette {
-      display: flex;
-      overflow-x: auto;
-      gap: 10px;
-      padding: 10px 5px;
-      scrollbar-width: thin;
-      scrollbar-color: var(--primary) var(--card-bg);
-    }
-
-    .color-palette::-webkit-scrollbar {
-      height: 6px;
-    }
-
-    .color-palette::-webkit-scrollbar-track {
-      background: var(--card-bg);
-      border-radius: 3px;
-    }
-
-    .color-palette::-webkit-scrollbar-thumb {
-      background-color: var(--primary);
-      border-radius: 10px;
-    }
-
-    .color-option {
-      flex: 0 0 60px;
-      height: 60px;
-      border-radius: 50%;
-      cursor: pointer;
-      transition: all 0.3s ease;
-      position: relative;
-      overflow: hidden;
-      box-shadow: 0 3px 6px rgba(0,0,0,0.1);
-    }
-
-    .color-option::after {
-      content: '✔';
-      font-size: 24px;
-      color: white;
-      text-shadow: 0 1px 2px rgba(0,0,0,0.5);
-      position: absolute;
-      top: 50%;
-      left: 50%;
-      transform: translate(-50%, -50%);
-      opacity: 0;
-      transition: opacity 0.3s ease;
-    }
-    
-    .color-option.selected::after {
-      opacity: 1;
-    }
-
-    .color-option:hover {
-      transform: translateY(-5px);
-      box-shadow: 0 8px 15px rgba(0,0,0,0.2);
-    }
-
-    .color-name {
-      position: absolute;
-      bottom: 5px;
-      left: 0;
-      right: 0;
-      text-align: center;
-      font-size: 10px;
-      font-weight: 500;
-      color: white;
-      text-shadow: 0 1px 2px rgba(0,0,0,0.5);
-      z-index: 1;
-    }
-
-    /* Footer */
-    footer {
-      text-align: center;
-      margin-top: 40px;
-      padding: 20px;
-      color: var(--text-light);
-      font-size: 14px;
-      backdrop-filter: var(--glass-blur);
-      -webkit-backdrop-filter: var(--glass-blur);
-      border-radius: 20px;
-      background-color: var(--card-bg);
-      border: var(--glass-border);
-    }
-
-    /* Responsive */
-    @media (max-width: 768px) {
-      .controls {
-        flex-direction: column;
-        align-items: stretch;
-      }
-      
-      .buttons {
-        gap: 8px;
-      }
-      
-      .buttons button {
-        padding: 10px 15px;
-        font-size: 14px;
-      }
-      
-      th, td {
-        padding: 10px 12px;
-        font-size: 14px;
-      }
-      
-      .color-option {
-        flex: 0 0 50px;
-        height: 50px;
-      }
-
-      .voice-btn {
-        width: 50px;
-        height: 50px;
-      }
-      
-      .voice-status {
-        width: 250px;
-      }
-    }
-
-    @media (max-width: 480px) {
-      body {
-        padding: 10px;
-      }
-      
-      h1 {
-        font-size: 1.5rem;
-      }
-      
-      table {
-        display: block;
-        overflow-x: auto;
-      }
-      
-      .color-option {
-        flex: 0 0 55px;
-        height: 55px;
-      }
-      
-      .color-name {
-        font-size: 9px;
-      }
-      
-      .voice-status {
-        width: calc(100vw - 40px);
-        max-width: 280px;
-        font-size: 12px;
-        padding: 10px;
-      }
-    }
-
-    /* Samsung One UI 6 Color Classes */
-    .samsung-red { background: #ffd9d9; background: linear-gradient(150deg, rgba(255, 217, 217, 1) 0%, rgba(255, 0, 0, 1) 100%); }
-    .samsung-orange { background: #f5d295; background: linear-gradient(150deg, rgba(245, 210, 149, 1) 0%, rgba(230, 145, 9, 1) 100%); }
-    .samsung-yellow { background: #f2e6ce; background: linear-gradient(150deg, rgba(242, 230, 206, 1) 0%, rgba(217, 206, 2, 1) 100%); }
-    .samsung-green { background: #def0d8; background: linear-gradient(150deg, rgba(222, 240, 216, 1) 0%, rgba(2, 217, 2, 1) 100%); }
-    .samsung-mint { background: #797d80; background: linear-gradient(150deg, rgba(121, 125, 128, 1) 0%, rgba(0, 0, 0, 1) 100%); }
-    .samsung-teal { background-color: #30B0C7; }
-    .samsung-cyan { background-color: #32ADE6; }
-    .samsung-blue { background-color: #007AFF; }
-    .samsung-indigo { background-color: #5856D6; }
-    .samsung-purple { background-color: #AF52DE; }
-    .samsung-pink { background-color: #FF2D55; }
-    .samsung-brown { background-color: #A2845E; }
-    .samsung-gray { background-color: #8E8E93; }
-    .glass-theme { background: linear-gradient(135deg, rgba(255,255,255,0.1), rgba(255,255,255,0.05)); border: 1px solid rgba(255,255,255,0.2); box-shadow: 0 8px 32px 0 rgba(31, 38, 135, 0.15); }
- </style>
+        /* Mobile Navigation */
+        .mobile-nav-container {
+            display: none;
+        }
+        @media (max-width: 768px) {
+            .mobile-nav-container {
+                display: block;
+                position: fixed;
+                bottom: 1rem;
+                left: 1rem;
+                right: 1rem;
+                z-index: 100;
+            }
+            /* Новый, более заметный стиль для мобильной навигации */
+.mobile-nav-custom-style {
+    background-color: var(--card-bg); /* Использует основной цвет темы */
+    border: 2px solid var(--accent); /* Использует акцентный цвет для границы */
+    box-shadow: 0 4px 15px rgba(0, 0, 0, 0.2);
+}
+            .mobile-nav-link {
+                position: relative;
+                display: flex;
+                flex-direction: column;
+                align-items: center;
+                justify-content: center;
+                padding: 4px 12px;
+                border-radius: 9999px;
+                transition: background-color 0.3s ease, color 0.3s ease;
+                -webkit-tap-highlight-color: transparent;
+                opacity: 0.7;
+            }
+            .mobile-nav-link.active {
+                opacity: 1;
+                background-color: rgba(99, 102, 241, 0.2);
+                color: var(--accent);
+            }
+            .mobile-nav-link .icon-wrapper svg {
+                width: 28px;
+                height: 28px;
+            }
+            .mobile-nav-link .icon-wrapper span {
+                font-size: 0.75rem;
+            }
+            .desktop-back-btn {
+                display: none;
+            }
+        }
+        @media (min-width: 769px) {
+            .mobile-nav-container {
+                display: none;
+            }
+            .desktop-back-btn {
+                display: flex;
+                width: 100%;
+                justify-content: flex-start;
+            }
+        }
+    </style>
 </head>
 <body>
+
     <div id="selectionModal" class="modal">
-        <div class="modal-content glass-card">
+        <div class="modal-content">
             <h2>Выберите ваше расписание</h2>
             <div class="controls-modal">
                 <select id="facultySelect"></select>
@@ -525,60 +217,39 @@
     </div>
 
     <div class="container" id="mainContent" style="display: none;">
+        <div class="desktop-back-btn">
+            <a href="index.html" class="back">
+                <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                    <path d="M19 12H5"></path>
+                    <polyline points="12 19 5 12 12 5"></polyline>
+                </svg>
+            </a>
+        </div>
         <h1>Ҷадвали дарсҳо</h1>
         <div id="group-info-display" class="group-info"></div>
 
         <div class="theme-card">
             <h3>Палитра цветов</h3>
-          <div class="color-palette">
-          <div class="color-option glass-theme" data-theme="glass" onclick="applySamsungTheme('glass')">
-          <span class="color-name">Glass</span>
+            <div class="color-palette">
+                <div class="color-option glass-theme" data-theme="glass" onclick="applySamsungTheme('glass')"><span class="color-name">Glass</span></div>
+                <div class="color-option samsung-red" data-theme="red" onclick="applySamsungTheme('red')"><span class="color-name">Red</span></div>
+                <div class="color-option samsung-orange" data-theme="orange" onclick="applySamsungTheme('orange')"><span class="color-name">Orange</span></div>
+                <div class="color-option samsung-yellow" data-theme="yellow" onclick="applySamsungTheme('yellow')"><span class="color-name">Yellow</span></div>
+                <div class="color-option samsung-green" data-theme="green" onclick="applySamsungTheme('green')"><span class="color-name">Green</span></div>
+                <div class="color-option samsung-mint" data-theme="mint" onclick="applySamsungTheme('mint')"><span class="color-name">Тёмная</span></div>
+                <div class="color-option samsung-teal" data-theme="teal" onclick="applySamsungTheme('teal')"><span class="color-name">Teal</span></div>
+                <div class="color-option samsung-cyan" data-theme="cyan" onclick="applySamsungTheme('cyan')"><span class="color-name">Cyan</span></div>
+                <div class="color-option samsung-blue" data-theme="blue" onclick="applySamsungTheme('blue')"><span class="color-name">Blue</span></div>
+                <div class="color-option samsung-indigo" data-theme="indigo" onclick="applySamsungTheme('indigo')"><span class="color-name">Indigo</span></div>
+                <div class="color-option samsung-purple" data-theme="purple" onclick="applySamsungTheme('purple')"><span class="color-name">Purple</span></div>
+                <div class="color-option samsung-pink" data-theme="pink" onclick="applySamsungTheme('pink')"><span class="color-name">Pink</span></div>
+                <div class="color-option samsung-brown" data-theme="brown" onclick="applySamsungTheme('brown')"><span class="color-name">Brown</span></div>
+                <div class="color-option samsung-gray" data-theme="gray" onclick="applySamsungTheme('gray')"><span class="color-name">Gray</span></div>
+            </div>
         </div>
-        <div class="color-option samsung-red" data-theme="red" onclick="applySamsungTheme('red')">
-          <span class="color-name">Red</span>
-        </div>
-        <div class="color-option samsung-orange" data-theme="orange" onclick="applySamsungTheme('orange')">
-          <span class="color-name">Orange</span>
-        </div>
-        <div class="color-option samsung-yellow" data-theme="yellow" onclick="applySamsungTheme('yellow')">
-          <span class="color-name">Yellow</span>
-        </div>
-        <div class="color-option samsung-green" data-theme="green" onclick="applySamsungTheme('green')">
-          <span class="color-name">Green</span>
-        </div>
-        <div class="color-option samsung-mint" data-theme="mint" onclick="applySamsungTheme('mint')">
-          <span class="color-name">Тёмная</span>
-        </div>
-        <div class="color-option samsung-teal" data-theme="teal" onclick="applySamsungTheme('teal')">
-          <span class="color-name">Teal</span>
-        </div>
-        <div class="color-option samsung-cyan" data-theme="cyan" onclick="applySamsungTheme('cyan')">
-          <span class="color-name">Cyan</span>
-        </div>
-        <div class="color-option samsung-blue" data-theme="blue" onclick="applySamsungTheme('blue')">
-          <span class="color-name">Blue</span>
-        </div>
-        <div class="color-option samsung-indigo" data-theme="indigo" onclick="applySamsungTheme('indigo')">
-          <span class="color-name">Indigo</span>
-        </div>
-        <div class="color-option samsung-purple" data-theme="purple" onclick="applySamsungTheme('purple')">
-          <span class="color-name">Purple</span>
-        </div>
-        <div class="color-option samsung-pink" data-theme="pink" onclick="applySamsungTheme('pink')">
-          <span class="color-name">Pink</span>
-        </div>
-        <div class="color-option samsung-brown" data-theme="brown" onclick="applySamsungTheme('brown')">
-          <span class="color-name">Brown</span>
-        </div>
-        <div class="color-option samsung-gray" data-theme="gray" onclick="applySamsungTheme('gray')">
-          <span class="color-name">Gray</span>
-        </div>
-      
-      </div>
-    </div>
 
         <div class="controls">
-             <button id="changeGroupBtn" class="btn">Сменить группу</button>
+            <button id="changeGroupBtn" class="btn">Сменить группу</button>
         </div>
 
         <div class="buttons">
@@ -599,225 +270,349 @@
     <div class="voice-assistant">
         <div class="voice-status" id="voiceStatus"></div>
         <button class="voice-btn" id="voiceBtn" title="Голосовой помощник">
-            <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M12 1a3 3 0 0 0-3 3v8a3 3 0 0 0 6 0V4a3 3 0 0 0-3-3z"></path><path d="M19 10v2a7 7 0 0 1-14 0v-2"></path><line x1="12" y1="19" x2="12" y2="23"></line><line x1="8" y1="23" x2="16" y2="23"></line></svg>
+            <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                <path d="M12 1a3 3 0 0 0-3 3v8a3 3 0 0 0 6 0V4a3 3 0 0 0-3-3z"></path>
+                <path d="M19 10v2a7 7 0 0 1-14 0v-2"></path>
+                <line x1="12" y1="19" x2="12" y2="23"></line>
+                <line x1="8" y1="23" x2="16" y2="23"></line>
+            </svg>
         </button>
     </div>
-  
+
+   <nav class="mobile-nav-container fixed bottom-4 left-4 right-4 z-40 rounded-2xl h-16 mobile-nav-custom-style">
+
+        <div class="flex justify-around items-center h-full text-sm">
+            <a href="index.html" class="mobile-nav-link">
+                <div class="icon-wrapper"><svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="currentColor" class="w-7 h-7 tap-highlight-transparent"><path d="M11.47 3.84a.75.75 0 011.06 0l8.69 8.69a.75.75 0 101.06-1.06l-8.689-8.69a2.25 2.25 0 00-3.182 0l-8.69 8.69a.75.75 0 001.061 1.06l8.69-8.69z" /><path d="M12 5.432l8.159 8.159c.03.03.06.058.091.086v6.198c0 1.035-.84 1.875-1.875 1.875H15a.75.75 0 01-.75-.75v-4.5a.75.75 0 00-.75-.75h-3a.75.75 0 00-.75.75V21a.75.75 0 01-.75.75H5.625a1.875 1.875 0 01-1.875-1.875v-6.198a2.29 2.29 0 00.091-.086L12 5.43z" /></svg></div>
+                <span class="text-xs font-medium mt-0.5"></span>
+            </a>
+            <a href="#" class="mobile-nav-link active">
+                <div class="icon-wrapper"><svg xmlns="http://www.w3.org/2000/svg" height="35px" viewBox="0 -960 960 960" width="40px" fill="currentColor"><path d="M186.67-633.33h586.66v-113.34H186.67v113.34Zm0 0v-113.34 113.34Zm0 553.33q-27 0-46.84-19.83Q120-119.67 120-146.67v-600q0-27 19.83-46.83 19.84-19.83 46.84-19.83h56.66V-880h70v66.67h333.34V-880h70v66.67h56.66q27 0 46.84 19.83Q840-773.67 840-746.67v280.34q-15.78-7.86-32.39-13.1-16.61-5.24-34.28-8.24v-79H186.67v420h296.66q6.34 18.67 14.84 35 8.5 16.34 20.16 31.67H186.67Zm540.66 40q-79.95 0-136.31-56.35-56.35-56.36-56.35-136.32 0-79.95 56.35-136.31 56.36-56.35 136.31-56.35 79.96 0 136.32 56.35Q920-312.62 920-232.67q0 79.96-56.35 136.32Q807.29-40 727.33-40Zm61.17-93.67 27.83-28-75-75v-112H702V-222l86.5 88.33Z"/></svg></div>
+                <span class="text-xs font-medium mt-0.5"></span>
+            </a>
+            <a href="fakultet.html" class="mobile-nav-link">
+                <div class="icon-wrapper"><svg xmlns="http://www.w3.org/2000/svg" height="35px" viewBox="0 -960 960 960" width="40px" fill="currentColor"><path d="M479.33-120 192.67-276.67v-240L40-600l439.33-240L920-600v318h-66.67v-280L766-516.67v240L479.33-120Zm0-316 301.34-164-301.34-162-300 162 300 164Zm0 240.33 220-120.66v-162.34L479.33-360l-220-120v163.67l220 120.66ZM480-436Zm-.67 79.33Zm0 0Z"/></svg></div>
+                <span class="text-xs font-medium mt-0.5"></span>
+            </a>
+            <a href="contact.html" class="mobile-nav-link">
+                <div class="icon-wrapper"><svg xmlns="http://www.w3.org/2000/svg" height="35px" viewBox="0 -960 960 960" width="40px" fill="currentColor"><path d="M264-199q21-19.33 46.83-46.83 25.84-27.5 48.84-58.84 23-31.33 39-63.97t16-62.69q0-67.89-42.38-112.28Q329.92-588 264-588q-65.92 0-108.29 44.4-42.38 44.4-42.38 112.3 0 30.3 16 62.8t39 63.83q23 31.34 48.84 58.84Q243-218.33 264-199ZM80-80v-53.33h156.67Q208-160 173-196t-65-78q-26-37.33-43.67-77-17.66-39.67-17.66-80.43 0-95.12 62.33-159.18t155-64.06q92.67 0 155 64.06t62.33 159.18q0 40.76-17.66 80.43Q446-311.33 420-274q-30 42.67-65.33 78.67-35.34 36-64 62H880V-80H80Zm524-514.67Zm-10.67 345.34L521-365.67 558.67-432l34.66 56.33L628.67-432h184.66v-381.33h-422V-728h-66.66v-85.33q0-27 19.83-46.84Q364.33-880 391.33-880h422q27 0 46.84 19.83Q880-840.33 880-813.33V-432q0 27-19.83 46.83-19.84 19.84-46.84 19.84H665.67l-72.34 116Zm-71-267.34 81.34-49 81.33 49-21.67-92 72-63-94.87-8-36.79-87-36.8 87-94.87 8 72 63-21.67 92ZM264-372.67q28.61 0 48.64-20.02 20.03-20.03 20.03-48.64t-20.03-48.64Q292.61-510 264-510t-48.64 20.03q-20.03 20.03-20.03 48.64t20.03 48.64q20.03 20.02 48.64 20.02Zm0-68.66Z"/></svg></div>
+                <span class="text-xs font-medium mt-0.5"></span>
+            </a>
+            <a href="profile.html" class="mobile-nav-link">
+                <div class="icon-wrapper"><svg xmlns="http://www.w3.org/2000/svg" height="40px" fill="currentColor" viewBox="0 0 24 24"><path d="M12 12c2.21 0 4-1.79 4-4s-1.79-4-4-4-4 1.79-4 4 1.79 4 4 4zm0 2c-2.67 0-8 1.34-8 4v2h16v-2c0-2.66-5.33-4-8-4z"/></svg></div>
+                <span class="text-xs font-medium mt-0.5"></span>
+            </a>
+        </div>
+    </nav>
+    
     <script src="https://www.gstatic.com/firebasejs/8.10.1/firebase-app.js"></script>
     <script src="https://www.gstatic.com/firebasejs/8.10.1/firebase-database.js"></script>
     <script>
-const firebaseConfig = {
-    apiKey: "AIzaSyB3_Qs3pr6OK2JvyL7ViO09aFXjjt9qygQ",
-    authDomain: "tut-app-6aaae.firebaseapp.com",
-    databaseURL: "https://tut-app-6aaae-default-rtdb.asia-southeast1.firebasedatabase.app",
-    projectId: "tut-app-6aaae",
-    storageBucket: "tut-app-6aaae.firebasestorage.app",
-    messagingSenderId: "726613480112",
-    appId: "1:726613480112:web:6e55cfb767ec8f6c5d6175",
-    measurementId: "G-DZ0XNZR35S"
-  };
-if (!firebase.apps.length) firebase.initializeApp(firebaseConfig);
-const db = firebase.database();
+        const firebaseConfig = {
+            apiKey: "AIzaSyB3_Qs3pr6OK2JvyL7ViO09aFXjjt9qygQ",
+            authDomain: "tut-app-6aaae.firebaseapp.com",
+            databaseURL: "https://tut-app-6aaae-default-rtdb.asia-southeast1.firebasedatabase.app",
+            projectId: "tut-app-6aaae",
+            storageBucket: "tut-app-6aaae.firebasestorage.app",
+            messagingSenderId: "726613480112",
+            appId: "1:726613480112:web:6e55cfb767ec8f6c5d6175",
+            measurementId: "G-DZ0XNZR35S"
+        };
+        if (!firebase.apps.length) firebase.initializeApp(firebaseConfig);
+        const db = firebase.database();
 
-let hierarchy = {}, currentSchedule = {}, currentDay = '', recognition;
-const $ = (selector) => document.querySelector(selector);
-const facultySelect = $('#facultySelect'), courseSelect = $('#courseSelect'), groupSelect = $('#groupSelect');
-const daysOfWeek = ['Душанбе', 'Сешанбе', 'Чоршанбе', 'Панҷшанбе', 'Ҷумъа', 'Шанбе'];
-const dayMapping = { 'понедельник': 'Душанбе', 'вторник': 'Сешанбе', 'среду': 'Чоршанбе', 'четверг': 'Панҷшанбе', 'пятницу': 'Ҷумъа', 'субботу': 'Шанбе' };
+        let hierarchy = {}, currentSchedule = {}, currentDay = '', recognition;
+        const $ = (selector) => document.querySelector(selector);
+        const facultySelect = $('#facultySelect'), courseSelect = $('#courseSelect'), groupSelect = $('#groupSelect');
+        const daysOfWeek = ['Душанбе', 'Сешанбе', 'Чоршанбе', 'Панҷшанбе', 'Ҷумъа', 'Шанбе'];
+        const dayMapping = { 'понедельник': 'Душанбе', 'вторник': 'Сешанбе', 'среду': 'Чоршанбе', 'четверг': 'Панҷшанбе', 'пятницу': 'Ҷумъа', 'субботу': 'Шанбе', 'завтра': 'завтра' };
 
-// --- THEME LOGIC ---
- const samsungThemes = {
-        red: {"--bg": "#ffe0e0", "--text": "black", "--heading": "#1F040A", "--primary": "#FF3B30", "--accent": "#E0352B", "--button-bg": "#FF3B30", "--button-text": "black", "--button-hover": "#E0352B", "--card-bg": "#dbb4b4", "--border": "#FFD6D4", "--row-hover": "#FFEAE9", "--text-light": "black", "--skeleton-bg": "rgba(255, 214, 212, 0.5)", "--glass-blur": "none", "--glass-border": "none", "--bg-image": "none"},
-        orange: {"--bg": "#FFF5ED", "--text": "black", "--heading": "black", "--primary": "#FF9500", "--accent": "#E08500", "--button-bg": "#FF9500", "--button-text": "black", "--button-hover": "#E08500", "--card-bg": "#e8d399", "--border": "#FFD9A6", "--row-hover": "#FFEDD3", "--text-light": "#8A5D3D", "--skeleton-bg": "rgba(255, 217, 166, 0.5)", "--glass-blur": "none", "--glass-border": "none", "--bg-image": "none"},
-        yellow: {"--bg": "#d6c79f", "--text": "#3A3007", "--heading": "#1F1904", "--primary": "#FFCC00", "--accent": "#E0B800", "--button-bg": "#FFCC00", "--button-text": "#3A3007", "--button-hover": "#E0B800", "--card-bg": "#ffeebf", "--border": "#FFE680", "--row-hover": "#FFF2BF", "--text-light": "black", "--skeleton-bg": "rgba(255, 230, 128, 0.5)", "--glass-blur": "none", "--glass-border": "none", "--bg-image": "none"},
-        green: {"--bg": "#DEF2BF", "--text": "#0A3A1D", "--heading": "#051F10", "--primary": "#34C759", "--accent": "#2DB350", "--button-bg": "#34C759", "--button-text": "#FFFFFF", "--button-hover": "#2DB350", "--card-bg": "#E7F0D8", "--border": "#B8EBC5", "--row-hover": "#DBF5E2", "--text-light": "#4D8A62", "--skeleton-bg": "rgba(184, 235, 197, 0.5)", "--glass-blur": "none", "--glass-border": "none", "--bg-image": "none"},
-        mint: {"--bg": "black", "--text": "white", "--heading": "white", "--primary": "#2b2b2b", "--accent": "#1768ff", "--button-bg": "#1768ff", "--button-text": "white", "--button-hover": "green", "--card-bg": "#2b2b2b", "--border": "#2b2b2b", "--row-hover": "#2b2b2b", "--text-light": "", "--skeleton-bg": "rgba(153, 232, 228, 0.5)", "--glass-blur": "none", "--glass-border": "none", "--bg-image": "url('sky.jpg')"},
-        teal: {"--bg": "#EFF9FB", "--text": "#072E3A", "--heading": "#04191F", "--primary": "#30B0C7", "--accent": "#2A9EB3", "--button-bg": "#30B0C7", "--button-text": "#FFFFFF", "--button-hover": "#2A9EB3", "--card-bg": "#FFFFFF", "--border": "#A5DCE6", "--row-hover": "#D2EDF3", "--text-light": "#4D7C8A", "--skeleton-bg": "rgba(165, 220, 230, 0.5)", "--glass-blur": "none", "--glass-border": "none", "--bg-image": "none"},
-        cyan: {"--bg": "#EFF9FE", "--text": "#072A3A", "--heading": "#04171F", "--primary": "#32ADE6", "--accent": "#2D9CD0", "--button-bg": "#32ADE6", "--button-text": "#FFFFFF", "--button-hover": "#2D9CD0", "--card-bg": "#FFFFFF", "--border": "#A7D7F3", "--row-hover": "#D3EBF9", "--text-light": "#4D7C8A", "--skeleton-bg": "rgba(167, 215, 243, 0.5)", "--glass-blur": "none", "--glass-border": "none", "--bg-image": "none"},
-        blue: {"--bg": "#F5F9FF", "--text": "#071D3A", "--heading": "#04101F", "--primary": "#007AFF", "--accent": "#006CE0", "--button-bg": "#007AFF", "--button-text": "#FFFFFF", "--button-hover": "#006CE0", "--card-bg": "#FFFFFF", "--border": "#99C7FF", "--row-hover": "#CCE3FF", "--text-light": "#4D6B8A", "--skeleton-bg": "rgba(153, 199, 255, 0.5)", "--glass-blur": "none", "--glass-border": "none", "--bg-image": "none"},
-        indigo: {"--bg": "#F5F5FF", "--text": "#12073A", "--heading": "#0A041F", "--primary": "#5856D6", "--accent": "#4F4DC2", "--button-bg": "#5856D6", "--button-text": "#FFFFFF", "--button-hover": "#4F4DC2", "--card-bg": "#FFFFFF", "--border": "#BAB9EB", "--row-hover": "#DCDCF5", "--text-light": "#5A588A", "--skeleton-bg": "rgba(186, 185, 235, 0.5)", "--glass-blur": "none", "--glass-border": "none", "--bg-image": "none"},
-        purple: {"--bg": "#FAF5FF", "--text": "#1F073A", "--heading": "#11041F", "--primary": "#AF52DE", "--accent": "#9E4AC9", "--button-bg": "#AF52DE", "--button-text": "#FFFFFF", "--button-hover": "#9E4AC9", "--card-bg": "#FFFFFF", "--border": "#D7A8ED", "--row-hover": "#EBD4F6", "--text-light": "#6D4D8A", "--skeleton-bg": "rgba(215, 168, 237, 0.5)", "--glass-blur": "none", "--glass-border": "none", "--bg-image": "none"},
-        pink: {"--bg": "#FFF5F8", "--text": "#3A071D", "--heading": "#1F0410", "--primary": "#FF2D55", "--accent": "#E0284D", "--button-bg": "#FF2D55", "--button-text": "#FFFFFF", "--button-hover": "#E0284D", "--card-bg": "#FFFFFF", "--border": "#FFA6B9", "--row-hover": "#FFD3DC", "--text-light": "#8A4D66", "--skeleton-bg": "rgba(255, 166, 185, 0.5)", "--glass-blur": "none", "--glass-border": "none", "--bg-image": "none"},
-        brown: {"--bg": "#F9F6F2", "--text": "#3A2610", "--heading": "#1F1408", "--primary": "#A2845E", "--accent": "#927755", "--button-bg": "#A2845E", "--button-text": "#FFFFFF", "--button-hover": "#927755", "--card-bg": "#FFFFFF", "--border": "#D1C2AC", "--row-hover": "#E8E1D6", "--text-light": "#8A7A60", "--skeleton-bg": "rgba(209, 194, 172, 0.5)", "--glass-blur": "none", "--glass-border": "none", "--bg-image": "none"},
-        gray: {"--bg": "#F2F2F7", "--text": "#1C1C1E", "--heading": "#0A0A0A", "--primary": "#8E8E93", "--accent": "#808085", "--button-bg": "#8E8E93", "--button-text": "#FFFFFF", "--button-hover": "#808085", "--card-bg": "#FFFFFF", "--border": "#C7C7CC", "--row-hover": "#E5E5EA", "--text-light": "#6C6C70", "--skeleton-bg": "rgba(199, 199, 204, 0.5)", "--glass-blur": "none", "--glass-border": "none", "--bg-image": "url('neon1.jpg')"},
-        glass: {"--bg": "rgba(255,255,255,0.1)", "--text": "#ffffff", "--heading": "#ffffff", "--primary": "rgba(255,255,255,0.01)", "--accent": "rgba(255,255,255,0.7)", "--button-bg": "rgba(255,255,255,0.1)", "--button-text": "#ffffff", "--button-hover": "rgba(255,255,255,0.2)", "--card-bg": "rgba(255,255,255,0.1)", "--border": "rgba(255,255,255,0.1)", "--row-hover": "rgba(255,255,255,0.1)", "--text-light": "rgba(255,255,255,0.7)", "--skeleton-bg": "rgba(255,255,255,0.2)", "--glass-blur": "blur(13px)", "--glass-border": "1px solid rgba(255,255,255,0.2)", "--bg-image": "linear-gradient(rgba(0,0,0,0.5), rgba(0,0,0,0.5)), url('neon2.jpg')"}
-    };
-function applySamsungTheme(t){if(!samsungThemes[t])return;const e=samsungThemes[t];Object.entries(e).forEach(([t,e])=>document.documentElement.style.setProperty(t,e)),localStorage.setItem("selectedTheme",t),document.querySelectorAll(".color-option").forEach(t=>t.classList.remove("selected"));const o=document.querySelector(`.color-option[data-theme="${t}"]`);o&&o.classList.add("selected")}
-
-// --- INITIALIZATION ---
-document.addEventListener('DOMContentLoaded', async () => {
-    applySamsungTheme(localStorage.getItem("selectedTheme") || 'glass');
-    showSkeletonLoader();
-    try {
-        const snapshot = await db.ref('hierarchy').once('value');
-        if (!snapshot.exists()) throw new Error("Hierarchy not found");
-        hierarchy = snapshot.val();
-        
-        populateFaculties();
-        initVoiceRecognition();
-
-        const savedPath = localStorage.getItem('schedulePath');
-        const savedInfo = localStorage.getItem('scheduleInfo');
-        if (savedPath) {
-            const pathIds = JSON.parse(savedPath);
-            facultySelect.value = pathIds.f;
-            populateCourses(pathIds.c);
-            populateGroups(pathIds.g);
-            $('#group-info-display').textContent = savedInfo;
-            $('#mainContent').style.display = 'block';
-            showTodayOrDefault();
-        } else {
-            $('#selectionModal').classList.add('active');
+        const samsungThemes = {
+            red: {"--bg": "#ffe0e0", "--text": "black", "--heading": "#1F040A", "--primary": "#FF3B30", "--accent": "#E0352B", "--button-bg": "#FF3B30", "--button-text": "black", "--button-hover": "#E0352B", "--card-bg": "#dbb4b4", "--border": "#FFD6D4", "--row-hover": "#FFEAE9", "--text-light": "black", "--skeleton-bg": "rgba(255, 214, 212, 0.5)", "--glass-blur": "none", "--glass-border": "none", "--bg-image": "none"},
+            orange: {"--bg": "#FFF5ED", "--text": "black", "--heading": "black", "--primary": "#FF9500", "--accent": "#E08500", "--button-bg": "#FF9500", "--button-text": "black", "--button-hover": "#E08500", "--card-bg": "#e8d399", "--border": "#FFD9A6", "--row-hover": "#FFEDD3", "--text-light": "#8A5D3D", "--skeleton-bg": "rgba(255, 217, 166, 0.5)", "--glass-blur": "none", "--glass-border": "none", "--bg-image": "none"},
+            yellow: {"--bg": "#d6c79f", "--text": "#3A3007", "--heading": "#1F1904", "--primary": "#FFCC00", "--accent": "#E0B800", "--button-bg": "#FFCC00", "--button-text": "#3A3007", "--button-hover": "#E0B800", "--card-bg": "#ffeebf", "--border": "#FFE680", "--row-hover": "#FFF2BF", "--text-light": "black", "--skeleton-bg": "rgba(255, 230, 128, 0.5)", "--glass-blur": "none", "--glass-border": "none", "--bg-image": "none"},
+            green: {"--bg": "#DEF2BF", "--text": "#0A3A1D", "--heading": "#051F10", "--primary": "#34C759", "--accent": "#2DB350", "--button-bg": "#34C759", "--button-text": "#FFFFFF", "--button-hover": "#2DB350", "--card-bg": "#E7F0D8", "--border": "#B8EBC5", "--row-hover": "#DBF5E2", "--text-light": "#4D8A62", "--skeleton-bg": "rgba(184, 235, 197, 0.5)", "--glass-blur": "none", "--glass-border": "none", "--bg-image": "none"},
+            mint: {"--bg": "black", "--text": "white", "--heading": "white", "--primary": "#2b2b2b", "--accent": "#1768ff", "--button-bg": "#1768ff", "--button-text": "white", "--button-hover": "green", "--card-bg": "#2b2b2b", "--border": "#2b2b2b", "--row-hover": "#2b2b2b", "--text-light": "", "--skeleton-bg": "rgba(153, 232, 228, 0.5)", "--glass-blur": "none", "--glass-border": "none", "--bg-image": "url('sky.jpg')"},
+            teal: {"--bg": "#EFF9FB", "--text": "#072E3A", "--heading": "#04191F", "--primary": "#30B0C7", "--accent": "#2A9EB3", "--button-bg": "#30B0C7", "--button-text": "#FFFFFF", "--button-hover": "#2A9EB3", "--card-bg": "#FFFFFF", "--border": "#A5DCE6", "--row-hover": "#D2EDF3", "--text-light": "#4D7C8A", "--skeleton-bg": "rgba(165, 220, 230, 0.5)", "--glass-blur": "none", "--glass-border": "none", "--bg-image": "none"},
+            cyan: {"--bg": "#EFF9FE", "--text": "#072A3A", "--heading": "#04171F", "--primary": "#32ADE6", "--accent": "#2D9CD0", "--button-bg": "#32ADE6", "--button-text": "#FFFFFF", "--button-hover": "#2D9CD0", "--card-bg": "#FFFFFF", "--border": "#A7D7F3", "--row-hover": "#D3EBF9", "--text-light": "#4D7C8A", "--skeleton-bg": "rgba(167, 215, 243, 0.5)", "--glass-blur": "none", "--glass-border": "none", "--bg-image": "none"},
+            blue: {"--bg": "#F5F9FF", "--text": "#071D3A", "--heading": "#04101F", "--primary": "#007AFF", "--accent": "#006CE0", "--button-bg": "#007AFF", "--button-text": "#FFFFFF", "--button-hover": "#006CE0", "--card-bg": "#FFFFFF", "--border": "#99C7FF", "--row-hover": "#CCE3FF", "--text-light": "#4D6B8A", "--skeleton-bg": "rgba(153, 199, 255, 0.5)", "--glass-blur": "none", "--glass-border": "none", "--bg-image": "none"},
+            indigo: {"--bg": "#F5F5FF", "--text": "#12073A", "--heading": "#0A041F", "--primary": "#5856D6", "--accent": "#4F4DC2", "--button-bg": "#5856D6", "--button-text": "#FFFFFF", "--button-hover": "#4F4DC2", "--card-bg": "#FFFFFF", "--border": "#BAB9EB", "--row-hover": "#DCDCF5", "--text-light": "#5A588A", "--skeleton-bg": "rgba(186, 185, 235, 0.5)", "--glass-blur": "none", "--glass-border": "none", "--bg-image": "none"},
+            purple: {"--bg": "#FAF5FF", "--text": "#1F073A", "--heading": "#11041F", "--primary": "#AF52DE", "--accent": "#9E4AC9", "--button-bg": "#AF52DE", "--button-text": "#FFFFFF", "--button-hover": "#9E4AC9", "--card-bg": "#FFFFFF", "--border": "#D7A8ED", "--row-hover": "#EBD4F6", "--text-light": "#6D4D8A", "--skeleton-bg": "rgba(215, 168, 237, 0.5)", "--glass-blur": "none", "--glass-border": "none", "--bg-image": "none"},
+            pink: {"--bg": "#FFF5F8", "--text": "#3A071D", "--heading": "#1F0410", "--primary": "#FF2D55", "--accent": "#E0284D", "--button-bg": "#FF2D55", "--button-text": "#FFFFFF", "--button-hover": "#E0284D", "--card-bg": "#FFFFFF", "--border": "#FFA6B9", "--row-hover": "#FFD3DC", "--text-light": "#8A4D66", "--skeleton-bg": "rgba(255, 166, 185, 0.5)", "--glass-blur": "none", "--glass-border": "none", "--bg-image": "none"},
+            brown: {"--bg": "#F9F6F2", "--text": "#3A2610", "--heading": "#1F1408", "--primary": "#A2845E", "--accent": "#927755", "--button-bg": "#A2845E", "--button-text": "#FFFFFF", "--button-hover": "#927755", "--card-bg": "#FFFFFF", "--border": "#D1C2AC", "--row-hover": "#E8E1D6", "--text-light": "#8A7A60", "--skeleton-bg": "rgba(209, 194, 172, 0.5)", "--glass-blur": "none", "--glass-border": "none", "--bg-image": "none"},
+            gray: {"--bg": "#F2F2F7", "--text": "#1C1C1E", "--heading": "#0A0A0A", "--primary": "#8E8E93", "--accent": "#808085", "--button-bg": "#8E8E93", "--button-text": "#FFFFFF", "--button-hover": "#808085", "--card-bg": "#FFFFFF", "--border": "#C7C7CC", "--row-hover": "#E5E5EA", "--text-light": "#6C6C70", "--skeleton-bg": "rgba(199, 199, 204, 0.5)", "--glass-blur": "none", "--glass-border": "none", "--bg-image": "url('neon1.jpg')"},
+            glass: {"--bg": "rgba(255,255,255,0.1)", "--text": "#ffffff", "--heading": "#ffffff", "--primary": "rgba(255,255,255,0.01)", "--accent": "rgba(255,255,255,0.7)", "--button-bg": "rgba(255,255,255,0.1)", "--button-text": "#ffffff", "--button-hover": "rgba(255,255,255,0.2)", "--card-bg": "rgba(255,255,255,0.1)", "--border": "rgba(255,255,255,0.1)", "--row-hover": "rgba(255,255,255,0.1)", "--text-light": "rgba(255,255,255,0.7)", "--skeleton-bg": "rgba(255,255,255,0.2)", "--glass-blur": "blur(13px)", "--glass-border": "1px solid rgba(255,255,255,0.2)", "--bg-image": "linear-gradient(rgba(0,0,0,0.5), rgba(0,0,0,0.5)), url('neon2.jpg')"}
+        };
+        function applySamsungTheme(t) {
+            if (!samsungThemes[t]) return;
+            const e = samsungThemes[t];
+            Object.entries(e).forEach(([t,e]) => document.documentElement.style.setProperty(t, e));
+            localStorage.setItem("selectedTheme", t);
+            document.querySelectorAll(".color-option").forEach(t => t.classList.remove("selected"));
+            const o = document.querySelector(`.color-option[data-theme="${t}"]`);
+            o && o.classList.add("selected");
         }
-    } catch(e) {
-        console.error(e);
-        document.body.innerHTML = '<h1>Ошибка загрузки данных</h1>';
-    }
-});
 
-// --- HIERARCHY & GROUP SELECTION ---
-function populateFaculties(){for(const e in facultySelect.innerHTML="<option value=''>Факультет</option>",hierarchy)facultySelect.add(new Option(hierarchy[e].name,e))}
-function populateCourses(e=null){const t=facultySelect.value;courseSelect.innerHTML="<option value=''>Курс</option>";if(!t)return void populateGroups();const o=hierarchy[t];o?.courses&&Object.keys(o.courses).forEach(t=>courseSelect.add(new Option(o.courses[t].name,t))),e&&(courseSelect.value=e)}
-function populateGroups(e=null){const t=facultySelect.value,o=courseSelect.value;groupSelect.innerHTML="<option value=''>Группа</option>";if(!o)return;const n=hierarchy[t]?.courses?.[o];n?.groups&&Object.keys(n.groups).forEach(t=>groupSelect.add(new Option(n.groups[t].name,t))),e&&(groupSelect.value=e)}
-facultySelect.addEventListener('change',()=>populateCourses());
-courseSelect.addEventListener('change',()=>populateGroups());
-groupSelect.addEventListener('change',()=>{$('#saveSelectionBtn').disabled=!groupSelect.value});
-$('#changeGroupBtn').addEventListener('click',()=>{ $('#selectionModal').classList.add('active');});
-$('#saveSelectionBtn').addEventListener('click',()=> {
-    const pathIds = { f: facultySelect.value, c: courseSelect.value, g: groupSelect.value };
-    if (!pathIds.f || !pathIds.c || !pathIds.g) return;
-    const info = `${facultySelect.options[facultySelect.selectedIndex].text}, ${courseSelect.options[courseSelect.selectedIndex].text}, ${groupSelect.options[groupSelect.selectedIndex].text}`;
-    localStorage.setItem('schedulePath', JSON.stringify(pathIds));
-    localStorage.setItem('scheduleInfo', info);
-    $('#selectionModal').classList.remove('active');
-    $('#mainContent').style.display = 'block';
-    $('#group-info-display').textContent = info;
-    showTodayOrDefault();
-});
+        // --- INITIALIZATION ---
+        document.addEventListener('DOMContentLoaded', async () => {
+            applySamsungTheme(localStorage.getItem("selectedTheme") || 'glass');
+            showSkeletonLoader();
+            try {
+                const snapshot = await db.ref('hierarchy').once('value');
+                if (!snapshot.exists()) throw new Error("Hierarchy not found");
+                hierarchy = snapshot.val();
+                
+                populateFaculties();
+                initVoiceRecognition();
 
-// --- SCHEDULE LOGIC ---
-function showTodayOrDefault(){let t=new Date().getDay();currentDay=daysOfWeek[0===t?6:t-1],updateSchedule()}
-function showDay(t){if("yakshanbe"===t)return;currentDay=t,updateSchedule()}
-async function updateSchedule() {
-    const pathIds = { f: facultySelect.value, c: courseSelect.value, g: groupSelect.value };
-    if (!pathIds.g) return renderNoGroupSelected();
-    showSkeletonLoader();
-    const schedulePath = `schedules/${pathIds.f}/${pathIds.c}/${pathIds.g}`;
-    const snapshot = await db.ref(schedulePath).get();
-    currentSchedule = snapshot.exists() ? snapshot.val() : {};
-    const daySchedule = currentSchedule[currentDay] || [];
-    setTimeout(() => {
-        if (daySchedule.length === 0 || daySchedule.every(item => !item.subject?.trim())) {
-            renderNoClasses();
-        } else {
-            renderSchedule(daySchedule);
-        }
-        document.querySelectorAll('.buttons button').forEach(btn => {
-            btn.classList.toggle('active-day', btn.dataset.day === currentDay);
+                const savedPath = localStorage.getItem('schedulePath');
+                const savedInfo = localStorage.getItem('scheduleInfo');
+                if (savedPath) {
+                    const pathIds = JSON.parse(savedPath);
+                    facultySelect.value = pathIds.f;
+                    populateCourses(pathIds.c);
+                    populateGroups(pathIds.g);
+                    $('#group-info-display').textContent = savedInfo;
+                    $('#mainContent').style.display = 'block';
+                    showTodayOrDefault();
+                } else {
+                    $('#selectionModal').classList.add('active');
+                }
+            } catch(e) {
+                console.error(e);
+                document.body.innerHTML = '<h1>Ошибка загрузки данных</h1>';
+            }
         });
-    }, 300);
-}
-function showSkeletonLoader(){$('#scheduleContainer').innerHTML=`<div class="skeleton-loader"><div class="skeleton-header"></div><div class="skeleton-row"></div></div>`}
-function renderNoGroupSelected(){$('#scheduleContainer').innerHTML=`<div class="schedule-day active" style="text-align: center; padding: 20px;">Пожалуйста, выберите группу.</div>`}
-function getToday(){const t=["yakshanbe","Душанбе","Сешанбе","Чоршанбе","Панҷшанбе","Ҷумъа","Шанбе"];return t[new Date().getDay()]}
-function renderNoClasses(){$('#scheduleContainer').innerHTML=`<div class="schedule-day active"><h2>${currentDay}</h2><p style="padding: 20px; text-align: center;">Дарсҳо нестанд</p></div>`}
-function renderSchedule(schedule) {
-    const container = $('#scheduleContainer');
-    let html = `<div class="schedule-day active"><h2>${currentDay}</h2><table><thead><tr><th>Вақт</th><th>АУД</th><th>Фан</th></tr></thead><tbody>`;
-    schedule.forEach(classInfo => {
-        if (classInfo.subject?.trim()) {
-            const time = classInfo.startTime && classInfo.endTime ? `${classInfo.startTime} - ${classInfo.endTime}` : (classInfo.time || '---');
-            html += `<tr><td>${time}</td><td>${classInfo.aud || '---'}</td><td>${classInfo.subject}</td></tr>`;
+
+        // --- HIERARCHY & GROUP SELECTION ---
+        function populateFaculties() { for (const e in facultySelect.innerHTML = "<option value=''>Факультет</option>", hierarchy) facultySelect.add(new Option(hierarchy[e].name, e)) }
+        function populateCourses(e = null) {
+            const t = facultySelect.value;
+            courseSelect.innerHTML = "<option value=''>Курс</option>";
+            if (!t) return populateGroups();
+            const o = hierarchy[t];
+            o?.courses && Object.keys(o.courses).forEach(t => courseSelect.add(new Option(o.courses[t].name, t)));
+            e && (courseSelect.value = e);
         }
-    });
-    html += `</tbody></table></div>`;
-    container.innerHTML = html;
-}
+        function populateGroups(e = null) {
+            const t = facultySelect.value, o = courseSelect.value;
+            groupSelect.innerHTML = "<option value=''>Группа</option>";
+            if (!o) return;
+            const n = hierarchy[t]?.courses?.[o];
+            n?.groups && Object.keys(n.groups).forEach(t => groupSelect.add(new Option(n.groups[t].name, t)));
+            e && (groupSelect.value = e);
+        }
+        facultySelect.addEventListener('change', () => populateCourses());
+        courseSelect.addEventListener('change', () => populateGroups());
+        groupSelect.addEventListener('change', () => { $('#saveSelectionBtn').disabled = !groupSelect.value });
+        $('#changeGroupBtn').addEventListener('click', () => { $('#selectionModal').classList.add('active'); });
+        $('#saveSelectionBtn').addEventListener('click', () => {
+            const pathIds = { f: facultySelect.value, c: courseSelect.value, g: groupSelect.value };
+            if (!pathIds.f || !pathIds.c || !pathIds.g) return;
+            const info = `${facultySelect.options[facultySelect.selectedIndex].text}, ${courseSelect.options[courseSelect.selectedIndex].text}, ${groupSelect.options[groupSelect.selectedIndex].text}`;
+            localStorage.setItem('schedulePath', JSON.stringify(pathIds));
+            localStorage.setItem('scheduleInfo', info);
+            $('#selectionModal').classList.remove('active');
+            $('#mainContent').style.display = 'block';
+            $('#group-info-display').textContent = info;
+            showTodayOrDefault();
+        });
 
-// --- VOICE ASSISTANT ---
-function initVoiceRecognition() {
-    const SpeechRecognition = window.SpeechRecognition || window.webkitSpeechRecognition;
-    if (!SpeechRecognition) return console.warn("Speech Recognition not supported.");
-    recognition = new SpeechRecognition();
-    recognition.lang = 'ru-RU';
-    recognition.interimResults = false;
-    recognition.onresult = (event) => processVoiceCommand(event.results[0][0].transcript.toLowerCase().trim());
-    recognition.onend = () => { $('#voiceBtn').classList.remove('listening'); };
-    $('#voiceBtn').addEventListener('click', () => { recognition.start(); $('#voiceBtn').classList.add('listening'); });
-}
-async function processVoiceCommand(command) {
-    const voiceStatus = $('#voiceStatus');
-    voiceStatus.innerHTML = `<p class="font-semibold">Вы сказали:</p><p class="italic">"${command}"</p>`;
-    voiceStatus.style.display = 'block';
-    let response = "Извините, я не поняла команду. Скажите 'помощь'.";
+        // --- SCHEDULE LOGIC ---
+        function getDayName(dayIndex) {
+            if (dayIndex < 0 || dayIndex >= daysOfWeek.length) return null;
+            return daysOfWeek[dayIndex];
+        }
 
-    if (/^(привет|здравствуй)/.test(command)) {
-        response = "Здравствуйте! Чем могу помочь с расписанием?";
-    } else if (/^(помощь|справка)/.test(command)) {
-        response = `Я могу показать расписание на день, например: "покажи среду", узнать погоду или найти следующую пару.`;
-    } else if (command.includes('погод')) {
-        voiceStatus.innerHTML += `<p class="mt-2 pt-2 border-t">Получаю данные о погоде...</p>`;
-        response = await getWeather();
-    } else if (command.includes('следующая пара')) {
-        response = findNextClass();
-    } else {
-        for (const [dayRussian, dayTajik] of Object.entries(dayMapping)) {
-            if (command.includes(dayRussian)) {
-                showDay(dayTajik);
-                response = `Показываю расписание на ${dayRussian}.`;
-                break;
+        function showTodayOrDefault() {
+            let todayIndex = new Date().getDay() === 0 ? 6 : new Date().getDay() - 1;
+            if (todayIndex >= daysOfWeek.length) {
+                todayIndex = 0;
+            }
+            currentDay = daysOfWeek[todayIndex];
+            updateSchedule();
+        }
+        function showDay(dayName) {
+            if (dayName.toLowerCase() === 'воскресенье' || dayName.toLowerCase() === 'якшанбе') {
+                alert('В воскресенье занятий нет!');
+                return;
+            }
+            currentDay = dayName;
+            updateSchedule();
+        }
+        async function updateSchedule() {
+            const pathIds = { f: facultySelect.value, c: courseSelect.value, g: groupSelect.value };
+            if (!pathIds.g) return renderNoGroupSelected();
+            showSkeletonLoader();
+            const schedulePath = `schedules/${pathIds.f}/${pathIds.c}/${pathIds.g}`;
+            const snapshot = await db.ref(schedulePath).get();
+            currentSchedule = snapshot.exists() ? snapshot.val() : {};
+            const daySchedule = currentSchedule[currentDay] || [];
+            setTimeout(() => {
+                if (daySchedule.length === 0 || daySchedule.every(item => !item.subject?.trim())) {
+                    renderNoClasses();
+                } else {
+                    renderSchedule(daySchedule);
+                }
+                document.querySelectorAll('.buttons button').forEach(btn => {
+                    btn.classList.toggle('active-day', btn.dataset.day === currentDay);
+                });
+            }, 300);
+        }
+        function showSkeletonLoader() { $('#scheduleContainer').innerHTML = `<div class="skeleton-loader"><div class="skeleton-header"></div><div class="skeleton-row"></div></div>` }
+        function renderNoGroupSelected() { $('#scheduleContainer').innerHTML = `<div class="schedule-day active" style="text-align: center; padding: 20px;">Пожалуйста, выберите группу.</div>` }
+        function renderNoClasses() { $('#scheduleContainer').innerHTML = `<div class="schedule-day active"><h2>${currentDay}</h2><p style="padding: 20px; text-align: center;">Дарсҳо нестанд</p></div>` }
+        function renderSchedule(schedule) {
+            const container = $('#scheduleContainer');
+            let html = `<div class="schedule-day active"><h2>${currentDay}</h2><table><thead><tr><th>Вақт</th><th>АУД</th><th>Фан</th></tr></thead><tbody>`;
+            schedule.forEach(classInfo => {
+                if (classInfo.subject?.trim()) {
+                    const time = classInfo.startTime && classInfo.endTime ? `${classInfo.startTime} - ${classInfo.endTime}` : (classInfo.time || '---');
+                    html += `<tr><td>${time}</td><td>${classInfo.aud || '---'}</td><td>${classInfo.subject}</td></tr>`;
+                }
+            });
+            html += `</tbody></table></div>`;
+            container.innerHTML = html;
+        }
+
+        // --- VOICE ASSISTANT ---
+        function initVoiceRecognition() {
+            const SpeechRecognition = window.SpeechRecognition || window.webkitSpeechRecognition;
+            if (!SpeechRecognition) return console.warn("Speech Recognition not supported.");
+            recognition = new SpeechRecognition();
+            recognition.lang = 'ru-RU';
+            recognition.interimResults = false;
+            recognition.onresult = (event) => processVoiceCommand(event.results[0][0].transcript.toLowerCase().trim());
+            recognition.onend = () => { $('#voiceBtn').classList.remove('listening'); };
+            $('#voiceBtn').addEventListener('click', () => { recognition.start(); $('#voiceBtn').classList.add('listening'); });
+        }
+        async function processVoiceCommand(command) {
+            const voiceStatus = $('#voiceStatus');
+            voiceStatus.innerHTML = `<p class="font-semibold">Вы сказали:</p><p class="italic">"${command}"</p>`;
+            voiceStatus.style.display = 'block';
+            let response = "Извините, я не поняла команду. Скажите 'помощь', чтобы узнать, что я умею.";
+            const speakResponse = (text) => {
+                speak(text);
+                voiceStatus.innerHTML += `<p class="assistant-response">${text}</p>`;
+                setTimeout(() => { voiceStatus.style.display = 'none' }, 7000);
+            };
+
+            const lowerCommand = command.toLowerCase();
+
+            if (lowerCommand.includes('привет') || lowerCommand.includes('здравствуй')) {
+                speakResponse("Здравствуйте! Чем могу помочь с расписанием?");
+                return;
+            } else if (lowerCommand.includes('помощь') || lowerCommand.includes('справка')) {
+                speakResponse(`Я могу:
+- показать расписание на любой день (например, "покажи расписание на завтра" или "покажи четверг"),
+- найти следующую пару,
+- узнать, какая сейчас пара,
+- узнать, какая погода в Душанбе.
+Просто скажите мне, что вы хотите.`);
+                return;
+            } else if (lowerCommand.includes('погода')) {
+                voiceStatus.innerHTML += `<p class="mt-2 pt-2 border-t">Получаю данные о погоде...</p>`;
+                const weatherInfo = await getWeather();
+                speakResponse(weatherInfo);
+                return;
+            } else if (lowerCommand.includes('следующая пара')) {
+                const nextClassInfo = findNextClass();
+                speakResponse(nextClassInfo);
+                return;
+            } else if (lowerCommand.includes('сейчас пара') || lowerCommand.includes('какая сейчас пара')) {
+                const currentClassInfo = findCurrentClass();
+                speakResponse(currentClassInfo);
+                return;
+            } else {
+                let dayFound = false;
+                if (lowerCommand.includes('завтра')) {
+                    const todayIndex = new Date().getDay();
+                    const tomorrowIndex = (todayIndex % 7);
+                    if (tomorrowIndex === 0) {
+                        speakResponse("Завтра воскресенье, занятий нет!");
+                        return;
+                    }
+                    const dayToShow = daysOfWeek[tomorrowIndex - 1];
+                    showDay(dayToShow);
+                    speakResponse(`Показываю расписание на завтра, ${dayToShow}.`);
+                    dayFound = true;
+                } else if (lowerCommand.includes('сегодня')) {
+                    const todayIndex = new Date().getDay();
+                    if (todayIndex === 0) {
+                        speakResponse("Сегодня воскресенье, занятий нет!");
+                        return;
+                    }
+                    const todayName = daysOfWeek[todayIndex - 1];
+                    showDay(todayName);
+                    speakResponse(`Показываю расписание на сегодня, ${todayName}.`);
+                    dayFound = true;
+                } else {
+                    for (const [dayRussian, dayTajik] of Object.entries(dayMapping)) {
+                        if (lowerCommand.includes(dayRussian)) {
+                            showDay(dayTajik);
+                            speakResponse(`Показываю расписание на ${dayRussian}.`);
+                            dayFound = true;
+                            break;
+                        }
+                    }
+                }
+                if (!dayFound) {
+                    speakResponse(response);
+                }
             }
         }
-        if (command.includes('завтра')) {
-            const tomorrowIndex = (new Date().getDay() % 7);
-            const dayToShow = daysOfWeek[tomorrowIndex];
-            showDay(dayToShow);
-            response = `Показываю расписание на завтра, ${dayToShow === 'Душанбе' ? 'понедельник' : 'следующий день'}.`;
-        }
-    }
-    
-    speak(response);
-    voiceStatus.innerHTML += `<p class="mt-2 pt-2 border-t font-semibold">${response}</p>`;
-    setTimeout(() => { voiceStatus.style.display = 'none' }, 7000);
-}
+        
+        function findNextClass() {
+            const now = new Date();
+            const currentTime = `${String(now.getHours()).padStart(2, '0')}:${String(now.getMinutes()).padStart(2, '0')}`;
+            const todayIndex = now.getDay() === 0 ? 6 : now.getDay() - 1;
+            const todayName = daysOfWeek[todayIndex];
+            const todaySchedule = (currentSchedule[todayName] || []).filter(item => item.subject?.trim()).sort((a, b) => (a.startTime || '').localeCompare(b.startTime || ''));
 
-function findNextClass() {
-    const now = new Date();
-    const currentTime = `${String(now.getHours()).padStart(2,'0')}:${String(now.getMinutes()).padStart(2,'0')}`;
-    const todayIndex = now.getDay() === 0 ? 6 : now.getDay() - 1;
-    if (todayIndex >= daysOfWeek.length) return "Сегодня пар больше нет.";
-    
-    const todayName = daysOfWeek[todayIndex];
-    const todaySchedule = (currentSchedule[todayName] || []).sort((a,b) => (a.startTime || '').localeCompare(b.startTime || ''));
-    
-    for (const lesson of todaySchedule) {
-        if ((lesson.startTime || lesson.time) > currentTime) {
-            return `Следующая пара: ${lesson.subject}, начало в ${lesson.startTime || lesson.time}, в аудитории ${lesson.aud}.`;
+            for (const lesson of todaySchedule) {
+                if ((lesson.startTime || lesson.time) > currentTime) {
+                    return `Следующая пара: ${lesson.subject}, начало в ${lesson.startTime || lesson.time}, в аудитории ${lesson.aud}.`;
+                }
+            }
+            return "На сегодня занятия уже закончились. Хорошего дня!";
         }
-    }
-    return "На сегодня занятия уже закончились.";
-}
 
-async function getWeather() {
-    try {
-        const response = await fetch(`https://wttr.in/Dushanbe?format=j1`);
-        if (!response.ok) throw new Error('Weather service not available');
-        const data = await response.json();
-        const weather = data.current_condition[0];
-        return `Сейчас в Душанбе ${weather.temp_C}°C, ощущается как ${weather.FeelsLikeC}°C. ${weather.lang_ru[0].value}.`;
-    } catch (error) {
-        console.error("Weather fetch error:", error);
-        return "Не удалось получить данные о погоде.";
-    }
-}
-function speak(text) {
-    try {
-        speechSynthesis.cancel();
-        const utterance = new SpeechSynthesisUtterance(text);
-        utterance.lang = 'ru-RU';
-        speechSynthesis.speak(utterance);
-    } catch(e) { console.error("Speech synthesis error:", e); }
-}
+        function findCurrentClass() {
+            const now = new Date();
+            const currentTime = `${String(now.getHours()).padStart(2, '0')}:${String(now.getMinutes()).padStart(2, '0')}`;
+            const todayIndex = now.getDay() === 0 ? 6 : now.getDay() - 1;
+            const todayName = daysOfWeek[todayIndex];
+            const todaySchedule = (currentSchedule[todayName] || []).filter(item => item.subject?.trim()).sort((a, b) => (a.startTime || '').localeCompare(b.startTime || ''));
+
+            for (const lesson of todaySchedule) {
+                if ((lesson.startTime || '') <= currentTime && (lesson.endTime || '') >= currentTime) {
+                    return `Сейчас идет пара: ${lesson.subject}, до ${lesson.endTime || lesson.time}, в аудитории ${lesson.aud}.`;
+                }
+            }
+            return "Сейчас нет занятий.";
+        }
+        
+        async function getWeather() {
+            try {
+                const response = await fetch(`https://wttr.in/Dushanbe?format=j1`);
+                if (!response.ok) throw new Error('Weather service not available');
+                const data = await response.json();
+                const weather = data.current_condition[0];
+                return `Сейчас в Душанбе ${weather.temp_C}°C, ощущается как ${weather.FeelsLikeC}°C. ${weather.lang_ru[0].value}.`;
+            } catch (error) {
+                console.error("Weather fetch error:", error);
+                return "Не удалось получить данные о погоде.";
+            }
+        }
+
+        function speak(text) {
+            try {
+                speechSynthesis.cancel();
+                const utterance = new SpeechSynthesisUtterance(text);
+                utterance.lang = 'ru-RU';
+                speechSynthesis.speak(utterance);
+            } catch(e) { console.error("Speech synthesis error:", e); }
+        }
     </script>
 </body>
 </html>
