@@ -1,4 +1,4 @@
- <!DOCTYPE html>
+<!DOCTYPE html>
 <html lang="ru" class="">
 <head>
     <meta charset="UTF-8">
@@ -19,6 +19,22 @@
             --border-light: rgba(0, 0, 0, 0.1); --border-dark: rgba(255, 255, 255, 0.1);
             --text-light: #0f172a; --text-dark: #e2e8f0;
             --primary: #4f46e5;
+              --primary: #5856D6;
+            --accent: #007AFF;
+            --bg: #F5F5FF;
+            --text: #1C1C1E;
+            --heading: #12073A;
+            --button-bg: #4b54d885;
+            --button-text: #FFFFFF;
+            --button-hover: #4F4DC2;
+            --card-bg: #FFFFFF;
+            --border: #BAB9EB;
+            --row-hover: #DCDCF5;
+            --text-light: #5A588A;
+            --skeleton-bg: rgba(186, 185, 235, 0.5);
+            --glass-blur: none;
+            --glass-border: none;
+            --bg-image: none;
         }
         html { scroll-behavior: smooth; }
         body {
@@ -35,22 +51,101 @@
         .dark .aurora-shape { opacity: 0.5; }
         .aurora-1 { width: 500px; height: 500px; background: #3b82f6; top: -150px; left: -150px; }
         .aurora-2 { width: 400px; height: 400px; background: #8b5cf6; bottom: -100px; right: -100px; animation-duration: 50s; }
+        
         .glass-card {
             background-color: var(--card-light); border: 1px solid var(--border-light);
             backdrop-filter: blur(20px); -webkit-backdrop-filter: blur(20px);
             transition: all 0.3s ease;
         }
         .dark .glass-card { background-color: var(--card-dark); border: 1px solid var(--border-dark); }
+
         .faculty-card {
-            transition: transform 0.3s ease, box-shadow 0.3s ease;
+            background-size: cover;
+            background-position: center;
+            position: relative;
+            overflow: hidden;
+            transition: transform 0.4s ease, box-shadow 0.4s ease;
+            height: 250px;
+        }
+        .faculty-card::before {
+            content: '';
+            position: absolute;
+            inset: 0;
+            background-image: linear-gradient(to top, rgba(0,0,0,0.8), rgba(0,0,0,0.1));
+            transition: background-color 0.4s ease;
         }
         .faculty-card:hover {
-            transform: translateY(-8px);
-            box-shadow: 0 20px 40px rgba(0,0,0,0.1);
+            transform: scale(1.05);
+            box-shadow: 0 25px 50px -12px rgba(0, 0, 0, 0.25);
         }
         .dark .faculty-card:hover {
-            box-shadow: 0 20px 40px rgba(0, 123, 255, 0.15);
+            box-shadow: 0 25px 50px -12px rgba(60, 80, 255, 0.25);
         }
+        
+         /* Mobile Navigation */
+        .mobile-nav-container {
+            display: none;
+        }
+        @media (max-width: 768px) {
+            .mobile-nav-container {
+                display: block;
+                position: fixed;
+                bottom: 1rem;
+                left: 1rem;
+                right: 1rem;
+                z-index: 100;
+            }
+            /* Новый, более заметный стиль для мобильной навигации */
+.mobile-nav-custom-style {
+    background-color: var(--glass-blur); /* Использует основной цвет темы */
+    backdrop-filter: blur(19px); /* Добавляет эффект размытия */
+    border: 2px solid var(--border); /* Использует акцентный цвет для границы */
+    box-shadow: 0 4px 15px rgba(4, 236, 62, 0.2);
+}
+            .mobile-nav-link {
+                position: relative;
+                display: flex;
+                flex-direction: column;
+                align-items: center;
+                justify-content: center;
+                padding: 4px 12px;
+                border-radius: 9999px;
+                transition: background-color 0.3s ease, color 0.3s ease;
+                -webkit-tap-highlight-color: transparent;
+                opacity: 0.7;
+            }
+            .mobile-nav-link.active {
+                opacity: 1;
+                background-color: var(--button-bg);
+                color: var(--card-bg);
+            }
+            .mobile-nav-link .icon-wrapper svg {
+                width: 28px;
+                height: 28px;
+            }
+            .mobile-nav-link .icon-wrapper span {
+                font-size: 0.75rem;
+            }
+            .desktop-back-btn {
+                display: none;
+            }
+        }
+        #logo {
+            width: 40px;
+            height: 40px;
+            border-radius: 50%;
+        }
+        @media (min-width: 769px) {
+            .mobile-nav-container {
+                display: none;
+            }
+            .desktop-back-btn {
+                display: flex;
+                width: 100%;
+                justify-content: flex-start;
+            }
+        }
+        [x-cloak] { display: none !important; }
     </style>
 </head>
 <body x-data="pageManager()" x-init="init()" :class="{ 'dark': isDark }" x-cloak>
@@ -64,17 +159,14 @@
         <header class="sticky top-0 z-30">
             <nav class="container mx-auto px-4 py-3 mt-4 glass-card rounded-2xl">
                 <div class="flex justify-between items-center">
-                    <a href="index.html" class="flex items-center space-x-3">
-                        <img src="logo.png" alt="Logo" class="w-10 h-10">
-                        <span class="text-lg font-bold hidden sm:inline">ДТТ</span>
+                    <a href="fakultet.html" class="flex items-center space-x-3">
+                        <img src="logo.png" alt="Logo" class="w-10 h-10" id="logo">
+                        <span class="text-lg font-bold  sm:inline">Факултетҳо</span>
                     </a>
                     <div class="flex items-center space-x-2">
                         <button @click="toggleTheme()" class="p-2 rounded-full transition-colors hover:bg-black/10 dark:hover:bg-white/10" aria-label="Toggle theme">
                             <svg x-show="!isDark" class="w-6 h-6" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 3v1m0 16v1m9-9h-1M4 12H3m15.364 6.364l-.707-.707M6.343 6.343l-.707-.707m12.728 0l-.707.707M6.343 17.657l-.707.707M16 12a4 4 0 11-8 0 4 4 0 018 0z"></path></svg>
                             <svg x-show="isDark" class="w-6 h-6" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M20.354 15.354A9 9 0 018.646 3.646 9.003 9.003 0 0012 21a9.003 9.003 0 008.354-5.646z"></path></svg>
-                        </button>
-                        <button @click="toggleMenu()" class="md:hidden p-2 rounded-full transition-colors hover:bg-black/10 dark:hover:bg-white/10" aria-label="Open menu">
-                            <svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 6h16M4 12h16m-7 6h7"></path></svg>
                         </button>
                     </div>
                 </div>
@@ -82,66 +174,10 @@
         </header>
 
         <main class="container mx-auto p-4 min-h-screen">
-            <h1 class="text-3xl font-bold mb-8 text-center">Факултетҳо</h1>
+            <h1 class="text-3xl md:text-4xl font-bold mb-8 text-center"></h1>
 
-            <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-6">
-                <a href="#" class="faculty-card glass-card p-6 rounded-xl flex flex-col text-center items-center">
-                    <div class="w-20 h-20 mb-4 flex items-center justify-center">
-                        <img src="https://cdn-icons-png.flaticon.com/512/3081/3081621.png" alt="Engineering" class="w-full h-full object-contain">
-                    </div>
-                    <h3 class="font-bold text-lg flex-grow">Факултети муҳандисӣ-технологӣ</h3>
-                </a>
-
-                <a href="#" class="faculty-card glass-card p-6 rounded-xl flex flex-col text-center items-center">
-                    <div class="w-20 h-20 mb-4 flex items-center justify-center">
-                        <img src="https://cdn-icons-png.flaticon.com/512/1055/1055683.png" alt="Design" class="w-full h-full object-contain">
-                    </div>
-                    <h3 class="font-bold text-lg flex-grow">Факултети технология ва дизайн</h3>
-                </a>
-
-                <a href="#" class="faculty-card glass-card p-6 rounded-xl flex flex-col text-center items-center">
-                    <div class="w-20 h-20 mb-4 flex items-center justify-center">
-                        <img src="https://cdn-icons-png.flaticon.com/512/8099/8099498.png" alt="AI" class="w-full h-full object-contain">
-                    </div>
-                    <h3 class="font-bold text-lg flex-grow">Факултети технологияҳои иттилоотӣ ва интеллекти сунъӣ</h3>
-                </a>
-
-                <a href="#" class="faculty-card glass-card p-6 rounded-xl flex flex-col text-center items-center">
-                    <div class="w-20 h-20 mb-4 flex items-center justify-center">
-                        <img src="https://cdn-icons-png.flaticon.com/512/2942/2942957.png" alt="Telecommunication" class="w-full h-full object-contain">
-                    </div>
-                    <h3 class="font-bold text-lg flex-grow">Факултети телекомуникатсия ва таълимоти касбӣ</h3>
-                </a>
-
-                <a href="#" class="faculty-card glass-card p-6 rounded-xl flex flex-col text-center items-center">
-                    <div class="w-20 h-20 mb-4 flex items-center justify-center">
-                        <img src="https://cdn-icons-png.flaticon.com/512/4340/4340683.png" alt="Finance" class="w-full h-full object-contain">
-                    </div>
-                    <h3 class="font-bold text-lg flex-grow">Факултети иқтисодиёт ва молия</h3>
-                </a>
-
-                <a href="#" class="faculty-card glass-card p-6 rounded-xl flex flex-col text-center items-center">
-                    <div class="w-20 h-20 mb-4 flex items-center justify-center">
-                        <img src="https://cdn-icons-png.flaticon.com/512/1256/1256650.png" alt="Marketing" class="w-full h-full object-contain">
-                    </div>
-                    <h3 class="font-bold text-lg flex-grow">Факултети менеҷмент ва маркетинги байналмилалӣ</h3>
-                </a>
-
-                <a href="#" class="faculty-card glass-card p-6 rounded-xl flex flex-col text-center items-center">
-                   <div class="w-20 h-20 mb-4 flex items-center justify-center">
-                        <img src="https://cdn-icons-png.flaticon.com/512/3388/3388876.png" alt="Partnership" class="w-full h-full object-contain">
-                    </div>
-                    <h3 class="font-bold text-lg flex-grow">Факултаи муштараки Донишгоҳи давлатии Полотск ва ДТТ</h3>
-                </a>
-
-                <a href="#" class="faculty-card glass-card p-6 rounded-xl flex flex-col text-center items-center">
-                    <div class="w-20 h-20 mb-4 flex items-center justify-center">
-                        <img src="https://cdn-icons-png.flaticon.com/512/2905/2905169.png" alt="Distance Learning" class="w-full h-full object-contain">
-                    </div>
-                    <h3 class="font-bold text-lg flex-grow">Факултети таҳсилоти фосилавӣ ва ғоибона</h3>
-                </a>
-
-            </div>
+            <div id="faculties-grid" class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-6">
+                </div>
         </main>
 
         <footer class="mt-12 pb-24 md:pb-6">
@@ -153,69 +189,83 @@
         </footer>
     </div>
 
-   <nav class="md:hidden glass-card fixed bottom-4 left-4 right-4 z-40 rounded-2xl h-16" 
-       x-show="contentLoaded" 
-       x-transition:enter="transition ease-out duration-300 transform" 
-       x-transition:enter-start="translate-y-24" 
-       x-transition:enter-end="translate-y-0">
+     <nav class="mobile-nav-container fixed bottom-4 left-4 right-4 z-40 rounded-2xl h-16 mobile-nav-custom-style">
+
         <div class="flex justify-around items-center h-full text-sm">
-            <a href="#" @click.prevent="activeMobileTab = 'home'" class="mobile-nav-link" :class="{ 'active': activeMobileTab === 'home' }">
-                <div class="icon-wrapper">
-                    <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="currentColor" class="w-7 h-7 tap-highlight-transparent"><path d="M11.47 3.84a.75.75 0 011.06 0l8.69 8.69a.75.75 0 101.06-1.06l-8.689-8.69a2.25 2.25 0 00-3.182 0l-8.69 8.69a.75.75 0 001.061 1.06l8.69-8.69z" /><path d="M12 5.432l8.159 8.159c.03.03.06.058.091.086v6.198c0 1.035-.84 1.875-1.875 1.875H15a.75.75 0 01-.75-.75v-4.5a.75.75 0 00-.75-.75h-3a.75.75 0 00-.75.75V21a.75.75 0 01-.75.75H5.625a1.875 1.875 0 01-1.875-1.875v-6.198a2.29 2.29 0 00.091-.086L12 5.43z" /></svg>
-                </div>
-                <span class="text-xs font-medium mt-0.5" data-translate="nav_home"></span>
+            <a href="home.html" class="mobile-nav-link">
+                <div class="icon-wrapper"><svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="currentColor" class="w-7 h-7 tap-highlight-transparent"><path d="M11.47 3.84a.75.75 0 011.06 0l8.69 8.69a.75.75 0 101.06-1.06l-8.689-8.69a2.25 2.25 0 00-3.182 0l-8.69 8.69a.75.75 0 001.061 1.06l8.69-8.69z" /><path d="M12 5.432l8.159 8.159c.03.03.06.058.091.086v6.198c0 1.035-.84 1.875-1.875 1.875H15a.75.75 0 01-.75-.75v-4.5a.75.75 0 00-.75-.75h-3a.75.75 0 00-.75.75V21a.75.75 0 01-.75.75H5.625a1.875 1.875 0 01-1.875-1.875v-6.198a2.29 2.29 0 00.091-.086L12 5.43z" /></svg></div>
+                <span class="text-xs font-medium mt-0.5"></span>
             </a>
-            <a href="jadvalidarsi.html" @click="activeMobileTab = 'schedule'" class="mobile-nav-link" :class="{ 'active': activeMobileTab === 'schedule' }">
-                <div class="icon-wrapper">
-                   <svg xmlns="http://www.w3.org/2000/svg" height="35px" viewBox="0 -960 960 960" width="40px" fill="currentColor"><path d="M186.67-633.33h586.66v-113.34H186.67v113.34Zm0 0v-113.34 113.34Zm0 553.33q-27 0-46.84-19.83Q120-119.67 120-146.67v-600q0-27 19.83-46.83 19.84-19.83 46.84-19.83h56.66V-880h70v66.67h333.34V-880h70v66.67h56.66q27 0 46.84 19.83Q840-773.67 840-746.67v280.34q-15.78-7.86-32.39-13.1-16.61-5.24-34.28-8.24v-79H186.67v420h296.66q6.34 18.67 14.84 35 8.5 16.34 20.16 31.67H186.67Zm540.66 40q-79.95 0-136.31-56.35-56.35-56.36-56.35-136.32 0-79.95 56.35-136.31 56.36-56.35 136.31-56.35 79.96 0 136.32 56.35Q920-312.62 920-232.67q0 79.96-56.35 136.32Q807.29-40 727.33-40Zm61.17-93.67 27.83-28-75-75v-112H702V-222l86.5 88.33Z"/>
-                </svg>
-                </div>
-                <span class="text-xs font-medium mt-0.5" data-translate="nav_schedule"></span>
+            <a href="jadvalidarsi.html" class="mobile-nav-link">
+                <div class="icon-wrapper"><svg xmlns="http://www.w3.org/2000/svg" height="35px" viewBox="0 -960 960 960" width="40px" fill="currentColor"><path d="M186.67-633.33h586.66v-113.34H186.67v113.34Zm0 0v-113.34 113.34Zm0 553.33q-27 0-46.84-19.83Q120-119.67 120-146.67v-600q0-27 19.83-46.83 19.84-19.83 46.84-19.83h56.66V-880h70v66.67h333.34V-880h70v66.67h56.66q27 0 46.84 19.83Q840-773.67 840-746.67v280.34q-15.78-7.86-32.39-13.1-16.61-5.24-34.28-8.24v-79H186.67v420h296.66q6.34 18.67 14.84 35 8.5 16.34 20.16 31.67H186.67Zm540.66 40q-79.95 0-136.31-56.35-56.35-56.36-56.35-136.32 0-79.95 56.35-136.31 56.36-56.35 136.31-56.35 79.96 0 136.32 56.35Q920-312.62 920-232.67q0 79.96-56.35 136.32Q807.29-40 727.33-40Zm61.17-93.67 27.83-28-75-75v-112H702V-222l86.5 88.33Z"/></svg></div>
+                <span class="text-xs font-medium mt-0.5"></span>
             </a>
-            <a href="fakultet.html" @click="activeMobileTab = 'faculties'" class="mobile-nav-link" :class="{ 'active': activeMobileTab === 'faculties' }">
-                <div class="icon-wrapper">
-                   <svg xmlns="http://www.w3.org/2000/svg" height="35px" viewBox="0 -960 960 960" width="40px" fill="currentColor">
-                    <path d="M479.33-120 192.67-276.67v-240L40-600l439.33-240L920-600v318h-66.67v-280L766-516.67v240L479.33-120Zm0-316 301.34-164-301.34-162-300 162 300 164Zm0 240.33 220-120.66v-162.34L479.33-360l-220-120v163.67l220 120.66ZM480-436Zm-.67 79.33Zm0 0Z"/></svg>
-                </div>
-                <span class="text-xs font-medium mt-0.5" data-translate="nav_faculties"></span>
+            <a href="fakultet.html" class="mobile-nav-link active">
+                <div class="icon-wrapper"><svg xmlns="http://www.w3.org/2000/svg" height="35px" viewBox="0 -960 960 960" width="40px" fill="currentColor"><path d="M479.33-120 192.67-276.67v-240L40-600l439.33-240L920-600v318h-66.67v-280L766-516.67v240L479.33-120Zm0-316 301.34-164-301.34-162-300 162 300 164Zm0 240.33 220-120.66v-162.34L479.33-360l-220-120v163.67l220 120.66ZM480-436Zm-.67 79.33Zm0 0Z"/></svg></div>
+                <span class="text-xs font-medium mt-0.5"></span>
             </a>
-            <a href="contact.html" @click="activeMobileTab = 'contact'" class="mobile-nav-link" :class="{ 'active': activeMobileTab === 'contact' }">
-                <div class="icon-wrapper">
-<svg xmlns="http://www.w3.org/2000/svg" height="35px" viewBox="0 -960 960 960" width="40px" fill="currentColor"><path d="M264-199q21-19.33 46.83-46.83 25.84-27.5 48.84-58.84 23-31.33 39-63.97t16-62.69q0-67.89-42.38-112.28Q329.92-588 264-588q-65.92 0-108.29 44.4-42.38 44.4-42.38 112.3 0 30.3 16 62.8t39 63.83q23 31.34 48.84 58.84Q243-218.33 264-199ZM80-80v-53.33h156.67Q208-160 173-196t-65-78q-26-37.33-43.67-77-17.66-39.67-17.66-80.43 0-95.12 62.33-159.18t155-64.06q92.67 0 155 64.06t62.33 159.18q0 40.76-17.66 80.43Q446-311.33 420-274q-30 42.67-65.33 78.67-35.34 36-64 62H880V-80H80Zm524-514.67Zm-10.67 345.34L521-365.67 558.67-432l34.66 56.33L628.67-432h184.66v-381.33h-422V-728h-66.66v-85.33q0-27 19.83-46.84Q364.33-880 391.33-880h422q27 0 46.84 19.83Q880-840.33 880-813.33V-432q0 27-19.83 46.83-19.84 19.84-46.84 19.84H665.67l-72.34 116Zm-71-267.34 81.34-49 81.33 49-21.67-92 72-63-94.87-8-36.79-87-36.8 87-94.87 8 72 63-21.67 92ZM264-372.67q28.61 0 48.64-20.02 20.03-20.03 20.03-48.64t-20.03-48.64Q292.61-510 264-510t-48.64 20.03q-20.03 20.03-20.03 48.64t20.03 48.64q20.03 20.02 48.64 20.02Zm0-68.66Z"/></svg>
-                </div>
-                <span class="text-xs font-medium mt-0.5" data-translate="nav_contact"></span>
+            <a href="contact.html" class="mobile-nav-link">
+                <div class="icon-wrapper"><svg xmlns="http://www.w3.org/2000/svg" height="35px" viewBox="0 -960 960 960" width="40px" fill="currentColor"><path d="M264-199q21-19.33 46.83-46.83 25.84-27.5 48.84-58.84 23-31.33 39-63.97t16-62.69q0-67.89-42.38-112.28Q329.92-588 264-588q-65.92 0-108.29 44.4-42.38 44.4-42.38 112.3 0 30.3 16 62.8t39 63.83q23 31.34 48.84 58.84Q243-218.33 264-199ZM80-80v-53.33h156.67Q208-160 173-196t-65-78q-26-37.33-43.67-77-17.66-39.67-17.66-80.43 0-95.12 62.33-159.18t155-64.06q92.67 0 155 64.06t62.33 159.18q0 40.76-17.66 80.43Q446-311.33 420-274q-30 42.67-65.33 78.67-35.34 36-64 62H880V-80H80Zm524-514.67Zm-10.67 345.34L521-365.67 558.67-432l34.66 56.33L628.67-432h184.66v-381.33h-422V-728h-66.66v-85.33q0-27 19.83-46.84Q364.33-880 391.33-880h422q27 0 46.84 19.83Q880-840.33 880-813.33V-432q0 27-19.83 46.83-19.84 19.84-46.84 19.84H665.67l-72.34 116Zm-71-267.34 81.34-49 81.33 49-21.67-92 72-63-94.87-8-36.79-87-36.8 87-94.87 8 72 63-21.67 92ZM264-372.67q28.61 0 48.64-20.02 20.03-20.03 20.03-48.64t-20.03-48.64Q292.61-510 264-510t-48.64 20.03q-20.03 20.03-20.03 48.64t20.03 48.64q20.03 20.02 48.64 20.02Zm0-68.66Z"/></svg></div>
+                <span class="text-xs font-medium mt-0.5"></span>
             </a>
-            <a href="profile.html" @click="activeMobileTab = 'profile'" class="mobile-nav-link" :class="{ 'active': activeMobileTab === 'profile' }">
-                <div class="icon-wrapper">
-                    <template x-if="isUserLoggedIn && userProfileImageUrl">
-                        <img :src="userProfileImageUrl" alt="Profile" id="profile-image" class="tap-highlight-transparent">
-                    </template>
-                    <template x-if="!isUserLoggedIn || !userProfileImageUrl" hieght="45px" class="h-10 w-7 tap-highlight-transparent">
-                        <svg xmlns="http://www.w3.org/2000/svg" height="40px" class="h-10 w-7 tap-highlight-transparent" fill="currentColor" viewBox="0 0 24 24">
-                           <path d="M12 12c2.21 0 4-1.79 4-4s-1.79-4-4-4-4 1.79-4 4 1.79 4 4 4zm0 2c-2.67 0-8 1.34-8 4v2h16v-2c0-2.66-5.33-4-8-4z"/>
-                        </svg>
-                    </template>
-                </div>
+            <a href="profile.html" class="mobile-nav-link">
+                <div class="icon-wrapper"><svg xmlns="http://www.w3.org/2000/svg" height="40px" fill="currentColor" viewBox="0 0 24 24"><path d="M12 12c2.21 0 4-1.79 4-4s-1.79-4-4-4-4 1.79-4 4 1.79 4 4 4zm0 2c-2.67 0-8 1.34-8 4v2h16v-2c0-2.66-5.33-4-8-4z"/></svg></div>
                 <span class="text-xs font-medium mt-0.5"></span>
             </a>
         </div>
     </nav>
- 
-   <div x-show="mobileMenuOpen" @click.away="mobileMenuOpen = false" class="fixed inset-0 z-50 flex justify-end" style="display: none;">
-        <div x-show="mobileMenuOpen" x-transition:enter="transition-opacity ease-in-out duration-300" x-transition:leave="transition-opacity ease-in-out duration-300" class="absolute inset-0 bg-black/30 backdrop-blur-sm"></div>
-        <div x-show="mobileMenuOpen" @click.stop x-transition:enter="transition ease-in-out duration-300 transform" x-transition:enter-start="translate-x-full" x-transition:enter-end="translate-x-0" x-transition:leave="transition ease-in-out duration-300 transform" x-transition:leave-start="translate-x-0" x-transition:leave-end="translate-x-full" class="relative w-4/5 max-w-sm h-full glass-card flex flex-col p-6">
-            <div class="flex justify-between items-center mb-10">
-                <span class="text-lg font-bold">Меню</span>
-                <button @click="toggleMenu()" class="p-2 -mr-2 rounded-full hover:bg-white/10" aria-label="Close menu"><svg class="w-7 h-7" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M6 18L18 6M6 6l12 12"></path></svg></button>
-            </div>
-            <nav class="flex flex-col space-y-6">
-                 <a href="index.html" class="text-xl font-medium opacity-80 hover:opacity-100">Асосӣ</a>
-                 <a href="#" class="text-xl font-medium text-blue-500 dark:text-blue-400">Факултетҳо</a>
-            </nav>
-        </div>
-    </div>
-
+    
     <script>
+        const facultiesData = [
+            {
+                name: "Факултети муҳандисӣ-технологӣ",
+                img: "fmt.jpg"
+            },
+            {
+                name: "Факултети технология ва дизайн",
+                img: "ftd.jpg"
+            },
+            {
+                name: "Факултети технологияҳои иттилоотӣ ва интеллекти сунъӣ",
+                img: "fai.jpg"
+            },
+            {
+                name: "Факултети телекомуникатсия ва таълимоти касбӣ",
+                img: "ftk.jpg"
+            },
+            {
+                name: "Факултети иқтисодиёт ва молия",
+                img: "fim.jpg"
+            },
+            {
+                name: "Факултети менеҷмент ва маркетинги байналмилалӣ",
+                img: "https://images.unsplash.com/photo-1556740738-b6a63e27c4df?q=80&w=2070&auto=format&fit=crop"
+            },
+            {
+                name: "Факултаи муштараки Донишгоҳи давлатии Полотск ва ДТТ",
+                img: "https://images.unsplash.com/photo-1549923746-c502d488b3ea?q=80&w=2071&auto=format&fit=crop"
+            },
+            {
+                name: "Факултети таҳсилоти фосилавӣ ва ғоибона",
+                img: "https://images.unsplash.com/photo-1488190211105-8b0e65b80b4e?q=80&w=2070&auto=format&fit=crop"
+            }
+        ];
+
+        function createFacultyCard(faculty) {
+            return `
+                <a href="#" class="faculty-card rounded-2xl flex flex-col justify-end p-6 text-white font-bold text-lg" style="background-image: url('${faculty.img}');">
+                    <span class="relative z-10">${faculty.name}</span>
+                </a>
+            `;
+        }
+
+        function renderFaculties() {
+            const grid = document.getElementById('faculties-grid');
+            grid.innerHTML = facultiesData.map(createFacultyCard).join('');
+        }
+
+        document.addEventListener('DOMContentLoaded', renderFaculties);
+
         function pageManager() {
             return {
                 isDark: false,
