@@ -5,94 +5,45 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Расписание</title>
     <link rel="manifest" href="manifest.json">
+    <meta name="theme-color" content="#5856D6">
+    <link rel="apple-touch-icon" href="icons/icon-192x192.png">
+    
     <link href="https://cdn.jsdelivr.net/npm/tailwindcss@2.2.19/dist/tailwind.min.css" rel="stylesheet">
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-    <link href="https://fonts.googleapis.com/css2?family=DM+Sans:ital,opsz,wght@0,9..40,100..1000;1,9..40,100..1000&family=Lato:ital,wght@0,100;0,300;0,400;0,700;0,900;1,100;1,300;1,400;1,700;1,900&family=Manrope:wght@200..800&family=Poppins:ital,wght@0,100;0,200;0,300;0,400;0,500;0,600;0,700;0,800;0,900;1,100;1,200;1,300;1,400;1,700;1,800;1,900&family=Satisfy&display=swap" rel="stylesheet">
+    <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600;700&family=DM+Sans:wght@500;700&display=swap" rel="stylesheet">
     <script src="https://cdn.jsdelivr.net/npm/alpinejs@3.13.10/dist/cdn.min.js" defer></script>
     <style>
-        :root {
-            --primary: #5856D6;
-            --accent: #007AFF;
-            --bg: #F5F5FF;
-            --text: #1C1C1E;
-            --heading: #12073A;
-            --button-bg: #5856D6;
-            --button-text: #FFFFFF;
-            --button-hover: #4F4DC2;
-            --card-bg: #FFFFFF;
-            --border: #BAB9EB;
-            --row-hover: #DCDCF5;
-            --text-light: #5A588A;
-            --skeleton-bg: rgba(186, 185, 235, 0.5);
-            --glass-blur: none;
-            --glass-border: none;
-            --bg-image: none;
+             :root {
+            --primary: #5856D6; --accent: #007AFF; --bg: #F5F5FF; --text: #1C1C1E;
+            --heading: #12073A; --button-bg: #5856D6; --button-text: #FFFFFF;
+            --button-hover: #4F4DC2; --card-bg: #FFFFFF; --border: #BAB9EB;
+            --row-hover: #DCDCF5; --text-light: #5A588A; --skeleton-bg: rgba(186, 185, 235, 0.5);
+            --glass-blur: none; --glass-border: none; --bg-image: none;
         }
-
         body {
-            font-family: 'Poppins', sans-serif;
-            font-size: 20px; /* Reduced base font size */
-            background-color: var(--bg);
-            color: var(--text);
-            padding: 10px;
-            width: 100%;
-            overflow-x: hidden;
-            min-height: 100vh;
-            background-image: var(--bg-image);
-            background-size: cover;
-            background-position: center;
-            background-attachment: fixed;
-            transition: all 0.3s ease;
+            font-family: 'Poppins', sans-serif; font-size: 18px; background-color: var(--bg);
+            color: var(--text); padding: 10px; width: 100%; overflow-x: hidden;
+            min-height: 100vh; background-image: var(--bg-image); background-size: cover;
+            background-position: center; background-attachment: fixed; transition: all 0.3s ease;
         }
-
-        h1 {
-            font-family: 'DM Sans', sans-serif;
-            text-align: center;
-            margin-bottom: 15px; /* Reduced margin */
-            font-size: 23px; /* Reduced font size */
-            color: var(--heading);
-        }
-
-        .btn {
-            padding: 8px 12px; /* Reduced padding */
-            border-radius: 20px; /* Reduced border radius */
-            font-weight: 500;
-            cursor: pointer;
-            border: none;
-            background: var(--primary);
-            color: white;
-            font-size: 18px; /* Reduced font size */
-        }
-        .back {
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            width: 36px; /* Reduced size */
-            height: 36px; /* Reduced size */
-            border-radius: 50%;
-            background-color: var(--card-bg);
-            box-shadow: 0 2px 5px rgba(0,0,0,0.1);
-            cursor: pointer;
-            backdrop-filter: var(--glass-blur);
-            -webkit-backdrop-filter: var(--glass-blur);
-        }
+        h1 { font-family: 'DM Sans', sans-serif; text-align: center; margin-bottom: 15px; font-size: 23px; color: var(--heading); }
+        .btn { padding: 8px 12px; border-radius: 20px; font-weight: 500; cursor: pointer; border: none; background: var(--button-bg); color: var(--button-text); font-size: 18px; }
+        .back { display: flex; align-items: center; justify-content: center; width: 36px; height: 36px; border-radius: 50%; background-color: var(--card-bg); box-shadow: 0 2px 5px rgba(0,0,0,0.1); cursor: pointer; backdrop-filter: var(--glass-blur); -webkit-backdrop-filter: var(--glass-blur); }
         .back:hover { transform: translateY(-2px); }
-
         .group-info { text-align: center; font-size: 0.9rem; color: var(--text-light); margin-bottom: 0.8rem; }
         .modal { position: fixed; top: 0; left: 0; width: 100%; height: 100%; background: rgba(0,0,0,0.7); backdrop-filter: blur(5px); z-index: 1000; display: none; align-items: center; justify-content: center; }
         .modal.active { display: flex; }
-        .modal-content { background: var(--card-bg); padding: 25px; border-radius: 15px; width: 90%; max-width: 400px; text-align: center; border: var(--glass-border); }
+        .modal-content { background: var(--card-bg); padding: 25px; border-radius: 25px; width: 90%; max-width: 400px; text-align: center; border: var(--glass-border); }
         .modal-content h2 { margin-bottom: 15px; font-size: 1.2rem; }
         .controls-modal { display: flex; flex-direction: column; gap: 10px; margin-bottom: 15px; }
-        .controls-modal select { width: 100%; padding: 10px; border-radius: 12px; border: 2px solid var(--primary); background-color: var(--card-bg); font-size: 14px; color: var(--text); font-weight: 500; }
+        .controls-modal select { width: 100%; padding: 10px; border-radius: 22px; border: 2px solid var(--primary); background-color: var(--card-bg); font-size: 14px; color: var(--text); font-weight: 500; }
         .voice-assistant { position: fixed; bottom: 20px; right: 20px; z-index: 1000; }
         .voice-btn { width: 50px; height: 50px; border-radius: 50%; background-color: var(--primary); color: white; display: flex; align-items: center; justify-content: center; box-shadow: 0 4px 12px rgba(0,0,0,0.2); cursor: pointer; border: none; transition: all 0.3s ease; backdrop-filter: var(--glass-blur); -webkit-backdrop-filter: var(--glass-blur); }
         .voice-btn:hover { transform: scale(1.1); box-shadow: 0 6px 16px rgba(0,0,0,0.3); }
         .voice-btn.listening { animation: pulse 1.5s infinite; background-color: var(--accent); }
         @keyframes pulse { 0% { transform: scale(1); } 50% { transform: scale(1.1); } 100% { transform: scale(1); } }
         .voice-status { position: absolute; bottom: 65px; right: 0; background-color: var(--card-bg); padding: 12px; border-radius: 10px; box-shadow: 0 4px 12px rgba(0,0,0,0.1); width: 250px; display: none; font-size: 13px; color: var(--text); backdrop-filter: var(--glass-blur); -webkit-backdrop-filter: var(--glass-blur); border: var(--glass-border); }
-        .voice-status .user-command { font-weight: bold; margin-bottom: 6px; }
         .voice-status.listening { display: block; animation: fadeIn 0.3s ease; }
         .voice-status .assistant-response { margin-top: 8px; padding-top: 8px; border-top: 1px solid var(--border); font-style: italic; color: var(--primary); }
         .skeleton-loader { width: 100%; margin-top: 15px; animation: fadeIn 0.5s ease; }
@@ -100,77 +51,145 @@
         .skeleton-row { height: 50px; background-color: var(--skeleton-bg); margin-bottom: 1px; animation: shimmer 1.5s infinite linear; }
         @keyframes shimmer { 0% { opacity: 0.5; } 50% { opacity: 0.8; } 100% { opacity: 0.5; } }
         .controls { display: flex; flex-wrap: wrap; justify-content: center; margin-bottom: 15px; gap: 10px; }
-        .controls select { padding: 10px 15px; border-radius: 20px; border: 2px solid var(--primary); background-color: var(--card-bg); font-size: 14px; color: var(--text); font-weight: 500; box-shadow: 0 3px 6px rgba(0, 0, 0, 0.05); appearance: none; background-image: url("data:image/svg+xml;charset=UTF-8,%3csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24' fill='none' stroke='currentColor' stroke-width='2' stroke-linecap='round' stroke-linejoin='round'%3e%3cpolyline points='6 9 12 15 18 9'%3e%3c/polyline%3e%3c/svg%3e"); background-repeat: no-repeat; background-position: right 10px center; background-size: 14px; min-width: 220px; backdrop-filter: var(--glass-blur); -webkit-backdrop-filter: var(--glass-blur); border: var(--glass-border); }
         .buttons { display: flex; flex-wrap: wrap; justify-content: center; gap: 8px; margin-bottom: 15px; }
-        .buttons button { font-family: 'Poppins', sans-serif; padding: 10px 15px; background-color: var(--button-bg); color: var(--button-text); border: none; border-radius: 15px; font-weight: 600; font-size: 18px; cursor: pointer; box-shadow: 0 4px 8px rgba(0,0,0,0.1); flex-grow: 1; min-width: 80px; transition: all 0.3s ease; backdrop-filter: var(--glass-blur); -webkit-backdrop-filter: var(--glass-blur); border: var(--glass-border); }
+        .buttons button { padding: 10px 15px; background-color: var(--button-bg); color: var(--button-text); border: none; border-radius: 15px; font-weight: 600; font-size: 18px; cursor: pointer; box-shadow: 0 4px 8px rgba(0,0,0,0.1); flex-grow: 1; min-width: 80px; transition: all 0.3s ease; backdrop-filter: var(--glass-blur); -webkit-backdrop-filter: var(--glass-blur); border: var(--glass-border); }
         .buttons button:hover { background-color: var(--button-hover); transform: translateY(-2px); box-shadow: 0 6px 12px rgba(0,0,0,0.15); }
         .buttons button.active-day { background-color: var(--accent); color: white; transform: translateY(-2px); box-shadow: 0 6px 12px rgba(0,0,0,0.15); }
-        .buttons button:active { transform: translateY(0); }
         .schedule-container { width: 100%; margin-top: 8px; }
-        .schedule-day { width: 100%; display: none; background-color: var(--card-bg); color: var(--text); border-radius: 15px; box-shadow: 0 8px 20px rgba(0,0,0,0.08); animation: fadeIn 0.5s ease-in-out; overflow: hidden; backdrop-filter: var(--glass-blur); -webkit-backdrop-filter: var(--glass-blur); border: var(--glass-border); }
+        .schedule-day { width: 100%; display: none; background-color: var(--card-bg); color: var(--text); border-radius: 20px; box-shadow: 0 8px 20px rgba(0,0,0,0.08); animation: fadeIn 0.5s ease-in-out; overflow: hidden; backdrop-filter: var(--glass-blur); -webkit-backdrop-filter: var(--glass-blur); border: var(--glass-border); }
         .active { display: block; }
         .schedule-day h2 { padding: 15px; background-color: var(--primary); color: white; margin: 0; border-radius: 12px 12px 0 0; backdrop-filter: var(--glass-blur); -webkit-backdrop-filter: var(--glass-blur); }
-        table { width: 100%; border-collapse: collapse; backdrop-filter: var(--glass-blur); -webkit-backdrop-filter: var(--glass-blur); }
-        th, td { padding: 10px 12px; text-align: left; border-bottom: 1px solid var(--border); font-size: 18px; }
+        table { width: 100%; border-collapse: collapse; }
+        th, td { padding: 10px 12px; text-align: left; border-bottom: 1px solid var(--border); font-size: 16px; }
         th { background-color: var(--primary); color: white; font-weight: 500; position: sticky; top: 0; backdrop-filter: var(--glass-blur); -webkit-backdrop-filter: var(--glass-blur); }
         tr:hover { background-color: var(--row-hover); }
         @keyframes fadeIn { from { opacity: 0; transform: translateY(15px); } to { opacity: 1; transform: translateY(0); } }
-        .theme-card { background-color: var(--card-bg); padding: 12px; margin: 15px 0; border-radius: 15px; box-shadow: 0 4px 15px rgba(0,0,0,0.08); backdrop-filter: var(--glass-blur); -webkit-backdrop-filter: var(--glass-blur); border: var(--glass-border); }
+        .theme-card { background-color: var(--card-bg); padding: 12px; margin: 15px 0; border-radius: 25px; box-shadow: 0 4px 15px rgba(0,0,0,0.08); backdrop-filter: var(--glass-blur); -webkit-backdrop-filter: var(--glass-blur); border: var(--glass-border); }
         .theme-card h3 { margin-bottom: 10px; color: var(--heading); text-align: center; font-size: 1.1rem; }
         .color-palette { display: flex; overflow-x: auto; gap: 8px; padding: 8px 4px; scrollbar-width: thin; scrollbar-color: var(--primary) var(--card-bg); }
         .color-palette::-webkit-scrollbar { height: 5px; }
-        .color-palette::-webkit-scrollbar-track { background: var(--card-bg); border-radius: 3px; }
-        .color-palette::-webkit-scrollbar-thumb { background-color: var(--primary); border-radius: 10px; }
+        .color-palette::-webkit-scrollbar-track { background: var(--card-bg); border-radius: 13px; }
+        .color-palette::-webkit-scrollbar-thumb { background-color: var(--primary); border-radius: 20px; }
         .color-option { flex: 0 0 50px; height: 50px; border-radius: 50%; cursor: pointer; transition: all 0.3s ease; position: relative; overflow: hidden; box-shadow: 0 3px 6px rgba(0,0,0,0.1); }
         .color-option::after { content: '✔'; font-size: 20px; color: white; text-shadow: 0 1px 2px rgba(0,0,0,0.5); position: absolute; top: 50%; left: 50%; transform: translate(-50%, -50%); opacity: 0; transition: opacity 0.3s ease; }
         .color-option.selected::after { opacity: 1; }
         .color-option:hover { transform: translateY(-3px); box-shadow: 0 6px 12px rgba(0,0,0,0.2); }
-        .color-name { position: absolute; bottom: 3px; left: 0; right: 0; text-align: center; font-size: 9px; font-weight: 500; color: white; text-shadow: 0 1px 2px rgba(0,0,0,0.5); z-index: 1; }
+        .color-name { position: absolute; bottom: 3px; left: 0; right: 0; text-align: center; font-size: 9px; font-weight: 500; color: white; text-shadow: 0 1px 2px rgba(0,0,0,0.5); }
+        .samsung-red { background: linear-gradient(150deg, #ffd9d9, #ff0000); } .samsung-orange { background: linear-gradient(150deg, #f5d295, #e69109); } .samsung-yellow { background: linear-gradient(150deg, #f2e6ce, #d9ce02); } .samsung-green { background: linear-gradient(150deg, #def0d8, #02d902); } .samsung-mint { background: linear-gradient(150deg, #797d80, #000000); } .samsung-teal { background-color: #30B0C7; } .samsung-cyan { background-color: #32ADE6; } .samsung-blue { background-color: #007AFF; } .samsung-indigo { background-color: #5856D6; } .samsung-purple { background-color: #AF52DE; } .samsung-pink { background-color: #FF2D55; } .samsung-brown { background-color: #A2845E; } .samsung-gray { background-color: #8E8E93; } .glass-theme { background: linear-gradient(135deg, rgba(255,255,255,0.1), rgba(255,255,255,0.05)); border: 1px solid rgba(255,255,255,0.2); box-shadow: 0 8px 32px 0 rgba(31, 38, 135, 0.15); }
         footer { text-align: center; margin-top: 30px; padding: 15px; color: var(--text-light); font-size: 13px; backdrop-filter: var(--glass-blur); -webkit-backdrop-filter: var(--glass-blur); border-radius: 15px; background-color: var(--card-bg); border: var(--glass-border); }
+      
+        #update-toast {
+            position: fixed; bottom: 20px; left: 50%;
+            transform: translateX(-50%) translateY(150%); opacity: 0;
+            background-color: var(--card-bg); color: var(--text);
+            padding: 1rem; border-radius: 1.5rem;
+            box-shadow: 0 10px 30px rgba(0,0,0,0.2); z-index: 2000;
+            display: flex; align-items: center; gap: 1rem;
+            transition: transform 0.5s cubic-bezier(0.22, 1, 0.36, 1), opacity 0.5s ease;
+            backdrop-filter: var(--glass-blur); -webkit-backdrop-filter: var(--glass-blur);
+            border: var(--glass-border); pointer-events: none;
+        }
+        #update-toast.show { transform: translateX(-50%) translateY(0); opacity: 1; pointer-events: auto; }
+        .toast-icon {
+            flex-shrink: 0; width: 40px; height: 40px;
+            background-color: var(--accent); border-radius: 50%;
+            display: flex; align-items: center; justify-content: center;
+            color: var(--button-text);
+        }
+        .toast-message p { margin: 0; line-height: 1.3; }
+        .toast-message .title { font-weight: 600; font-size: 1rem; }
+        .toast-message .subtitle { font-size: 0.8rem; opacity: 0.7; }
+        .toast-actions { display: flex; gap: 0.5rem; }
+        .toast-actions button {
+            border: none; padding: 8px 14px; border-radius: 1rem;
+            font-size: 0.9rem; font-weight: 600; cursor: pointer; transition: all 0.2s ease;
+        }
+        #update-later-btn { background-color: var(--row-hover); color: var(--text-light); }
+        #update-later-btn:hover { background-color: var(--border); }
+        #update-now-btn { background-color: var(--accent); color: var(--button-text); }
+        #update-now-btn:hover { filter: brightness(1.1); }
 
-        /* Samsung One UI 6 Color Classes */
-        .samsung-red { background: linear-gradient(150deg, rgba(255, 217, 217, 1) 0%, rgba(255, 0, 0, 1) 100%); }
-        .samsung-orange { background: linear-gradient(150deg, rgba(245, 210, 149, 1) 0%, rgba(230, 145, 9, 1) 100%); }
-        .samsung-yellow { background: linear-gradient(150deg, rgba(242, 230, 206, 1) 0%, rgba(217, 206, 2, 1) 100%); }
-        .samsung-green { background: linear-gradient(150deg, rgba(222, 240, 216, 1) 0%, rgba(2, 217, 2, 1) 100%); }
-        .samsung-mint { background: linear-gradient(150deg, rgba(121, 125, 128, 1) 0%, rgba(0, 0, 0, 1) 100%); }
-        .samsung-teal { background-color: #30B0C7; }
-        .samsung-cyan { background-color: #32ADE6; }
-        .samsung-blue { background-color: #007AFF; }
-        .samsung-indigo { background-color: #5856D6; }
-        .samsung-purple { background-color: #AF52DE; }
-        .samsung-pink { background-color: #FF2D55; }
-        .samsung-brown { background-color: #A2845E; }
-        .samsung-gray { background-color: #8E8E93; }
-        .glass-theme { background: linear-gradient(135deg, rgba(255,255,255,0.1), rgba(255,255,255,0.05)); border: 1px solid rgba(255,255,255,0.2); box-shadow: 0 8px 32px 0 rgba(31, 38, 135, 0.15); }
-
-        /* Mobile Navigation */
-        .mobile-nav-container { display: none; }
+            /* Mobile Navigation */
+        .mobile-nav-container {
+            display: none;
+        }
         @media (max-width: 768px) {
-            body { font-size: 18px; }
-            h1 { font-size: 20px; }
-            .btn { font-size: 16px; padding: 6px 10px; }
-            th, td { font-size: 15px; padding: 8px 10px; }
-            .modal-content { max-width: 350px; padding: 20px; border-radius: 25px; }
-            .modal-content h2 { font-size: 17px; }
-            .controls-modal select { font-size: 14px; padding: 8px 12px; }
-            .buttons button { font-size: 15px; padding: 8px 12px; min-width: 60px; border-radius: 19px; }
-            .mobile-nav-container { display: block; position: fixed; bottom: 1rem; left: 1rem; right: 1rem; z-index: 100; }
-            .mobile-nav-custom-style { background-color: var(--card-bg); border: 2px solid var(--accent); box-shadow: 0 4px 15px rgba(0, 0, 0, 0.2); }
-            .mobile-nav-link { position: relative; display: flex; flex-direction: column; align-items: center; justify-content: center; padding: 4px 15px; border-radius: 9999px; transition: background-color 0.3s ease, color 0.3s ease; -webkit-tap-highlight-color: transparent; opacity: 0.7; }
-            .mobile-nav-link.active { opacity: 1; background-color: rgba(99, 102, 241, 0.2); color: var(--accent); }
-            .mobile-nav-link .icon-wrapper svg { width: 26px; height: 26px; }
-            .mobile-nav-link .icon-wrapper span { font-size: 0.65rem; }
-            .desktop-back-btn { display: none; }
+            .mobile-nav-container {
+                display: block;
+                position: fixed;
+                bottom: 1rem;
+                left: 1rem;
+                right: 1rem;
+                z-index: 100;
+            }
+            /* Новый, более заметный стиль для мобильной навигации */
+.mobile-nav-custom-style {
+    background-color: var(--glass-blur); /* Использует основной цвет темы */
+    backdrop-filter: blur(19px); /* Добавляет эффект размытия */
+    border: 2px solid var(--border); /* Использует акцентный цвет для границы */
+    box-shadow: 0 4px 15px rgba(4, 236, 62, 0.2);
+}
+            .mobile-nav-link {
+                position: relative;
+                display: flex;
+                flex-direction: column;
+                align-items: center;
+                justify-content: center;
+                padding: 4px 12px;
+                border-radius: 9999px;
+                transition: background-color 0.3s ease, color 0.3s ease;
+                -webkit-tap-highlight-color: transparent;
+                opacity: 0.7;
+            }
+            .mobile-nav-link.active {
+                opacity: 1;
+                background-color: var(--button-bg);
+                color: var(--card-bg);
+            }
+            .mobile-nav-link .icon-wrapper svg {
+                width: 28px;
+                height: 28px;
+            }
+            .mobile-nav-link .icon-wrapper span {
+                font-size: 0.75rem;
+            }
+            .desktop-back-btn {
+                display: none;
+            }
+        }
+        #logo {
+            width: 40px;
+            height: 40px;
+            border-radius: 50%;
         }
         @media (min-width: 769px) {
-            .mobile-nav-container { display: none; }
-            .desktop-back-btn { display: flex; width: 100%; justify-content: flex-start; }
+            .mobile-nav-container {
+                display: none;
+            }
+            .desktop-back-btn {
+                display: flex;
+                width: 100%;
+                justify-content: flex-start;
+            }
         }
+
+
+        @media (max-width: 768px) {
+            body { font-size: 16px; } h1 { font-size: 20px; } th, td { font-size: 14px; }
+            .buttons button { font-size: 14px; min-width: 50px; border-radius: 20px;}
+            /* .mobile-nav-container { display: block; position: fixed; bottom: 1rem; left: 1rem; right: 1rem; z-index: 100; } */
+            /* .mobile-nav-custom-style { backdrop-filter: var(--glass-blur); -webkit-backdrop-filter: var(--glass-blur); background-color: var(--card-bg); border: 1px solid var(--accent); box-shadow: 0 4px 20px rgba(0, 0, 0, 0.2); border-radius: 25px; padding: 5px; } */
+            /* .mobile-nav-link { display: flex; flex: 1; justify-content: center; align-items: center; padding: 8px; border-radius: 20px; transition: all 0.3s ease; opacity: 0.7; } */
+            /* .mobile-nav-link.active { opacity: 1; background-color: var(--accent); color: var(--button-text); } */
+            .mobile-nav-link.active svg { color: var(--button-text); }
+            .mobile-nav-link svg { color: var(--accent); width: 26px; height: 26px; }
+            .desktop-back-btn { display: none; }
+            #update-toast.show { bottom: 95px; width: calc(100% - 2rem); }
+        }
+        @media (min-width: 769px) { .mobile-nav-container { display: none; } .desktop-back-btn { display: flex; width: 100%; justify-content: flex-start; } }
     </style>
 </head>
 <body>
-
     <div id="selectionModal" class="modal">
         <div class="modal-content">
             <h2>Выберите ваше расписание</h2>
@@ -182,82 +201,57 @@
             <button id="saveSelectionBtn" class="btn" disabled>Показать расписание</button>
         </div>
     </div>
-
-    <div class="container" id="mainContent" style="display: none;">
-        <div class="desktop-back-btn">
+    <div class="container mx-auto" id="mainContent" style="display: none;">
+        <div class="desktop-back-btn mb-4">
             <a href="index.html" class="back">
-                <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
-                    <path d="M19 12H5"></path>
-                    <polyline points="12 19 5 12 12 5"></polyline>
-                </svg>
+                <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M19 12H5"></path><polyline points="12 19 5 12 12 5"></polyline></svg>
             </a>
         </div>
         <h1>Ҷадвали дарсҳо</h1>
         <div id="group-info-display" class="group-info"></div>
-
         <div class="theme-card">
             <h3>Палитра цветов</h3>
-            <div class="color-palette">
-                <div class="color-option glass-theme" data-theme="glass" onclick="applySamsungTheme('glass')"><span class="color-name">Glass</span></div>
-                <div class="color-option samsung-red" data-theme="red" onclick="applySamsungTheme('red')"><span class="color-name">Red</span></div>
-                <div class="color-option samsung-orange" data-theme="orange" onclick="applySamsungTheme('orange')"><span class="color-name">Orange</span></div>
-                <div class="color-option samsung-yellow" data-theme="yellow" onclick="applySamsungTheme('yellow')"><span class="color-name">Yellow</span></div>
-                <div class="color-option samsung-green" data-theme="green" onclick="applySamsungTheme('green')"><span class="color-name">Green</span></div>
-                <div class="color-option samsung-mint" data-theme="mint" onclick="applySamsungTheme('mint')"><span class="color-name">Тёмная</span></div>
-                <div class="color-option samsung-teal" data-theme="teal" onclick="applySamsungTheme('teal')"><span class="color-name">Teal</span></div>
-                <div class="color-option samsung-cyan" data-theme="cyan" onclick="applySamsungTheme('cyan')"><span class="color-name">Cyan</span></div>
-                <div class="color-option samsung-blue" data-theme="blue" onclick="applySamsungTheme('blue')"><span class="color-name">Blue</span></div>
-                <div class="color-option samsung-indigo" data-theme="indigo" onclick="applySamsungTheme('indigo')"><span class="color-name">Indigo</span></div>
-                <div class="color-option samsung-purple" data-theme="purple" onclick="applySamsungTheme('purple')"><span class="color-name">Purple</span></div>
-                <div class="color-option samsung-pink" data-theme="pink" onclick="applySamsungTheme('pink')"><span class="color-name">Pink</span></div>
-                <div class="color-option samsung-brown" data-theme="brown" onclick="applySamsungTheme('brown')"><span class="color-name">Brown</span></div>
-                <div class="color-option samsung-gray" data-theme="gray" onclick="applySamsungTheme('gray')"><span class="color-name">Gray</span></div>
-            </div>
+            <div class="color-palette"></div>
         </div>
-
-        <div class="controls">
-            <button id="changeGroupBtn" class="btn">Сменить группу</button>
-        </div>
-
-        <div class="buttons">
-            <button data-day="Душанбе" onclick="showDay('Душанбе')">Душанбе</button>
-            <button data-day="Сешанбе" onclick="showDay('Сешанбе')">Сешанбе</button>
-            <button data-day="Чоршанбе" onclick="showDay('Чоршанбе')">Чоршанбе</button>
-            <button data-day="Панҷшанбе" onclick="showDay('Панҷшанбе')">Панҷшанбе</button>
-            <button data-day="Ҷумъа" onclick="showDay('Ҷумъа')">Ҷумъа</button>
-            <button data-day="Шанбе" onclick="showDay('Шанбе')">Шанбе</button>
-        </div>
-
+        <div class="controls"><button id="changeGroupBtn" class="btn">Сменить группу</button></div>
+        <div class="buttons"></div>
         <div id="scheduleContainer" class="schedule-container"></div>
-        <footer>
-            <p>© 2025. ДТТ. Душанбе.</p>
-        </footer>
+        <footer><p>© 2025. ДТТ. Душанбе.</p></footer>
     </div>
-
     <div class="voice-assistant">
         <div class="voice-status" id="voiceStatus"></div>
         <button class="voice-btn" id="voiceBtn" title="Голосовой помощник">
-            <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
-                <path d="M12 1a3 3 0 0 0-3 3v8a3 3 0 0 0 6 0V4a3 3 0 0 0-3-3z"></path>
-                <path d="M19 10v2a7 7 0 0 1-14 0v-2"></path>
-                <line x1="12" y1="19" x2="12" y2="23"></line>
-                <line x1="8" y1="23" x2="16" y2="23"></line>
-            </svg>
+            <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M12 1a3 3 0 0 0-3 3v8a3 3 0 0 0 6 0V4a3 3 0 0 0-3-3z"></path><path d="M19 10v2a7 7 0 0 1-14 0v-2"></path><line x1="12" y1="19" x2="12" y2="23"></line><line x1="8" y1="23" x2="16" y2="23"></line></svg>
         </button>
     </div>
+  
+    
+    <div id="update-toast">
+        <div class="toast-icon">
+            <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><path d="M3 15v4c0 1.1.9 2 2 2h14a2 2 0 0 0 2-2v-4M17 9l-5 5-5-5M12 14V3"/></svg>
+        </div>
+        <div class="toast-message">
+            <p class="title">Доступно обновление</p>
+            <p class="subtitle">Расписание было изменено.</p>
+        </div>
+        <div class="toast-actions">
+            <button id="update-later-btn">Позже</button>
+            <button id="update-now-btn">Обновить</button>
+        </div>
+    </div>
 
-   <nav class="mobile-nav-container fixed bottom-4 left-4 right-4 z-40 rounded-2xl h-16 mobile-nav-custom-style">
+     <nav class="mobile-nav-container fixed bottom-4 left-4 right-4 z-40 rounded-2xl h-16 mobile-nav-custom-style">
 
         <div class="flex justify-around items-center h-full text-sm">
             <a href="home.html" class="mobile-nav-link">
                 <div class="icon-wrapper"><svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="currentColor" class="w-7 h-7 tap-highlight-transparent"><path d="M11.47 3.84a.75.75 0 011.06 0l8.69 8.69a.75.75 0 101.06-1.06l-8.689-8.69a2.25 2.25 0 00-3.182 0l-8.69 8.69a.75.75 0 001.061 1.06l8.69-8.69z" /><path d="M12 5.432l8.159 8.159c.03.03.06.058.091.086v6.198c0 1.035-.84 1.875-1.875 1.875H15a.75.75 0 01-.75-.75v-4.5a.75.75 0 00-.75-.75h-3a.75.75 0 00-.75.75V21a.75.75 0 01-.75.75H5.625a1.875 1.875 0 01-1.875-1.875v-6.198a2.29 2.29 0 00.091-.086L12 5.43z" /></svg></div>
                 <span class="text-xs font-medium mt-0.5"></span>
             </a>
-            <a href="#" class="mobile-nav-link active">
+            <a href="jadvalidarsi.html" class="mobile-nav-link">
                 <div class="icon-wrapper"><svg xmlns="http://www.w3.org/2000/svg" height="35px" viewBox="0 -960 960 960" width="40px" fill="currentColor"><path d="M186.67-633.33h586.66v-113.34H186.67v113.34Zm0 0v-113.34 113.34Zm0 553.33q-27 0-46.84-19.83Q120-119.67 120-146.67v-600q0-27 19.83-46.83 19.84-19.83 46.84-19.83h56.66V-880h70v66.67h333.34V-880h70v66.67h56.66q27 0 46.84 19.83Q840-773.67 840-746.67v280.34q-15.78-7.86-32.39-13.1-16.61-5.24-34.28-8.24v-79H186.67v420h296.66q6.34 18.67 14.84 35 8.5 16.34 20.16 31.67H186.67Zm540.66 40q-79.95 0-136.31-56.35-56.35-56.36-56.35-136.32 0-79.95 56.35-136.31 56.36-56.35 136.31-56.35 79.96 0 136.32 56.35Q920-312.62 920-232.67q0 79.96-56.35 136.32Q807.29-40 727.33-40Zm61.17-93.67 27.83-28-75-75v-112H702V-222l86.5 88.33Z"/></svg></div>
                 <span class="text-xs font-medium mt-0.5"></span>
             </a>
-            <a href="fakultet.html" class="mobile-nav-link">
+            <a href="fakultet.html" class="mobile-nav-link active">
                 <div class="icon-wrapper"><svg xmlns="http://www.w3.org/2000/svg" height="35px" viewBox="0 -960 960 960" width="40px" fill="currentColor"><path d="M479.33-120 192.67-276.67v-240L40-600l439.33-240L920-600v318h-66.67v-280L766-516.67v240L479.33-120Zm0-316 301.34-164-301.34-162-300 162 300 164Zm0 240.33 220-120.66v-162.34L479.33-360l-220-120v163.67l220 120.66ZM480-436Zm-.67 79.33Zm0 0Z"/></svg></div>
                 <span class="text-xs font-medium mt-0.5"></span>
             </a>
@@ -271,7 +265,7 @@
             </a>
         </div>
     </nav>
-    
+
     <script src="https://www.gstatic.com/firebasejs/8.10.1/firebase-app.js"></script>
     <script src="https://www.gstatic.com/firebasejs/8.10.1/firebase-database.js"></script>
     <script>
@@ -280,21 +274,21 @@
             authDomain: "tut-app-6aaae.firebaseapp.com",
             databaseURL: "https://tut-app-6aaae-default-rtdb.asia-southeast1.firebasedatabase.app",
             projectId: "tut-app-6aaae",
-            storageBucket: "tut-app-6aaae.firebasestorage.app",
+            storageBucket: "tut-app-6aaae.appspot.com",
             messagingSenderId: "726613480112",
             appId: "1:726613480112:web:6e55cfb767ec8f6c5d6175",
-            measurementId: "G-DZ0XNZR35S"
         };
         if (!firebase.apps.length) firebase.initializeApp(firebaseConfig);
         const db = firebase.database();
 
-        let hierarchy = {}, currentSchedule = {}, currentDay = '', recognition;
+        let hierarchy = {}, allSchedules = {}, currentSchedule = {}, currentDay = '', recognition;
+        let toastHideTimeout = null;
         const $ = (selector) => document.querySelector(selector);
         const facultySelect = $('#facultySelect'), courseSelect = $('#courseSelect'), groupSelect = $('#groupSelect');
         const daysOfWeek = ['Душанбе', 'Сешанбе', 'Чоршанбе', 'Панҷшанбе', 'Ҷумъа', 'Шанбе'];
-        const dayMapping = { 'понедельник': 'Душанбе', 'вторник': 'Сешанбе', 'среду': 'Чоршанбе', 'четверг': 'Панҷшанбе', 'пятницу': 'Ҷумъа', 'субботу': 'Шанбе', 'завтра': 'завтра' };
-
+        const dayMapping = { 'понедельник': 'Душанбе', 'вторник': 'Сешанбе', 'среду': 'Чоршанбе', 'четверг': 'Панҷшанбе', 'пятницу': 'Ҷумъа', 'субботу': 'Шанбе' };
         const samsungThemes = {
+            glass: {"--bg": "rgba(255,255,255,0.1)", "--text": "#ffffff", "--heading": "#ffffff", "--primary": "rgba(255,255,255,0.01)", "--accent": "rgba(255,255,255,0.7)", "--button-bg": "rgba(255,255,255,0.1)", "--button-text": "#ffffff", "--button-hover": "rgba(255,255,255,0.2)", "--card-bg": "rgba(255,255,255,0.1)", "--border": "rgba(255,255,255,0.1)", "--row-hover": "rgba(255,255,255,0.1)", "--text-light": "rgba(255,255,255,0.7)", "--skeleton-bg": "rgba(255,255,255,0.2)", "--glass-blur": "blur(13px)", "--glass-border": "1px solid rgba(255,255,255,0.2)", "--bg-image": "linear-gradient(rgba(0,0,0,0.5), rgba(0,0,0,0.5)), url('neon2.jpg')"},
             red: {"--bg": "#ffe0e0", "--text": "black", "--heading": "#1F040A", "--primary": "#FF3B30", "--accent": "#E0352B", "--button-bg": "#FF3B30", "--button-text": "black", "--button-hover": "#E0352B", "--card-bg": "#dbb4b4", "--border": "#FFD6D4", "--row-hover": "#FFEAE9", "--text-light": "black", "--skeleton-bg": "rgba(255, 214, 212, 0.5)", "--glass-blur": "none", "--glass-border": "none", "--bg-image": "none"},
             orange: {"--bg": "#FFF5ED", "--text": "black", "--heading": "black", "--primary": "#FF9500", "--accent": "#E08500", "--button-bg": "#FF9500", "--button-text": "black", "--button-hover": "#E08500", "--card-bg": "#e8d399", "--border": "#FFD9A6", "--row-hover": "#FFEDD3", "--text-light": "#8A5D3D", "--skeleton-bg": "rgba(255, 217, 166, 0.5)", "--glass-blur": "none", "--glass-border": "none", "--bg-image": "none"},
             yellow: {"--bg": "#d6c79f", "--text": "#3A3007", "--heading": "#1F1904", "--primary": "#FFCC00", "--accent": "#E0B800", "--button-bg": "#FFCC00", "--button-text": "#3A3007", "--button-hover": "#E0B800", "--card-bg": "#ffeebf", "--border": "#FFE680", "--row-hover": "#FFF2BF", "--text-light": "black", "--skeleton-bg": "rgba(255, 230, 128, 0.5)", "--glass-blur": "none", "--glass-border": "none", "--bg-image": "none"},
@@ -308,214 +302,248 @@
             pink: {"--bg": "#FFF5F8", "--text": "#3A071D", "--heading": "#1F0410", "--primary": "#FF2D55", "--accent": "#E0284D", "--button-bg": "#FF2D55", "--button-text": "#FFFFFF", "--button-hover": "#E0284D", "--card-bg": "#FFFFFF", "--border": "#FFA6B9", "--row-hover": "#FFD3DC", "--text-light": "#8A4D66", "--skeleton-bg": "rgba(255, 166, 185, 0.5)", "--glass-blur": "none", "--glass-border": "none", "--bg-image": "none"},
             brown: {"--bg": "#F9F6F2", "--text": "#3A2610", "--heading": "#1F1408", "--primary": "#A2845E", "--accent": "#927755", "--button-bg": "#A2845E", "--button-text": "#FFFFFF", "--button-hover": "#927755", "--card-bg": "#FFFFFF", "--border": "#D1C2AC", "--row-hover": "#E8E1D6", "--text-light": "#8A7A60", "--skeleton-bg": "rgba(209, 194, 172, 0.5)", "--glass-blur": "none", "--glass-border": "none", "--bg-image": "none"},
             gray: {"--bg": "#F2F2F7", "--text": "#1C1C1E", "--heading": "#0A0A0A", "--primary": "#8E8E93", "--accent": "#808085", "--button-bg": "#8E8E93", "--button-text": "#FFFFFF", "--button-hover": "#808085", "--card-bg": "#FFFFFF", "--border": "#C7C7CC", "--row-hover": "#E5E5EA", "--text-light": "#6C6C70", "--skeleton-bg": "rgba(199, 199, 204, 0.5)", "--glass-blur": "none", "--glass-border": "none", "--bg-image": "url('neon1.jpg')"},
-            glass: {"--bg": "rgba(255,255,255,0.1)", "--text": "#ffffff", "--heading": "#ffffff", "--primary": "rgba(255,255,255,0.01)", "--accent": "rgba(255,255,255,0.7)", "--button-bg": "rgba(255,255,255,0.1)", "--button-text": "#ffffff", "--button-hover": "rgba(255,255,255,0.2)", "--card-bg": "rgba(255,255,255,0.1)", "--border": "rgba(255,255,255,0.1)", "--row-hover": "rgba(255,255,255,0.1)", "--text-light": "rgba(255,255,255,0.7)", "--skeleton-bg": "rgba(255,255,255,0.2)", "--glass-blur": "blur(13px)", "--glass-border": "1px solid rgba(255,255,255,0.2)", "--bg-image": "linear-gradient(rgba(0,0,0,0.5), rgba(0,0,0,0.5)), url('neon2.jpg')"}
         };
-        function applySamsungTheme(t) {
-            if (!samsungThemes[t]) return;
-            const e = samsungThemes[t];
-            Object.entries(e).forEach(([t,e]) => document.documentElement.style.setProperty(t, e));
-            localStorage.setItem("selectedTheme", t);
-            document.querySelectorAll(".color-option").forEach(t => t.classList.remove("selected"));
-            const o = document.querySelector(`.color-option[data-theme="${t}"]`);
-            o && o.classList.add("selected");
+
+        function applySamsungTheme(themeName) {
+            const theme = samsungThemes[themeName];
+            if (!theme) return;
+            Object.entries(theme).forEach(([key, value]) => document.documentElement.style.setProperty(key, value));
+            localStorage.setItem("selectedTheme", themeName);
+            document.querySelectorAll(".color-option").forEach(el => el.classList.remove("selected"));
+            const currentThemeEl = document.querySelector(`.color-option[data-theme="${themeName}"]`);
+            if (currentThemeEl) currentThemeEl.classList.add("selected");
+        }
+        function populateThemeButtons() {
+            const palette = document.querySelector('.color-palette');
+            palette.innerHTML = Object.keys(samsungThemes).map(key => {
+                const name = key.charAt(0).toUpperCase() + key.slice(1);
+                let displayName = key === 'glass' ? 'Glass' : (key === 'mint' ? 'Тёмная' : name);
+                return `<div class="color-option ${key === 'glass' ? 'glass-theme' : `samsung-${key}`}" data-theme="${key}" onclick="applySamsungTheme('${key}')"><span class="color-name">${displayName}</span></div>`;
+            }).join('');
+        }
+        function populateDayButtons() {
+            const buttonContainer = document.querySelector('.buttons');
+            buttonContainer.innerHTML = daysOfWeek.map(day => `<button data-day="${day}" onclick="showDay('${day}')">${day}</button>`).join('');
         }
 
-        // --- INITIALIZATION ---
-        document.addEventListener('DOMContentLoaded', async () => {
-            applySamsungTheme(localStorage.getItem("selectedTheme") || 'glass');
-            showSkeletonLoader();
-            try {
-                const snapshot = await db.ref('hierarchy').once('value');
-                if (!snapshot.exists()) throw new Error("Hierarchy not found");
-                hierarchy = snapshot.val();
-                
-                populateFaculties();
-                initVoiceRecognition();
-
-                const savedPath = localStorage.getItem('schedulePath');
-                const savedInfo = localStorage.getItem('scheduleInfo');
-                if (savedPath) {
-                    const pathIds = JSON.parse(savedPath);
-                    facultySelect.value = pathIds.f;
-                    populateCourses(pathIds.c);
-                    populateGroups(pathIds.g);
-                    $('#group-info-display').textContent = savedInfo;
-                    $('#mainContent').style.display = 'block';
-                    showTodayOrDefault();
-                } else {
-                    $('#selectionModal').classList.add('active');
-                }
-            } catch(e) {
-                console.error(e);
-                document.body.innerHTML = '<h1>Ошибка загрузки данных</h1>';
+        function showUpdateToast() {
+            clearTimeout(toastHideTimeout);
+            $('#update-toast').classList.add('show');
+            toastHideTimeout = setTimeout(hideUpdateToast, 15000);
+        }
+        function hideUpdateToast() {
+            clearTimeout(toastHideTimeout);
+            $('#update-toast').classList.remove('show');
+        }
+        function applyUpdates() {
+            console.log("Applying updates without reloading...");
+            hierarchy = JSON.parse(localStorage.getItem('cachedHierarchy'));
+            allSchedules = JSON.parse(localStorage.getItem('cachedSchedules'));
+            
+            const savedPath = JSON.parse(localStorage.getItem('schedulePath'));
+            populateFaculties();
+            if(savedPath) {
+                facultySelect.value = savedPath.f;
+                populateCourses(savedPath.c);
+                populateGroups(savedPath.g);
             }
+            updateScheduleView();
+            hideUpdateToast();
+        }
+
+        async function loadData() {
+            populateThemeButtons();
+            populateDayButtons();
+            applySamsungTheme(localStorage.getItem("selectedTheme") || 'indigo');
+            
+            const cachedHierarchy = localStorage.getItem('cachedHierarchy');
+            const cachedSchedules = localStorage.getItem('cachedSchedules');
+            let isCacheAvailable = cachedHierarchy && cachedSchedules;
+
+            if (isCacheAvailable) {
+                console.log("Loading data from localStorage cache.");
+                hierarchy = JSON.parse(cachedHierarchy);
+                allSchedules = JSON.parse(cachedSchedules);
+                initializeApp();
+            }
+
+            if (navigator.onLine) {
+                try {
+                    console.log("Checking for fresh data from Firebase...");
+                    const [hierarchySnapshot, schedulesSnapshot] = await Promise.all([
+                        db.ref('hierarchy').once('value'),
+                        db.ref('schedules').once('value')
+                    ]);
+
+                    if (!hierarchySnapshot.exists() || !schedulesSnapshot.exists()) throw new Error("Data not found in Firebase.");
+
+                    const freshHierarchyStr = JSON.stringify(hierarchySnapshot.val());
+                    const freshSchedulesStr = JSON.stringify(schedulesSnapshot.val());
+
+                    if (!isCacheAvailable || freshHierarchyStr !== cachedHierarchy || freshSchedulesStr !== cachedSchedules) {
+                        console.log("New data found. Updating cache.");
+                        localStorage.setItem('cachedHierarchy', freshHierarchyStr);
+                        localStorage.setItem('cachedSchedules', freshSchedulesStr);
+                        
+                        if (isCacheAvailable) {
+                            showUpdateToast();
+                        } else {
+                            hierarchy = hierarchySnapshot.val();
+                            allSchedules = schedulesSnapshot.val();
+                            initializeApp();
+                        }
+                    } else {
+                        console.log("Cache is up to date.");
+                    }
+                } catch (e) {
+                    console.error("Failed to fetch fresh data:", e);
+                    if (!isCacheAvailable) document.body.innerHTML = '<h1 class="text-center text-red-500 p-8">Ошибка загрузки. Проверьте интернет.</h1>';
+                }
+            } else if (!isCacheAvailable) {
+                 document.body.innerHTML = '<h1 class="text-center text-red-500 p-8">Нет сети и нет сохраненных данных.</h1>';
+            }
+        }
+        
+        document.addEventListener('DOMContentLoaded', () => {
+            loadData();
+            $('#update-now-btn').addEventListener('click', applyUpdates);
+            $('#update-later-btn').addEventListener('click', hideUpdateToast);
         });
 
-        // --- HIERARCHY & GROUP SELECTION ---
-        function populateFaculties() { for (const e in facultySelect.innerHTML = "<option value=''>Факультет</option>", hierarchy) facultySelect.add(new Option(hierarchy[e].name, e)) }
-        function populateCourses(e = null) {
-            const t = facultySelect.value;
+        function initializeApp() {
+            populateFaculties();
+            initVoiceRecognition();
+            const savedPath = localStorage.getItem('schedulePath');
+            if (savedPath) {
+                const pathIds = JSON.parse(savedPath);
+                facultySelect.value = pathIds.f;
+                populateCourses(pathIds.c);
+                populateGroups(pathIds.g);
+                updateScheduleView(); 
+                $('#mainContent').style.display = 'block';
+            } else {
+                $('#selectionModal').classList.add('active');
+            }
+        }
+        
+        function populateFaculties() { facultySelect.innerHTML = "<option value=''>Факультет</option>"; for (const id in hierarchy) facultySelect.add(new Option(hierarchy[id].name, id)); }
+        function populateCourses(selectedId = null) {
+            const facultyId = facultySelect.value;
             courseSelect.innerHTML = "<option value=''>Курс</option>";
-            if (!t) return populateGroups();
-            const o = hierarchy[t];
-            o?.courses && Object.keys(o.courses).forEach(t => courseSelect.add(new Option(o.courses[t].name, t)));
-            e && (courseSelect.value = e);
+            if (!facultyId) return populateGroups();
+            const faculty = hierarchy[facultyId];
+            if (faculty?.courses) Object.keys(faculty.courses).forEach(id => courseSelect.add(new Option(faculty.courses[id].name, id)));
+            if (selectedId) courseSelect.value = selectedId;
         }
-        function populateGroups(e = null) {
-            const t = facultySelect.value, o = courseSelect.value;
+        function populateGroups(selectedId = null) {
+            const facultyId = facultySelect.value, courseId = courseSelect.value;
             groupSelect.innerHTML = "<option value=''>Группа</option>";
-            if (!o) return;
-            const n = hierarchy[t]?.courses?.[o];
-            n?.groups && Object.keys(n.groups).forEach(t => groupSelect.add(new Option(n.groups[t].name, t)));
-            e && (groupSelect.value = e);
+            if (!courseId) return;
+            const course = hierarchy[facultyId]?.courses?.[courseId];
+            if (course?.groups) Object.keys(course.groups).forEach(id => groupSelect.add(new Option(course.groups[id].name, id)));
+            if (selectedId) groupSelect.value = selectedId;
         }
+
         facultySelect.addEventListener('change', () => populateCourses());
         courseSelect.addEventListener('change', () => populateGroups());
-        groupSelect.addEventListener('change', () => { $('#saveSelectionBtn').disabled = !groupSelect.value });
-        $('#changeGroupBtn').addEventListener('click', () => { $('#selectionModal').classList.add('active'); });
+        groupSelect.addEventListener('change', () => { $('#saveSelectionBtn').disabled = !groupSelect.value; });
+        $('#changeGroupBtn').addEventListener('click', () => $('#selectionModal').classList.add('active'));
+        
         $('#saveSelectionBtn').addEventListener('click', () => {
             const pathIds = { f: facultySelect.value, c: courseSelect.value, g: groupSelect.value };
-            if (!pathIds.f || !pathIds.c || !pathIds.g) return;
+            if (!pathIds.g) return;
             const info = `${facultySelect.options[facultySelect.selectedIndex].text}, ${courseSelect.options[courseSelect.selectedIndex].text}, ${groupSelect.options[groupSelect.selectedIndex].text}`;
             localStorage.setItem('schedulePath', JSON.stringify(pathIds));
             localStorage.setItem('scheduleInfo', info);
+            
             $('#selectionModal').classList.remove('active');
-            $('#mainContent').style.display = 'block';
-            $('#group-info-display').textContent = info;
-            showTodayOrDefault();
+            if (!$('#mainContent').style.display || $('#mainContent').style.display === 'none') {
+                $('#mainContent').style.display = 'block';
+            }
+            updateScheduleView();
         });
 
-        // --- SCHEDULE LOGIC ---
-        function getDayName(dayIndex) {
-            if (dayIndex < 0 || dayIndex >= daysOfWeek.length) return null;
-            return daysOfWeek[dayIndex];
-        }
-
-        function showTodayOrDefault() {
-            let todayIndex = new Date().getDay() === 0 ? 6 : new Date().getDay() - 1;
-            if (todayIndex >= daysOfWeek.length) {
-                todayIndex = 0;
-            }
-            currentDay = daysOfWeek[todayIndex];
-            updateSchedule();
+        function updateScheduleView() {
+            const pathIds = JSON.parse(localStorage.getItem('schedulePath') || '{}');
+            if (!pathIds.g) return renderNoGroupSelected();
+            currentSchedule = allSchedules?.[pathIds.f]?.[pathIds.c]?.[pathIds.g] || {};
+            $('#group-info-display').textContent = localStorage.getItem('scheduleInfo') || '';
+            let todayIndex = new Date().getDay();
+            todayIndex = todayIndex === 0 ? 5 : todayIndex - 1;
+            if (todayIndex >= daysOfWeek.length) todayIndex = 0;
+            showDay(daysOfWeek[todayIndex]);
         }
         function showDay(dayName) {
-            if (dayName.toLowerCase() === 'воскресенье' || dayName.toLowerCase() === 'якшанбе') {
-                alert('В воскресенье занятий нет!');
-                return;
-            }
             currentDay = dayName;
-            updateSchedule();
-        }
-        async function updateSchedule() {
-            const pathIds = { f: facultySelect.value, c: courseSelect.value, g: groupSelect.value };
-            if (!pathIds.g) return renderNoGroupSelected();
-            showSkeletonLoader();
-            const schedulePath = `schedules/${pathIds.f}/${pathIds.c}/${pathIds.g}`;
-            const snapshot = await db.ref(schedulePath).get();
-            currentSchedule = snapshot.exists() ? snapshot.val() : {};
             const daySchedule = currentSchedule[currentDay] || [];
-            setTimeout(() => {
-                if (daySchedule.length === 0 || daySchedule.every(item => !item.subject?.trim())) {
-                    renderNoClasses();
-                } else {
-                    renderSchedule(daySchedule);
-                }
-                document.querySelectorAll('.buttons button').forEach(btn => {
-                    btn.classList.toggle('active-day', btn.dataset.day === currentDay);
-                });
-            }, 300);
+            if (daySchedule.length === 0 || daySchedule.every(item => !item.subject?.trim())) renderNoClasses();
+            else renderSchedule(daySchedule);
+            document.querySelectorAll('.buttons button').forEach(btn => btn.classList.toggle('active-day', btn.dataset.day === currentDay));
         }
-        function showSkeletonLoader() { $('#scheduleContainer').innerHTML = `<div class="skeleton-loader"><div class="skeleton-header"></div><div class="skeleton-row"></div></div>` }
-        function renderNoGroupSelected() { $('#scheduleContainer').innerHTML = `<div class="schedule-day active" style="text-align: center; padding: 20px;">Пожалуйста, выберите группу.</div>` }
-        function renderNoClasses() { $('#scheduleContainer').innerHTML = `<div class="schedule-day active"><h2>${currentDay}</h2><p style="padding: 20px; text-align: center;">Дарсҳо нестанд</p></div>` }
+        function renderNoGroupSelected() { $('#scheduleContainer').innerHTML = `<div class="schedule-day active" style="text-align: center; padding: 20px;">Пожалуйста, выберите группу.</div>`; }
+        function renderNoClasses() { $('#scheduleContainer').innerHTML = `<div class="schedule-day active"><h2>${currentDay}</h2><p style="padding: 20px; text-align: center;">Дарсҳо нестанд. Шумо метавонед истироҳат кунед!</p></div>`; }
         function renderSchedule(schedule) {
-            const container = $('#scheduleContainer');
             let html = `<div class="schedule-day active"><h2>${currentDay}</h2><table><thead><tr><th>Вақт</th><th>АУД</th><th>Фан</th></tr></thead><tbody>`;
-            schedule.forEach(classInfo => {
-                if (classInfo.subject?.trim()) {
-                    const time = classInfo.startTime && classInfo.endTime ? `${classInfo.startTime} - ${classInfo.endTime}` : (classInfo.time || '---');
-                    html += `<tr><td>${time}</td><td>${classInfo.aud || '---'}</td><td>${classInfo.subject}</td></tr>`;
+            schedule.forEach(item => {
+                if (item.subject?.trim()) {
+                    const time = item.startTime && item.endTime ? `${item.startTime} - ${item.endTime}` : (item.time || '---');
+                    html += `<tr><td>${time}</td><td>${item.aud || '---'}</td><td>${item.subject}</td></tr>`;
                 }
             });
-            html += `</tbody></table></div>`;
-            container.innerHTML = html;
+            $('#scheduleContainer').innerHTML = html + `</tbody></table></div>`;
         }
-
-        // --- VOICE ASSISTANT ---
+        
         function initVoiceRecognition() {
             const SpeechRecognition = window.SpeechRecognition || window.webkitSpeechRecognition;
-            if (!SpeechRecognition) return console.warn("Speech Recognition not supported.");
+            if (!SpeechRecognition) return console.warn("Распознавание речи не поддерживается.");
             recognition = new SpeechRecognition();
             recognition.lang = 'ru-RU';
             recognition.interimResults = false;
             recognition.onresult = (event) => processVoiceCommand(event.results[0][0].transcript.toLowerCase().trim());
-            recognition.onend = () => { $('#voiceBtn').classList.remove('listening'); };
+            recognition.onend = () => $('#voiceBtn').classList.remove('listening');
             $('#voiceBtn').addEventListener('click', () => { recognition.start(); $('#voiceBtn').classList.add('listening'); });
         }
         async function processVoiceCommand(command) {
             const voiceStatus = $('#voiceStatus');
             voiceStatus.innerHTML = `<p class="font-semibold">Вы сказали:</p><p class="italic">"${command}"</p>`;
             voiceStatus.style.display = 'block';
-            let response = "Извините, я не поняла команду. Скажите 'помощь', чтобы узнать, что я умею.";
+            let responseText = "Извините, я не поняла команду. Скажите 'помощь', чтобы узнать, что я умею.";
+            
             const speakResponse = (text) => {
                 speak(text);
                 voiceStatus.innerHTML += `<p class="assistant-response">${text}</p>`;
                 setTimeout(() => { voiceStatus.style.display = 'none' }, 7000);
             };
 
-            const lowerCommand = command.toLowerCase();
-
-            if (lowerCommand.includes('привет') || lowerCommand.includes('здравствуй')) {
+            if (command.includes('привет')) {
                 speakResponse("Здравствуйте! Чем могу помочь с расписанием?");
-                return;
-            } else if (lowerCommand.includes('помощь') || lowerCommand.includes('справка')) {
-                speakResponse(`Я могу:
-- показать расписание на любой день (например, "покажи расписание на завтра" или "покажи четверг"),
-- найти следующую пару,
-- узнать, какая сейчас пара,
-- узнать, какая погода в Душанбе.
-Просто скажите мне, что вы хотите.`);
-                return;
-            } else if (lowerCommand.includes('погода')) {
+            } else if (command.includes('помощь') || command.includes('справка')) {
+                speakResponse("Я могу: показать расписание на день, найти следующую пару, или узнать погоду.");
+            } else if (command.includes('погода')) {
                 voiceStatus.innerHTML += `<p class="mt-2 pt-2 border-t">Получаю данные о погоде...</p>`;
                 const weatherInfo = await getWeather();
                 speakResponse(weatherInfo);
-                return;
-            } else if (lowerCommand.includes('следующая пара')) {
+            } else if (command.includes('следующая пара')) {
                 const nextClassInfo = findNextClass();
                 speakResponse(nextClassInfo);
-                return;
-            } else if (lowerCommand.includes('сейчас пара') || lowerCommand.includes('какая сейчас пара')) {
+            } else if (command.includes('сейчас пара')) {
                 const currentClassInfo = findCurrentClass();
                 speakResponse(currentClassInfo);
-                return;
             } else {
                 let dayFound = false;
-                if (lowerCommand.includes('завтра')) {
-                    const todayIndex = new Date().getDay();
-                    const tomorrowIndex = (todayIndex % 7);
-                    if (tomorrowIndex === 0) {
-                        speakResponse("Завтра воскресенье, занятий нет!");
-                        return;
+                if (command.includes('завтра')) {
+                    const tomorrowIndex = (new Date().getDay() % 7);
+                    if (tomorrowIndex >= daysOfWeek.length) {
+                        speakResponse("Завтра выходной, занятий нет!");
+                    } else {
+                        const dayToShow = daysOfWeek[tomorrowIndex];
+                        showDay(dayToShow);
+                        speakResponse(`Показываю расписание на завтра, ${dayToShow}.`);
                     }
-                    const dayToShow = daysOfWeek[tomorrowIndex - 1];
-                    showDay(dayToShow);
-                    speakResponse(`Показываю расписание на завтра, ${dayToShow}.`);
-                    dayFound = true;
-                } else if (lowerCommand.includes('сегодня')) {
-                    const todayIndex = new Date().getDay();
-                    if (todayIndex === 0) {
-                        speakResponse("Сегодня воскресенье, занятий нет!");
-                        return;
-                    }
-                    const todayName = daysOfWeek[todayIndex - 1];
-                    showDay(todayName);
-                    speakResponse(`Показываю расписание на сегодня, ${todayName}.`);
                     dayFound = true;
                 } else {
                     for (const [dayRussian, dayTajik] of Object.entries(dayMapping)) {
-                        if (lowerCommand.includes(dayRussian)) {
+                        if (command.includes(dayRussian)) {
                             showDay(dayTajik);
                             speakResponse(`Показываю расписание на ${dayRussian}.`);
                             dayFound = true;
@@ -523,19 +551,16 @@
                         }
                     }
                 }
-                if (!dayFound) {
-                    speakResponse(response);
-                }
+                if (!dayFound) speakResponse(responseText);
             }
         }
-        
         function findNextClass() {
             const now = new Date();
             const currentTime = `${String(now.getHours()).padStart(2, '0')}:${String(now.getMinutes()).padStart(2, '0')}`;
             const todayIndex = now.getDay() === 0 ? 6 : now.getDay() - 1;
-            const todayName = daysOfWeek[todayIndex];
-            const todaySchedule = (currentSchedule[todayName] || []).filter(item => item.subject?.trim()).sort((a, b) => (a.startTime || '').localeCompare(b.startTime || ''));
-
+            if (todayIndex >= daysOfWeek.length) return "Сегодня выходной, занятий нет.";
+            
+            const todaySchedule = (currentSchedule[daysOfWeek[todayIndex]] || []).filter(item => item.subject?.trim()).sort((a, b) => (a.startTime || '').localeCompare(b.startTime || ''));
             for (const lesson of todaySchedule) {
                 if ((lesson.startTime || lesson.time) > currentTime) {
                     return `Следующая пара: ${lesson.subject}, начало в ${lesson.startTime || lesson.time}, в аудитории ${lesson.aud}.`;
@@ -543,54 +568,55 @@
             }
             return "На сегодня занятия уже закончились. Хорошего дня!";
         }
-
         function findCurrentClass() {
             const now = new Date();
             const currentTime = `${String(now.getHours()).padStart(2, '0')}:${String(now.getMinutes()).padStart(2, '0')}`;
             const todayIndex = now.getDay() === 0 ? 6 : now.getDay() - 1;
-            const todayName = daysOfWeek[todayIndex];
-            const todaySchedule = (currentSchedule[todayName] || []).filter(item => item.subject?.trim()).sort((a, b) => (a.startTime || '').localeCompare(b.startTime || ''));
+             if (todayIndex >= daysOfWeek.length) return "Сейчас выходной.";
 
+            const todaySchedule = (currentSchedule[daysOfWeek[todayIndex]] || []).filter(item => item.subject?.trim());
             for (const lesson of todaySchedule) {
                 if ((lesson.startTime || '') <= currentTime && (lesson.endTime || '') >= currentTime) {
-                    return `Сейчас идет пара: ${lesson.subject}, до ${lesson.endTime || lesson.time}, в аудитории ${lesson.aud}.`;
+                    return `Сейчас идет пара: ${lesson.subject}, до ${lesson.endTime}, в аудитории ${lesson.aud}.`;
                 }
             }
             return "Сейчас нет занятий.";
         }
         
         async function getWeather() {
-            // Replaced wttr.in with OpenWeatherMap for reliability
-            const apiKey = '8e00398683299b7b8b6bf757a7d5b193'; // Replace with your actual API key
+            const apiKey = '8e00398683299b7b8b6bf757a7d5b193'; // ❗❗❗ ВАЖНО: ЗАМЕНИТЕ ЭТОТ КЛЮЧ НА СВОЙ! ❗❗❗
             const city = 'Dushanbe';
-            const lang = 'ru';
-            const url = `https://api.openweathermap.org/data/2.5/weather?q=${city}&appid=${apiKey}&lang=${lang}&units=metric`;
-
+            const url = `https://api.openweathermap.org/data/2.5/weather?q=${city}&appid=${apiKey}&lang=ru&units=metric`;
+            if (apiKey === '8e00398683299b7b8b6bf757a7d5b193') return "Функция погоды не настроена. Пожалуйста, укажите API-ключ в коде.";
+            
             try {
                 const response = await fetch(url);
-                if (!response.ok) {
-                    throw new Error('Weather service not available');
-                }
+                if (!response.ok) throw new Error('Weather service not available');
                 const data = await response.json();
                 const temp = Math.round(data.main.temp);
                 const feelsLike = Math.round(data.main.feels_like);
-                const description = data.weather[0].description;
-                return `Сейчас в Душанбе ${temp}°C, ощущается как ${feelsLike}°C. ${description}.`;
+                return `Сейчас в Душанбе ${temp}°C, ощущается как ${feelsLike}°C. ${data.weather[0].description}.`;
             } catch (error) {
                 console.error("Weather fetch error:", error);
                 return "Не удалось получить данные о погоде.";
             }
         }
-
         function speak(text) {
             try {
                 speechSynthesis.cancel();
                 const utterance = new SpeechSynthesisUtterance(text);
                 utterance.lang = 'ru-RU';
                 speechSynthesis.speak(utterance);
-            } catch(e) { console.error("Speech synthesis error:", e); }
+            } catch (e) { console.error("Speech synthesis error:", e); }
+        }
+
+        if ('serviceWorker' in navigator) {
+            window.addEventListener('load', () => {
+                navigator.serviceWorker.register('./sw.js')
+                    .then(reg => console.log('Service worker registered successfully.'))
+                    .catch(err => console.error('Service worker registration failed:', err));
+            });
         }
     </script>
 </body>
 </html>
-
