@@ -1,14 +1,14 @@
- <!DOCTYPE html>
+<!DOCTYPE html>
 <html lang="ru">
 <head>
-     <meta charset="UTF-8">
-  <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <meta name="description" content="Komronbek">
-  <meta name="keywords" content="1-40010101B">
-  <meta name="author" content="Komronbek Sharipov">
-  <link rel="website icon" type="png" href="logo.png">
-  <link rel="manifest" href="manifest.json">
-  <title>Вход в TUT</title>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta name="description" content="Komronbek">
+    <meta name="keywords" content="1-40010101B">
+    <meta name="author" content="Komronbek Sharipov">
+    <link rel="website icon" type="png" href="logo.png">
+    <link rel="manifest" href="manifest.json">
+    <title>Вход в TUT</title>
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
     <link href="https://fonts.googleapis.com/css2?family=Roboto:wght@300;400;500;700&family=Orbitron:wght@500;700&display=swap" rel="stylesheet">
     <style>
@@ -55,6 +55,46 @@
                 radial-gradient(circle at 80% 70%, rgba(156, 39, 176, 0.1) 0%, transparent 20%),
                 radial-gradient(circle at 40% 60%, rgba(0, 255, 157, 0.1) 0%, transparent 20%);
             z-index: -1;
+        }
+
+        /* Toast Notification Styles */
+        #toast-container {
+            position: fixed;
+            top: 20px;
+            right: 20px;
+            z-index: 1000;
+            display: flex;
+            flex-direction: column;
+            gap: 10px;
+        }
+
+        .toast {
+            background-color: rgba(30, 30, 30, 0.9);
+            color: var(--light-color);
+            padding: 15px 25px;
+            border-radius: 10px;
+            box-shadow: 0 5px 15px rgba(0, 0, 0, 0.3);
+            border: 1px solid rgba(255, 255, 255, 0.1);
+            backdrop-filter: blur(5px);
+            transform: translateX(120%);
+            transition: transform 0.5s ease-in-out;
+            min-width: 250px;
+            max-width: 400px;
+            opacity: 0;
+        }
+
+        .toast.show {
+            transform: translateX(0);
+            opacity: 1;
+        }
+
+        .toast.success {
+            border-left: 5px solid var(--success-color);
+        }
+
+        .toast.error {
+            border-left: 5px solid var(--error-color);
+            background-color: red;
         }
 
         .container {
@@ -483,7 +523,8 @@
             left: 0;
             width: 100%;
             height: 100%;
-            background: linear-gradient(135deg, var(--dark-color) 0%, var(--secondary-color) 50%, var(--primary-color) 100%);
+            background-size: cover;
+            background-position: center;
             display: flex;
             justify-content: center;
             align-items: center;
@@ -491,9 +532,9 @@
             z-index: 100;
             opacity: 0;
             pointer-events: none;
-            transition: opacity 0.5s ease;
             text-align: center;
             padding: 1rem;
+            transition: opacity 0.5s ease;
         }
 
         .welcome-container::before {
@@ -503,16 +544,50 @@
             left: 0;
             width: 100%;
             height: 100%;
-            background:
-                radial-gradient(circle at 20% 30%, rgba(0, 212, 255, 0.1) 0%, transparent 20%),
-                radial-gradient(circle at 80% 70%, rgba(156, 39, 176, 0.1) 0%, transparent 20%),
-                radial-gradient(circle at 40% 60%, rgba(0, 255, 157, 0.1) 0%, transparent 20%);
+            background-color: rgba(2, 0, 36, 0.4);
             z-index: -1;
         }
 
         .welcome-container.active {
             opacity: 1;
             pointer-events: all;
+        }
+
+        .welcome-container.active.morning {
+            animation: zoom-in-morning 4s forwards;
+        }
+
+        .welcome-container.active.afternoon {
+            animation: zoom-in-afternoon 4s forwards;
+        }
+
+        .welcome-container.active.evening {
+            animation: zoom-in-evening 4s forwards;
+        }
+
+        .welcome-container.active.night {
+            animation: zoom-in-night 4s forwards;
+        }
+
+        /* Animation for different times */
+        @keyframes zoom-in-morning {
+            0% { background-image: url('morning.jpg'); background-size: 110%; }
+            100% { background-image: url('morning.jpg'); background-size: 100%; }
+        }
+
+        @keyframes zoom-in-afternoon {
+            0% { background-image: url('afternoon.jpg'); background-size: 110%; }
+            100% { background-image: url('afternoon.jpg'); background-size: 100%; }
+        }
+
+        @keyframes zoom-in-evening {
+            0% { background-image: url('evening.jpg'); background-size: 110%; }
+            100% { background-image: url('evening.jpg'); background-size: 100%; }
+        }
+
+        @keyframes zoom-in-night {
+            0% { background-image: url('night.jpg'); background-size: 110%; }
+            100% { background-image: url('night.jpg'); background-size: 100%; }
         }
 
         .welcome-container h1 {
@@ -564,7 +639,7 @@
             opacity: 0;
             transform: translateY(20px);
         }
-        
+
         .welcome-container.active .welcome-message {
             opacity: 0.9;
             transform: translateY(0);
@@ -665,7 +740,7 @@
                 opacity: 0;
             }
         }
-        
+
         /* Responsive */
         @media (max-width: 870px) {
             .container {
@@ -769,7 +844,7 @@
                 top: 5%;
                 transform: translate(-50%, 0);
             }
-            
+
             .welcome-container h1 {
                 font-size: 2.5rem;
             }
@@ -820,6 +895,8 @@
     </style>
 </head>
 <body>
+    <div id="toast-container"></div>
+
     <div class="binary-code" id="binary-code"></div>
 
     <div class="container" id="auth-container">
@@ -901,7 +978,7 @@
 
     <div class="welcome-container" id="welcome-container">
         <h1 id="greeting-text">Добро пожаловать, <span id="username"></span>!</h1>
-        <p class="welcome-message">Вы успешно вошли в систему факультета информационных технологий и искусственного интеллекта. Теперь у вас есть доступ ко всем ресурсам и возможностям нашего сообщества.</p>
+        <p class="welcome-message">Вы успешно вошли в систему TUT. Теперь у вас есть доступ ко всем ресурсам и возможностям нашего сообщества.</p>
         <div class="confetti"></div>
         <div class="confetti"></div>
         <div class="confetti"></div>
@@ -949,6 +1026,27 @@
         const githubSignUp = document.getElementById('github-signup');
         const binaryCodeContainer = document.getElementById('binary-code');
 
+        // Function to show a Toast notification
+        function showToast(message, type = 'info') {
+            const toastContainer = document.getElementById('toast-container');
+            const toast = document.createElement('div');
+            toast.className = `toast ${type}`;
+            toast.innerHTML = `<p>${message}</p>`;
+
+            toastContainer.appendChild(toast);
+
+            setTimeout(() => {
+                toast.classList.add('show');
+            }, 10);
+
+            setTimeout(() => {
+                toast.classList.remove('show');
+                setTimeout(() => {
+                    toast.remove();
+                }, 500);
+            }, 4000);
+        }
+
         // Generate binary code animation
         function generateBinaryCode() {
             const binaryChars = '01';
@@ -958,7 +1056,6 @@
                 const line = document.createElement('div');
                 line.classList.add('binary-line');
 
-                // Generate random binary string
                 let binaryString = '';
                 const length = Math.floor(Math.random() * 30) + 20;
                 for (let j = 0; j < length; j++) {
@@ -1030,7 +1127,6 @@
             });
         }
 
-        // Add ripple to all buttons
         document.querySelectorAll('.btn').forEach(btn => {
             addRippleEffect(btn);
         });
@@ -1038,87 +1134,70 @@
         // Sign up function
         signUpForm.addEventListener('submit', (e) => {
             e.preventDefault();
-
             const email = document.getElementById('signup-email').value;
             const password = document.getElementById('signup-password').value;
             const name = document.getElementById('signup-name').value;
 
             auth.createUserWithEmailAndPassword(email, password)
                 .then((userCredential) => {
-                    // Signed up successfully
                     const user = userCredential.user;
-
-                    // Update user profile with display name
                     return user.updateProfile({
                         displayName: name
                     });
                 })
                 .then(() => {
-                    // Show welcome message
                     showWelcomeMessage(auth.currentUser.displayName);
-
-                    // Reset form
                     signUpForm.reset();
                 })
                 .catch((error) => {
-                    alert(error.message);
+                    let errorMessage = error.message;
+                    if (errorMessage.includes("email-already-in-use")) {
+                        showToast("Этот email уже используется. Попробуйте другой.", "error");
+                    } else {
+                        showToast("Ошибка регистрации. Попробуйте еще раз.", "error");
+                    }
                 });
         });
 
         // Sign in function
         signInForm.addEventListener('submit', (e) => {
             e.preventDefault();
-
             const email = document.getElementById('signin-email').value;
             const password = document.getElementById('signin-password').value;
 
             auth.signInWithEmailAndPassword(email, password)
                 .then((userCredential) => {
-                    // Signed in successfully
                     const user = userCredential.user;
-
-                    // Show welcome message
                     showWelcomeMessage(user.displayName || user.email.split('@')[0]);
-
-                    // Reset form
                     signInForm.reset();
                 })
                 .catch((error) => {
-                    alert(error.message);
+                    showToast("Неправильный email или пароль. Повторите попытку.", "error");
                 });
         });
 
-        // Google sign in
+        // Social auth functions
         function googleAuth() {
             const provider = new firebase.auth.GoogleAuthProvider();
-
             auth.signInWithPopup(provider)
                 .then((result) => {
-                    // Signed in with Google
                     const user = result.user;
-
-                    // Show welcome message
                     showWelcomeMessage(user.displayName);
                 })
                 .catch((error) => {
-                    alert(error.message);
+                    showToast("Ошибка входа через Google. Попробуйте еще раз.", "error");
                 });
         }
 
-        // GitHub sign in
         function githubAuth() {
             const provider = new firebase.auth.GithubAuthProvider();
-
             auth.signInWithPopup(provider)
                 .then((result) => {
-                    // Signed in with GitHub
                     const user = result.user;
-
-                    // Show welcome message
                     showWelcomeMessage(user.displayName || user.email.split('@')[0]);
                 })
                 .catch((error) => {
-                    alert(error.message);
+                    showToast("Ошибка входа через GitHub. Попробуйте еще раз.", "error");
                 });
         }
 
@@ -1144,29 +1223,28 @@
 
         // Show welcome message and redirect
         function showWelcomeMessage(username) {
-            // Set username
-            usernameElement.textContent = username;
-
-            // Get current time for greeting
             const hour = new Date().getHours();
-            let greeting;
+            let greeting = '';
+            let timeClass = '';
 
             if (hour >= 5 && hour < 12) {
                 greeting = 'Доброе утро🏙️';
+                timeClass = 'morning';
             } else if (hour >= 12 && hour < 18) {
                 greeting = 'Добрый день🌇';
+                timeClass = 'afternoon';
             } else if (hour >= 18 && hour < 22) {
                 greeting = 'Добрый вечер🌙🌆';
+                timeClass = 'evening';
             } else {
-                greeting = 'Доброй ночи🌙🌃';
+                greeting = 'Доброй ночи🌙';
+                timeClass = 'night';
             }
-
+            
+            welcomeContainer.className = `welcome-container active ${timeClass}`;
+            usernameElement.textContent = username;
             greetingText.textContent = `${greeting}, ${username}!`;
 
-            // Show welcome container
-            welcomeContainer.classList.add('active');
-
-            // Start confetti animation after welcome message appears
             const confetti = document.querySelectorAll('.confetti');
             confetti.forEach((item, index) => {
                 setTimeout(() => {
@@ -1174,7 +1252,6 @@
                 }, index * 200);
             });
 
-            // Redirect to home.html after 4 seconds
             setTimeout(() => {
                 window.location.href = 'home.html';
             }, 4000);
@@ -1183,7 +1260,6 @@
         // Auth state observer
         auth.onAuthStateChanged((user) => {
             if (user) {
-                // User is signed in
                 const displayName = user.displayName || user.email.split('@')[0];
                 showWelcomeMessage(displayName);
             }
@@ -1191,16 +1267,13 @@
 
         // Add animation to input fields on focus
         const inputFields = document.querySelectorAll('.input-field');
-
         inputFields.forEach(inputField => {
             const input = inputField.querySelector('input');
-
             input.addEventListener('focus', () => {
                 inputField.style.transform = 'scale(1.02)';
                 inputField.style.boxShadow = '0 0 20px rgba(0, 212, 255, 0.4)';
                 inputField.style.borderColor = 'var(--neon-green)';
             });
-
             input.addEventListener('blur', () => {
                 inputField.style.transform = 'scale(1)';
                 inputField.style.boxShadow = '0 0 10px rgba(0, 212, 255, 0.1)';
@@ -1210,13 +1283,11 @@
 
         // Button hover effects
         const buttons = document.querySelectorAll('.btn');
-
         buttons.forEach(button => {
             button.addEventListener('mouseenter', () => {
                 button.style.transform = 'translateY(-3px)';
                 button.style.boxShadow = '0 10px 20px rgba(0, 212, 255, 0.5)';
             });
-
             button.addEventListener('mouseleave', () => {
                 button.style.transform = 'translateY(0)';
                 button.style.boxShadow = '0 5px 15px rgba(0, 0, 0, 0.3)';
