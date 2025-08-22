@@ -525,6 +525,7 @@
             height: 100%;
             background-size: cover;
             background-position: center;
+            background-repeat: no-repeat;
             display: flex;
             justify-content: center;
             align-items: center;
@@ -554,40 +555,39 @@
         }
 
         .welcome-container.active.morning {
-            animation: zoom-in-morning 4s forwards;
+            animation: zoom-out-morning 4s forwards;
         }
 
         .welcome-container.active.afternoon {
-            animation: zoom-in-afternoon 4s forwards;
+            animation: zoom-out-afternoon 4s forwards;
         }
 
         .welcome-container.active.evening {
-            animation: zoom-in-evening 4s forwards;
+            animation: zoom-out-evening 4s forwards;
         }
 
         .welcome-container.active.night {
-            animation: zoom-in-night 4s forwards;
+            animation: zoom-out-night 4s forwards;
         }
 
-        /* Animation for different times */
-        @keyframes zoom-in-morning {
-            0% { background-image: url('morning.jpg'); background-size: 110%; }
-            100% { background-image: url('morning.jpg'); background-size: 100%; }
+        @keyframes zoom-out-morning {
+            0% { background-image: url('morning.jpg'); background-size: 101%; }
+            100% { background-image: url('morning.jpg'); background-size: 117%; }
         }
 
-        @keyframes zoom-in-afternoon {
-            0% { background-image: url('afternoon.jpg'); background-size: 110%; }
-            100% { background-image: url('afternoon.jpg'); background-size: 100%; }
+        @keyframes zoom-out-afternoon {
+            0% { background-image: url('afternoon.jpg'); background-size: 101%; }
+            100% { background-image: url('afternoon.jpg'); background-size: 117%; }
         }
 
-        @keyframes zoom-in-evening {
-            0% { background-image: url('evening.jpg'); background-size: 110%; }
-            100% { background-image: url('evening.jpg'); background-size: 100%; }
+        @keyframes zoom-out-evening {
+            0% { background-image: url('evening.jpg'); background-size: 101%; }
+            100% { background-image: url('evening.jpg'); background-size: 117%; }
         }
 
-        @keyframes zoom-in-night {
-            0% { background-image: url('night.jpg'); background-size: 110%; }
-            100% { background-image: url('night.jpg'); background-size: 100%; }
+        @keyframes zoom-out-night {
+            0% { background-image: url('night.jpg'); background-size: 101%; }
+            100% { background-image: url('night.jpg'); background-size: 117%; }
         }
 
         .welcome-container h1 {
@@ -968,7 +968,7 @@
             <div class="panel right-panel">
                 <div class="content">
                     <h3>Уже с нами?</h3>
-                    <p>Войдите в свой аккаунт и продолжите исследование мира информационных технологий и ИИ!</p>
+                    <p></p>
                     <button class="btn transparent" id="sign-in-btn2">Вход</button>
                 </div>
                 <img src="https://assets1.lottiefiles.com/packages/lf20_6wutsrox.json" class="image" alt="" style="width: 80%; height: auto;">
@@ -990,7 +990,21 @@
     <script src="https://www.gstatic.com/firebasejs/8.10.0/firebase-auth.js"></script>
 
     <script>
+        // Register Service Worker for offline functionality
+        if ('serviceWorker' in navigator) {
+            window.addEventListener('load', () => {
+                navigator.serviceWorker.register('/service-worker.js')
+                    .then(registration => {
+                        console.log('Service Worker registered with scope:', registration.scope);
+                    })
+                    .catch(error => {
+                        console.log('Service Worker registration failed:', error);
+                    });
+            });
+        }
+    
         // Firebase configuration
+        // !!! IMPORTANT: REPLACE WITH YOUR OWN FIREBASE CONFIGURATION !!!
         const firebaseConfig = {
             apiKey: "AIzaSyCAOfxPW5m2UqtulWzuh3egOjJ-ti-rDf8",
             authDomain: "register-221e5.firebaseapp.com",
@@ -1134,6 +1148,12 @@
         // Sign up function
         signUpForm.addEventListener('submit', (e) => {
             e.preventDefault();
+            
+            if (!navigator.onLine) {
+                showToast("Для регистрации необходимо подключение к интернету.", "error");
+                return;
+            }
+
             const email = document.getElementById('signup-email').value;
             const password = document.getElementById('signup-password').value;
             const name = document.getElementById('signup-name').value;
@@ -1162,6 +1182,12 @@
         // Sign in function
         signInForm.addEventListener('submit', (e) => {
             e.preventDefault();
+
+            if (!navigator.onLine) {
+                showToast("Для входа необходимо подключение к интернету.", "error");
+                return;
+            }
+
             const email = document.getElementById('signin-email').value;
             const password = document.getElementById('signin-password').value;
 
@@ -1178,6 +1204,10 @@
 
         // Social auth functions
         function googleAuth() {
+            if (!navigator.onLine) {
+                showToast("Для входа через Google необходимо подключение к интернету.", "error");
+                return;
+            }
             const provider = new firebase.auth.GoogleAuthProvider();
             auth.signInWithPopup(provider)
                 .then((result) => {
@@ -1190,6 +1220,10 @@
         }
 
         function githubAuth() {
+            if (!navigator.onLine) {
+                showToast("Для входа через GitHub необходимо подключение к интернету.", "error");
+                return;
+            }
             const provider = new firebase.auth.GithubAuthProvider();
             auth.signInWithPopup(provider)
                 .then((result) => {
@@ -1231,10 +1265,10 @@
                 greeting = 'Доброе утро🏙️';
                 timeClass = 'morning';
             } else if (hour >= 12 && hour < 18) {
-                greeting = 'Добрый день🌇';
+                greeting = 'Добрый день';
                 timeClass = 'afternoon';
             } else if (hour >= 18 && hour < 22) {
-                greeting = 'Добрый вечер🌙🌆';
+                greeting = 'Добрый вечер🌙';
                 timeClass = 'evening';
             } else {
                 greeting = 'Доброй ночи🌙';
@@ -1257,7 +1291,7 @@
             }, 4000);
         }
 
-        // Auth state observer
+        // Auth state observer for offline login
         auth.onAuthStateChanged((user) => {
             if (user) {
                 const displayName = user.displayName || user.email.split('@')[0];
