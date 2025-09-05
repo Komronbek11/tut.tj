@@ -1,9 +1,9 @@
- <!DOCTYPE html>
+<!DOCTYPE html>
 <html lang="ru">
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Уведомления</title>
+    <title>Огоҳиномаҳо</title>
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
     <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
@@ -19,8 +19,12 @@
             --text-color: #f0f2f5;
             --text-secondary-color: #e0e2e5;
             
-            --border-radius: 20px;
+            --border-radius: 16px; /* Adjusted for modern feel */
             --font-family: 'Inter', sans-serif;
+            --background-color: #121212;
+            --card-background: rgba(255, 255, 255, 0.08);
+            --border-color: rgba(255, 255, 255, 0.1);
+            --skeleton-color: rgba(255, 255, 255, 0.05);
         }
 
         *, *::before, *::after {
@@ -29,22 +33,22 @@
 
         body {
             font-family: var(--font-family);
-            background: #121212;
+            background: var(--background-color);
             color: var(--text-color);
             margin: 0;
             height: 100vh;
-            overflow: hidden; /* Скрываем части фигур, выходящие за пределы */
+            overflow: hidden;
             position: relative;
         }
 
-        /* Динамические фигуры на фоне */
+        /* Dynamic background shapes */
         body::before, body::after {
             content: '';
             position: fixed;
             z-index: -1;
             border-radius: 50%;
             filter: blur(100px);
-            opacity: 0.7;
+            opacity: 0.6;
         }
 
         body::before {
@@ -75,11 +79,10 @@
             to { transform: translate(-80px, -40px) rotate(-180deg); }
         }
 
-        /* Новый класс-обертка для скроллинга */
         .scroll-wrapper {
             height: 100vh;
             overflow-y: auto;
-            padding: 30px;
+            padding: 25px 20px;
         }
 
         .container {
@@ -88,40 +91,65 @@
             margin: 0 auto;
         }
 
-        h1 {
-            text-align: center;
-            color: #ffffff;
-            margin-top: 0;
-            margin-bottom: 40px;
-            font-weight: 700;
-            font-size: 2.5rem;
-            text-shadow: 0 2px 10px rgba(0,0,0,0.2);
+        .header-actions {
+            display: flex;
+            align-items: center;
+            margin-bottom: 25px;
         }
 
-        /* Сетка уведомлений */
+        .btn-back {
+            background: none;
+            border: 1px solid rgba(255, 255, 255, 0.1);
+            border-radius: 50%;
+            width: 40px;
+            height: 40px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            cursor: pointer;
+            transition: background-color 0.3s ease, transform 0.2s ease;
+            margin-right: 20px;
+        }
+        .btn-back:hover {
+            background-color: rgba(255, 255, 255, 0.1);
+            transform: translateY(-2px);
+        }
+        .btn-back svg {
+            width: 20px;
+            height: 20px;
+            color: var(--text-color);
+        }
+        
+        h1 {
+            color: #ffffff;
+            margin: 0;
+            font-weight: 700;
+            font-size: 2.2rem;
+            text-shadow: 0 2px 8px rgba(0,0,0,0.2);
+            flex-grow: 1;
+        }
+
         #notifications-grid {
             display: grid;
-            grid-template-columns: repeat(auto-fill, minmax(320px, 1fr));
-            gap: 30px;
-            padding-bottom: 30px; /* Добавим отступ снизу внутри скролл-области */
+            grid-template-columns: repeat(auto-fill, minmax(300px, 1fr));
+            gap: 25px;
+            padding-bottom: 30px;
         }
 
-        /* Стиль Glassmorphism для карточки */
         .notification-card {
-            background: rgba(255, 255, 255, 0.1);
+            background: var(--card-background);
             backdrop-filter: blur(25px);
             -webkit-backdrop-filter: blur(25px);
             border: 1px solid rgba(255, 255, 255, 0.18);
             border-radius: var(--border-radius);
             box-shadow: 0 8px 32px 0 rgba(0, 0, 0, 0.2);
-            padding: 25px;
+            padding: 20px;
             display: flex;
             flex-direction: column;
             animation: fadeIn 0.6s ease-out;
             transition: transform 0.3s ease, box-shadow 0.3s ease;
         }
         
-        /* Fallback для старых браузеров */
         @supports not (backdrop-filter: blur(25px)) {
             .notification-card {
                 background: rgba(40, 40, 40, 0.9);
@@ -129,13 +157,12 @@
         }
 
         .notification-card:hover {
-            transform: scale(1.03);
+            transform: translateY(-5px);
         }
 
-        /* Свечение при наведении */
-        .notification-card.info:hover { box-shadow: 0 0 25px var(--primary-glow); }
-        .notification-card.success:hover { box-shadow: 0 0 25px var(--success-glow); }
-        .notification-card.warning:hover { box-shadow: 0 0 25px var(--warning-glow); }
+        .notification-card.info:hover { box-shadow: 0 0 20px var(--primary-glow); }
+        .notification-card.success:hover { box-shadow: 0 0 20px var(--success-glow); }
+        .notification-card.warning:hover { box-shadow: 0 0 20px var(--warning-glow); }
 
 
         @keyframes fadeIn {
@@ -147,6 +174,15 @@
         .notification-card.success .notification-icon { color: var(--success-color); }
         .notification-card.warning .notification-icon { color: var(--warning-color); }
         
+        .notification-image {
+            width: calc(100% + 40px);
+            max-height: 200px;
+            object-fit: cover;
+            margin: -20px -20px 20px -20px;
+            border-radius: var(--border-radius) var(--border-radius) 0 0;
+            transition: opacity 0.5s ease;
+        }
+
         .card-header {
             display: flex;
             align-items: flex-start;
@@ -174,7 +210,7 @@
             color: var(--text-secondary-color);
             border-top: 1px solid rgba(255, 255, 255, 0.1);
             padding-top: 15px;
-            margin-top: auto; /* Прижимает мета-данные к низу */
+            margin-top: auto;
             line-height: 1.5;
         }
         .notification-meta span {
@@ -185,13 +221,55 @@
             font-weight: 500;
         }
 
-
         .loader-container {
             text-align: center;
             padding: 50px;
             font-size: 1.2rem;
             color: var(--text-secondary-color);
-            grid-column: 1 / -1; /* Растягиваем на всю ширину сетки */
+            grid-column: 1 / -1;
+        }
+
+        /* Skeleton Loader styles */
+        .skeleton-card {
+            background: rgba(255, 255, 255, 0.05);
+            border-radius: var(--border-radius);
+            padding: 20px;
+            display: flex;
+            flex-direction: column;
+            animation: pulse 1.5s infinite ease-in-out;
+        }
+
+        .skeleton-image {
+            width: calc(100% + 40px);
+            height: 150px;
+            margin: -20px -20px 20px -20px;
+            background: var(--skeleton-color);
+            border-radius: var(--border-radius) var(--border-radius) 0 0;
+        }
+
+        .skeleton-line {
+            height: 12px;
+            background: var(--skeleton-color);
+            border-radius: 4px;
+            margin-bottom: 10px;
+        }
+        .skeleton-line.full { width: 100%; }
+        .skeleton-line.half { width: 60%; }
+        .skeleton-line.quarter { width: 40%; }
+        
+        .skeleton-icon {
+            width: 28px;
+            height: 28px;
+            background: var(--skeleton-color);
+            border-radius: 50%;
+            margin-right: 15px;
+            flex-shrink: 0;
+        }
+
+        @keyframes pulse {
+            0% { opacity: 0.8; }
+            50% { opacity: 0.5; }
+            100% { opacity: 0.8; }
         }
 
         @media (max-width: 768px) {
@@ -212,10 +290,16 @@
 <body>
     <main class="scroll-wrapper">
         <div class="container">
-            <h1>Огоҳиномаҳо</h1>
-            <div id="notifications-grid">
-                <div class="loader-container">Огоҳиномаҳо боргирӣ шудаистодаанд...</div>
+            <div class="header-actions">
+                <a href="#" class="btn-back" onclick="history.back()">
+                    <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2">
+                        <path stroke-linecap="round" stroke-linejoin="round" d="M15 19l-7-7 7-7" />
+                    </svg>
+                </a>
+                <h1>Огоҳиномаҳо</h1>
             </div>
+            <div id="notifications-grid">
+                </div>
         </div>
     </main>
 
@@ -245,18 +329,40 @@
             warning: `<svg xmlns="http://www.w3.org/2000/svg" fill="currentColor" viewBox="0 0 24 24"><path d="M1 21h22L12 2 1 21zm12-3h-2v-2h2v2zm0-4h-2v-4h2v4z"/></svg>`
         };
 
+        // Function to show skeleton loaders
+        function showSkeletons() {
+            notificationsGrid.innerHTML = '';
+            for (let i = 0; i < 6; i++) {
+                const skeleton = document.createElement('div');
+                skeleton.className = 'skeleton-card';
+                skeleton.innerHTML = `
+                    <div class="skeleton-image"></div>
+                    <div style="display: flex; align-items: flex-start; margin-bottom: 20px;">
+                        <div class="skeleton-icon"></div>
+                        <div style="flex-grow: 1;">
+                            <div class="skeleton-line full"></div>
+                            <div class="skeleton-line half"></div>
+                        </div>
+                    </div>
+                    <div class="skeleton-line full"></div>
+                    <div class="skeleton-line full"></div>
+                    <div class="skeleton-line quarter"></div>
+                `;
+                notificationsGrid.appendChild(skeleton);
+            }
+        }
+
         function loadNotifications() {
+            showSkeletons(); // Show skeleton loaders immediately
+            
             notificationsCollection.orderBy('createdAt', 'desc').onSnapshot(snapshot => {
+                notificationsGrid.innerHTML = ''; // Clear skeletons once data is fetched
+
                 if (snapshot.empty) {
                     notificationsGrid.innerHTML = '<p style="text-align:center; color:#ccc; grid-column: 1 / -1;">Ҳанӯз огоҳинома нест.</p>';
                     return;
                 }
                 
-                // Очищаем сетку плавно
-                while (notificationsGrid.firstChild) {
-                    notificationsGrid.removeChild(notificationsGrid.firstChild);
-                }
-
                 snapshot.forEach(doc => {
                     const data = doc.data();
                     const card = document.createElement('div');
@@ -267,6 +373,7 @@
                     const formattedDate = timestamp.toLocaleDateString('ru-RU', { day: 'numeric', month: 'long', year: 'numeric' });
 
                     card.innerHTML = `
+                        ${data.imageUrl ? `<img src="${data.imageUrl}" alt="Изображение уведомления" class="notification-image">` : ''}
                         <div class="card-header">
                             <div class="notification-icon">
                                 ${icons[data.type] || icons.info}
@@ -277,7 +384,7 @@
                         </div>
                         <div class="notification-meta">
                             <span>Нашр шудааст: <strong>${data.author || 'Администрация'}</strong></span>
-                            <span>${formattedDate} в ${formattedTime}</span>
+                            <span>${formattedDate} дар ${formattedTime}</span>
                         </div>
                     `;
                     notificationsGrid.appendChild(card);
