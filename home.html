@@ -5,8 +5,8 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Донишгоҳи Технологии Тоҷикистон</title>
     <meta name="apple-mobile-web-app-capable" content="yes">
-<meta name="apple-mobile-web-app-status-bar-style" content="black">
-<meta name="apple-mobile-web-app-title" content="Асосӣ-TUT">
+    <meta name="apple-mobile-web-app-status-bar-style" content="black">
+    <meta name="apple-mobile-web-app-title" content="Асосӣ-TUT">
     
     <link href="https://cdn.jsdelivr.net/npm/tailwindcss@2.2.19/dist/tailwind.min.css" rel="stylesheet">
     <link rel="preconnect" href="https://fonts.googleapis.com">
@@ -117,7 +117,7 @@
         <div class="aurora-shape aurora-3"></div>
     </div>
 
-    <div x-show.transition.opacity.duration.500ms="!contentLoaded" 
+    <div x-show.transition.opacity.duration.0ms="!contentLoaded" 
          class="fixed inset-0 z-[100] flex items-center justify-center"
          :class="isDark ? 'bg-[#0b1120]' : 'bg-[#f8fafc]'">
         <h1 class="text-2xl font-bold text-center px-4"
@@ -154,19 +154,33 @@
                             </a>
                             <span x-show="notificationCount > 0" x-text="notificationCount" class="notification-badge" x-cloak></span>
                         </div>
+
+                        <a href="profile.html" class="hidden md:block p-1 rounded-full transition-colors hover:bg-black/10 dark:hover:bg-white/10 interactive-press" aria-label="Profile">
+                            <template x-if="isUserLoggedIn && userProfileImageUrl">
+                                <img :src="userProfileImageUrl" alt="Profile" class="w-7 h-7 rounded-full object-cover">
+                            </template>
+                            <template x-if="!isUserLoggedIn || !userProfileImageUrl">
+                                <svg xmlns="http://www.w3.org/2000/svg" class="w-7 h-7" viewBox="0 0 20 20" fill="currentColor">
+                                  <path fill-rule="evenodd" d="M18 10a8 8 0 11-16 0 8 8 0 0116 0zm-6-3a2 2 0 11-4 0 2 2 0 014 0zM10 12a5.95 5.95 0 00-4.5 2.22A.75.75 0 005.75 15h8.5a.75.75 0 00.25-1.28A5.95 5.95 0 0010 12z" clip-rule="evenodd" />
+                                </svg>
+                            </template>
+                        </a>
+                        
                         <button @click="toggleLanguage()" class="p-2 rounded-full transition-colors hover:bg-black/10 dark:hover:bg-white/10 interactive-press" aria-label="Toggle language">
                             <span x-show="currentLang === 'tj'" class="flag-icon flag-tj"></span>
                             <span x-show="currentLang === 'ru'" class="flag-icon flag-ru"></span>
                         </button>
+                        
                         <button @click="toggleTheme()" class="p-2 rounded-full transition-colors hover:bg-black/10 dark:hover:bg-white/10 interactive-press" aria-label="Toggle theme">
                             <svg x-show="!isDark" class="w-6 h-6" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 3v1m0 16v1m9-9h-1M4 12H3m15.364 6.364l-.707-.707M6.343 6.343l-.707-.707m12.728 0l-.707.707M6.343 17.657l-.707.707M16 12a4 4 0 11-8 0 4 4 0 018 0z"></path></svg>
                             <svg x-show="isDark" class="w-6 h-6" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M20.354 15.354A9 9 0 018.646 3.646 9.003 9.003 0 0012 21a9.003 9.003 0 008.354-5.646z"></path></svg>
                         </button>
+                        
                         <button @click="toggleMenu()" class="md:hidden p-2 rounded-full transition-colors hover:bg-black/10 dark:hover:bg-white/10 interactive-press" aria-label="Open menu">
                             <svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 6h16M4 12h16m-7 6h7"></path></svg>
                         </button>
                     </div>
-                </div>
+                    </div>
             </nav>
         </header>
 
@@ -359,11 +373,11 @@
         </footer>
     </div>
     
-    <nav class="md:hidden glass-card fixed bottom-4 left-4 right-4 z-40 rounded-2xl h-16" 
-        x-show="contentLoaded" 
-        x-transition:enter="transition ease-out duration-300 transform" 
-        x-transition:enter-start="translate-y-24" 
-        x-transition:enter-end="translate-y-0">
+    <nav class="md:hidden glass-card fixed bottom-1 left-1 right-1 z-45 rounded-3xl h-16" 
+         x-show="contentLoaded" 
+         x-transition:enter="transition ease-out duration-300 transform" 
+         x-transition:enter-start="translate-y-24" 
+         x-transition:enter-end="translate-y-0">
         <div class="flex justify-around items-center h-full text-sm">
             <a href="#" @click.prevent="activeMobileTab = 'home'" class="mobile-nav-link" :class="{ 'active': activeMobileTab === 'home' }">
                 <div class="icon-wrapper">
@@ -469,11 +483,11 @@
                 currentLang: 'tj',
                 imagesLoaded: false,
                 loadedImageCount: 0,
-                totalImages: 4, // Total number of images in the carousel
+                totalImages: 4,
                 activeMobileTab: 'home',
-                isUserLoggedIn: false,
-                userProfileImageUrl: '',
-                notificationCount: 0,
+                isUserLoggedIn: false, // Установите в true для теста
+                userProfileImageUrl: '', // URL для теста: 'https://i.pravatar.cc/150'
+                notificationCount: 3, // Пример
                 currentSlide: 0,
                 carouselInterval: null,
 
@@ -497,14 +511,10 @@
                     t_raspisanie: { tj: 'Ҷадвали дарсҳо барои омӯзгорон', ru: 'Расписание уроков для преподавателей' },
                     t_raspisanie_desc: { tj: 'Ҷадвали дарсӣ имконият медиҳад, ки интихоб кардани аудитория,гурӯҳҳо,омӯзгорон ба таври динамикӣ нишон медиҳад. ', ru: 'Расписание урока позволяет динамически выбирать аудиторию, группы и преподавателей.' },
                     address: { tj: 'Адрес: Душанбе, ҳиёбони Неъмат Қарабоев<br>Телефон: +992 (37) 234-56-78<br>Email: info@tut.tj', ru: 'Адрес: Душанбе, проспект Неъмат Карабаев <br>Телефон: +992 (37) 234-56-78<br>Email: info@tut.tj' },
-                    // nav_home: { tj: 'Асосӣ', ru: 'Главная' },
-                    // nav_schedule: { tj: 'Ҷадвал', ru: 'Расписание' },
-                    // nav_faculties: { tj: 'Факултетҳо', ru: 'Факультеты' },
-                    // nav_contact: { tj: 'Тамос', ru: 'Контакты' },
-                    // nav_profile: { tj: 'Профил', ru: 'Профиль' },
                     menu_title: { tj: 'Меню', ru: 'Меню' },
                 },
 
+                // ===== ОБНОВЛЕННАЯ ФУНКЦИЯ INIT С ИСПРАВЛЕНИЕМ АНИМАЦИИ =====
                 init() {
                     this.isDark = localStorage.getItem('theme') === 'dark' || (!('theme' in localStorage) && window.matchMedia('(prefers-color-scheme: dark)').matches);
                     this.updateHtmlClass();
@@ -513,18 +523,36 @@
                     this.translatePage();
                     
                     this.initFirebase();
-                    
-                    // Failsafe timer: if images don't load in 5s, show the page anyway
-                    setTimeout(() => {
-                        if (!this.contentLoaded) {
-                            this.imagesLoaded = true; // Force show carousel
-                            this.finishLoading();
+
+                    // Функция для запуска и перезапуска анимации
+                    const startLoadingSequence = () => {
+                        this.contentLoaded = false;
+                        this.imagesLoaded = false;
+                        this.loadedImageCount = 0;
+                        
+                        // Failsafe timer: if images don't load in 5s, show the page anyway
+                        setTimeout(() => {
+                            if (!this.contentLoaded) {
+                                this.imagesLoaded = true; // Force show carousel
+                                this.finishLoading();
+                            }
+                        }, 1000);
+                    };
+
+                    // Запускаем анимацию при первой загрузке
+                    startLoadingSequence();
+
+                    // Добавляем слушатель, который будет перезапускать анимацию при возврате на страницу
+                    window.addEventListener('pageshow', (event) => {
+                        if (event.persisted) { // event.persisted = true, когда страница восстановлена из bfcache
+                           this.$nextTick(() => startLoadingSequence());
                         }
-                    }, 5000);
+                    });
 
                     this.$watch('currentSlide', () => this.updateCarousel());
                     this.startCarousel();
                 },
+                // ===== КОНЕЦ ОБНОВЛЕННОЙ ФУНКЦИИ INIT =====
                 
                 initFirebase() {
                     const firebaseConfig = {
@@ -572,22 +600,18 @@
                     });
                 },
 
-                // Called by each carousel image @load event
                 imageLoaded() {
                     this.loadedImageCount++;
                     if (this.loadedImageCount >= this.totalImages) {
                         this.imagesLoaded = true;
-                        // Once all carousel images are loaded, finish the page loading sequence
                         this.finishLoading();
                     }
                 },
                 
-                // Finishes loading sequence
                 finishLoading() {
-                    if (this.contentLoaded) return; // Prevent running twice
+                    if (this.contentLoaded) return;
                     
                     this.contentLoaded = true;
-                    // Animate in the content cards
                     this.$nextTick(() => {
                         document.querySelectorAll('.fade-in-up').forEach(el => el.classList.add('is-visible'));
                     });
@@ -648,7 +672,3 @@
     </script>
 </body>
 </html>
-
-
-
-
