@@ -1,4 +1,4 @@
- <!DOCTYPE html>
+<!DOCTYPE html>
 <html lang="ru" class="">
 <head>
     <meta charset="UTF-8">
@@ -12,114 +12,254 @@
 
     <style>
         :root {
-            --bg-light: #f8fafc; --bg-dark: #0b1120;
-            --card-light: rgba(255, 255, 255, 0.7); --card-dark: rgba(23, 37, 62, 0.6);
-            --border-light: rgba(0, 0, 0, 0.1); --border-dark: rgba(255, 255, 255, 0.1);
-            --text-light: #0f172a; --text-dark: #e2e8f0;
+            --bg-light: #f6f7fb; --bg-dark: #121212;
+            --card-light: #ffffff; --card-dark: #1e1e1e;
+            --text-light: #1c1c1e; --text-dark: #e5e7eb;
             --primary: #4f46e5;
-            --input-bg-light: #f0f5fa; --input-bg-dark: #1e293b;
+            --input-bg-light: #eef0f4; --input-bg-dark: #333333;
+            --modal-bg-light: rgba(255, 255, 255, 0.9); /* Светлый фон модального окна */
+            --modal-bg-dark: rgba(30, 30, 30, 0.9); /* Темный фон модального окна */
         }
         html { scroll-behavior: smooth; }
         body {
             font-family: 'Inter', sans-serif; background-color: var(--bg-light); color: var(--text-light);
-            transition: background-color 0.5s ease, color 0.5s ease;
+            transition: background-color 0.3s ease, color 0.3s ease;
         }
         .dark { background-color: var(--bg-dark); color: var(--text-dark); --primary: #6366f1; }
-        .aurora-container { position: fixed; top: 0; left: 0; width: 100%; height: 100vh; overflow: hidden; z-index: -1; pointer-events: none;}
-        @keyframes rotate { 0% { transform: rotate(0deg); } 100% { transform: rotate(360deg); } }
-        .aurora-shape { position: absolute; border-radius: 50%; filter: blur(100px); opacity: 0.3; animation: rotate 40s infinite linear; }
-        .dark .aurora-shape { opacity: 0.5; }
-        .aurora-1 { width: 500px; height: 500px; background: #3b82f6; top: -150px; left: -150px; }
-        .aurora-2 { width: 400px; height: 400px; background: #8b5cf6; bottom: -100px; right: -100px; animation-duration: 50s; }
-        .glass-card {
-            background-color: var(--card-light); border: 1px solid var(--border-light);
-            backdrop-filter: blur(20px); -webkit-backdrop-filter: blur(20px);
-            transition: all 0.3s ease;
-        }
-        .dark .glass-card { background-color: var(--card-dark); border: 1px solid var(--border-dark); }
         [x-cloak] { display: none !important; }
+        
+        /* ИЗМЕНЕНИЕ: Цвета теперь применяются к фону карточки */
+        .note-color-default { background-color: var(--card-light); }
+        .dark .note-color-default { background-color: var(--card-dark); }
+        .note-color-red { background-color: #fee2e2; }
+        .dark .note-color-red { background-color: #3f2727; }
+        .note-color-blue { background-color: #dbeafe; }
+        .dark .note-color-blue { background-color: #23314a; }
+        .note-color-green { background-color: #d1fae5; }
+        .dark .note-color-green { background-color: #203a30; }
+        .note-color-yellow { background-color: #fef3c7; }
+        .dark .note-color-yellow { background-color: #423b24; }
+        /* НОВЫЕ ЦВЕТА */
+        .note-color-purple { background-color: #ede9fe; }
+        .dark .note-color-purple { background-color: #2e263d; }
+        .note-color-teal { background-color: #ccfbf1; }
+        .dark .note-color-teal { background-color: #213330; }
+
         .spinner { animation: spin 1s linear infinite; }
         @keyframes spin { from { transform: rotate(0deg); } to { transform: rotate(360deg); } }
+        
         .modern-input {
-            background-color: var(--input-bg-light);
-            border: 2px solid transparent;
-            transition: all 0.2s ease-in-out;
+            background-color: var(--input-bg-light); border: 2px solid transparent; transition: all 0.2s ease-in-out;
         }
         .dark .modern-input { background-color: var(--input-bg-dark); }
         .modern-input:focus {
-            background-color: transparent; border-color: var(--primary);
-            box-shadow: 0 0 0 3px rgba(79, 70, 229, 0.2); outline: none;
+            background-color: transparent; border-color: var(--primary); outline: none;
         }
+
+        /* СТИЛЬ ONE UI: Фон модального окна */
+        .modal-background {
+            background-color: var(--modal-bg-light);
+            backdrop-filter: blur(8px);
+            -webkit-backdrop-filter: blur(8px);
+        }
+        .dark .modal-background {
+            background-color: var(--modal-bg-dark);
+        }
+        
+        .header-actions {
+            display: flex;
+            align-items: center;
+            margin-bottom: 25px;
+        }
+
+        .btn-back {
+            background: none;
+            border: 1px solid rgba(255, 255, 255, 0.1);
+            border-radius: 50%;
+            width: 40px;
+            height: 40px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            cursor: pointer;
+            transition: background-color 0.3s ease, transform 0.2s ease;
+            margin-right: 20px;
+        }
+        .btn-back:hover {
+            background-color: rgba(255, 255, 255, 0.1);
+            transform: translateY(-2px);
+        }
+        .btn-back svg {
+            width: 20px;
+            height: 20px;
+            color: var(--text-color);
+        }
+        
+        h1 {
+            color: #ffffff;
+            margin: 0;
+            font-weight: 700;
+            font-size: 1.5rem;
+            text-shadow: 0 2px 8px rgba(0,0,0,0.2);
+            flex-grow: 1;
+        }
+
     </style>
 </head>
+ <div class="header-actions">
+                <a href="home.html" class="btn-back" onclick="history.back()">
+                    <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2">
+                        <path stroke-linecap="round" stroke-linejoin="round" d="M15 19l-7-7 7-7" />
+                    </svg>
+                </a>
+                <h1>Мои Заметки СРС </h1>
+            </div>
 <body x-data="notesManager()" x-init="init()" :class="{ 'dark': isDark }" x-cloak>
     
-    <div class="aurora-container"></div>
-
-    <div :class="{ 'filter blur-sm': mobileMenuOpen }" class="transition-filter duration-300">
-        <header class="sticky top-0 z-30">
-            </header>
-
-        <main class="container mx-auto p-4 min-h-screen">
-            <template x-if="isLoggedIn">
-                <div>
-                    <div class="flex flex-col sm:flex-row justify-between items-center mb-8">
-                        <h1 class="text-3xl font-bold">Заметки для СРС</h1>
-                        <button @click="openAddModal()" class="mt-4 sm:mt-0 w-full sm:w-auto bg-blue-500 text-white px-5 py-2 rounded-lg hover:bg-blue-600 flex items-center justify-center gap-2">
-                             <svg class="w-5 h-5" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 6v6m0 0v6m0-6h6m-6 0H6" /></svg>
-                             <span>Добавить заметку</span>
-                        </button>
+    <main class="container mx-auto p-4 min-h-screen">
+        <template x-if="isLoggedIn">
+            <div>
+                <header class="pt-12 pb-8">
+                    <!-- <h1 class="text-4xl font-extrabold tracking-tight mb-6" data-translate="notes_title"></h1> -->
+                    <div class="relative">
+                        <input type="text" x-model="searchTerm" placeholder="Поиск по заметкам..." class="modern-input w-full p-4 pl-12 rounded-2xl text-base">
+                        <svg class="w-6 h-6 absolute left-4 top-1/3 -translate-y-1/2 opacity-40" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0z" /></svg>
                     </div>
+                </header>
 
-                    <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
-                        <template x-if="notes.length === 0 && !loading">
-                            <p class="col-span-full text-center opacity-70 mt-10">У вас пока нет заметок. Нажмите "Добавить заметку", чтобы создать первую.</p>
-                        </template>
-
-                        <template x-for="note in notes" :key="note.id">
-                            <div class="glass-card p-5 rounded-xl flex flex-col">
-                                <h4 class="font-bold text-lg mb-2" x-text="note.subject"></h4>
-                                <p class="flex-grow opacity-80 whitespace-pre-wrap" x-text="note.text"></p>
-                                <div class="flex justify-end gap-2 mt-4 border-t border-gray-500/10 pt-4">
-                                    <button @click="openEditModal(note)" class="p-2 rounded-full hover:bg-blue-500/20 text-blue-500" title="Редактировать">
-                                        <svg class="w-5 h-5" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15.232 5.232l3.536 3.536m-2.036-5.036a2.5 2.5 0 113.536 3.536L6.5 21.036H3v-3.5L16.732 3.732z" /></svg>
-                                    </button>
-                                    <button @click="deleteNote(note.id)" class="p-2 rounded-full hover:bg-red-500/20 text-red-500" title="Удалить">
-                                        <svg class="w-5 h-5" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 7l-.867 12.142A2 2 0 0116.138 21H7.862a2 2 0 01-1.995-1.858L5 7m5 4v6m4-6v6m1-10V4a1 1 0 00-1-1h-4a1 1 0 00-1 1v3M4 7h16" /></svg>
-                                    </button>
+                <div x-show="!loading && pinnedNotes.length > 0" x-transition>
+                    <h2 class="text-xs font-bold uppercase opacity-50 mb-3 ml-2 tracking-wider">Закрепленные</h2>
+                    <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-5 mb-8">
+                        <template x-for="note in pinnedNotes" :key="note.id">
+                            <div class="shadow-sm rounded-3xl flex flex-col transition-transform transform hover:scale-[1.03]" :class="`note-color-${note.color || 'default'}`">
+                                <div class="p-5 flex flex-col h-full">
+                                    <div class="flex justify-between items-start mb-2">
+                                        <h4 class="font-bold text-lg" x-text="note.subject"></h4>
+                                        <button @click.stop="toggleNotePin(note)" class="p-1 rounded-full text-gray-400" :class="note.isPinned ? 'text-indigo-500' : 'hover:text-indigo-500'" title="Закрепить">
+                                            <svg class="w-5 h-5" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 20 20" :fill="note.isPinned ? 'currentColor' : 'none'" stroke="currentColor" stroke-width="2"><path d="M10.868 2.884c.321-.772 1.415-.772 1.736 0l1.681 4.06c.064.155.183.274.337.337l4.061 1.68c.772.321.772 1.415 0 1.736l-4.06 1.682c-.155.064-.274.183-.337.337l-1.682 4.06c-.32.772-1.415.772-1.736 0l-1.681-4.06a.5.5 0 01-.337-.337l-4.06-1.682a1.25 1.25 0 010-1.736l4.06-1.681a.5.5 0 01.337-.337l1.681-4.06z" /></svg>
+                                        </button>
+                                    </div>
+                                    <p class="flex-grow opacity-80 whitespace-pre-wrap text-sm mb-4" x-text="note.text.length > 150 ? note.text.substring(0, 150) + '...' : note.text"></p>
+                                    <div class="flex justify-between items-center mt-auto pt-3 border-t border-black/5 dark:border-white/5">
+                                        <span class="text-xs opacity-50" x-text="note.createdAt ? new Date(note.createdAt.seconds * 1000).toLocaleDateString() : ''"></span>
+                                        <div class="flex items-center gap-2">
+                                            <button @click="openEditModal(note)" class="p-2 rounded-full text-gray-500 hover:text-blue-600 hover:bg-blue-100 dark:hover:bg-blue-500/20" title="Редактировать">
+                                                <svg class="w-5 h-5" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15.232 5.232l3.536 3.536m-2.036-5.036a2.5 2.5 0 113.536 3.536L6.5 21.036H3v-3.5L16.732 3.732z" /></svg>
+                                            </button>
+                                            <button @click="openDeleteConfirmation(note.id)" class="p-2 rounded-full text-gray-500 hover:text-red-600 hover:bg-red-100 dark:hover:bg-red-500/20" title="Удалить">
+                                                <svg class="w-5 h-5" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 7l-.867 12.142A2 2 0 0116.138 21H7.862a2 2 0 01-1.995-1.858L5 7m5 4v6m4-6v6m1-10V4a1 1 0 00-1-1h-4a1 1 0 00-1 1v3M4 7h16" /></svg>
+                                            </button>
+                                        </div>
+                                    </div>
                                 </div>
                             </div>
                         </template>
                     </div>
                 </div>
-            </template>
-            <div x-show="!isLoggedIn && !loading" class="text-center py-20">
-                <h2 class="text-2xl font-bold">Пожалуйста, войдите в систему</h2>
-                <p class="opacity-70 mt-2">Для доступа к заметкам необходимо авторизоваться.</p>
-                <a href="auth.html" class="mt-6 inline-block bg-blue-500 text-white px-6 py-3 rounded-lg hover:bg-blue-600">Перейти на страницу входа</a>
-            </div>
-             <div x-show="loading" class="flex justify-center items-center py-20">
-                <svg class="w-12 h-12 spinner text-indigo-500" fill="none" viewBox="0 0 24 24"><circle class="opacity-25" cx="12" cy="12" r="10" stroke="currentColor" stroke-width="4"></circle><path class="opacity-75" fill="currentColor" d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4zm2 5.291A7.962 7.962 0 014 12H0c0 3.042 1.135 5.824 3 7.938l3-2.647z"></path></svg>
-             </div>
-        </main>
-    </div>
-    
-    <div x-show="isModalOpen" @click.self="isModalOpen = false" class="fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center z-50 p-4">
-        <div @click.stop class="glass-card rounded-2xl p-6 w-full max-w-lg">
-            <h3 class="text-lg font-bold mb-4" x-text="isEditing ? 'Редактировать заметку' : 'Новая заметка'"></h3>
-            <div class="space-y-4">
-                <div>
-                    <label for="subject-input" class="block text-sm font-medium opacity-80 mb-1">Предмет</label>
-                    <input type="text" id="subject-input" x-model="currentNote.subject" placeholder="Название предмета..." class="modern-input w-full p-3 rounded-md">
+
+                <div x-show="!loading && unpinnedNotes.length > 0" x-transition>
+                    <h2 class="text-xs font-bold uppercase opacity-50 mb-3 ml-2 tracking-wider" x-show="pinnedNotes.length > 0">Другие заметки</h2>
+                    <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-5">
+                        <template x-for="note in unpinnedNotes" :key="note.id">
+                             <div class="shadow-sm rounded-3xl flex flex-col transition-transform transform hover:scale-[1.03]" :class="`note-color-${note.color || 'default'}`">
+                               <div class="p-5 flex flex-col h-full">
+                                    <div class="flex justify-between items-start mb-2">
+                                        <h4 class="font-bold text-lg" x-text="note.subject"></h4>
+                                        <button @click.stop="toggleNotePin(note)" class="p-1 rounded-full text-gray-400" :class="note.isPinned ? 'text-indigo-500' : 'hover:text-indigo-500'" title="Закрепить">
+                                            <svg class="w-5 h-5" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 20 20" :fill="note.isPinned ? 'currentColor' : 'none'" stroke="currentColor" stroke-width="2"><path d="M10.868 2.884c.321-.772 1.415-.772 1.736 0l1.681 4.06c.064.155.183.274.337.337l4.061 1.68c.772.321.772 1.415 0 1.736l-4.06 1.682c-.155.064-.274.183-.337.337l-1.682 4.06c-.32.772-1.415.772-1.736 0l-1.681-4.06a.5.5 0 01-.337-.337l-4.06-1.682a1.25 1.25 0 010-1.736l4.06-1.681a.5.5 0 01.337-.337l1.681-4.06z" /></svg>
+                                        </button>
+                                    </div>
+                                    <p class="flex-grow opacity-80 whitespace-pre-wrap text-sm mb-4" x-text="note.text.length > 150 ? note.text.substring(0, 150) + '...' : note.text"></p>
+                                    <div class="flex justify-between items-center mt-auto pt-3 border-t border-black/5 dark:border-white/5">
+                                        <span class="text-xs opacity-50" x-text="note.createdAt ? new Date(note.createdAt.seconds * 1000).toLocaleDateString() : ''"></span>
+                                        <div class="flex items-center gap-2">
+                                            <button @click="openEditModal(note)" class="p-2 rounded-full text-gray-500 hover:text-blue-600 hover:bg-blue-100 dark:hover:bg-blue-500/20" title="Редактировать">
+                                                <svg class="w-5 h-5" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15.232 5.232l3.536 3.536m-2.036-5.036a2.5 2.5 0 113.536 3.536L6.5 21.036H3v-3.5L16.732 3.732z" /></svg>
+                                            </button>
+                                            <button @click="openDeleteConfirmation(note.id)" class="p-2 rounded-full text-gray-500 hover:text-red-600 hover:bg-red-100 dark:hover:bg-red-500/20" title="Удалить">
+                                                <svg class="w-5 h-5" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 7l-.867 12.142A2 2 0 0116.138 21H7.862a2 2 0 01-1.995-1.858L5 7m5 4v6m4-6v6m1-10V4a1 1 0 00-1-1h-4a1 1 0 00-1 1v3M4 7h16" /></svg>
+                                            </button>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        </template>
+                    </div>
                 </div>
+                
+                <template x-if="notes.length === 0 && !loading">
+                    <div class="text-center py-16 px-6">
+                        <svg class="mx-auto h-12 w-12 text-gray-400" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 12h6m-6 4h6m2 5H7a2 2 0 01-2-2V5a2 2 0 012-2h5.586a1 1 0 01.707.293l5.414 5.414a1 1 0 01.293.707V19a2 2 0 01-2 2z" /></svg>
+                        <h3 class="mt-2 text-xl font-medium">Нет заметок</h3>
+                        <p class="mt-1 text-gray-500">Создайте свою первую заметку, чтобы начать.</p>
+                    </div>
+                </template>
+
+                <template x-if="filteredNotes.length === 0 && notes.length > 0 && !loading">
+                    <div class="text-center py-16 px-6 col-span-full">
+                        <svg class="mx-auto h-12 w-12 text-gray-400" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" d="M12 9v3.75m-9.303 3.376c-.866 1.5.217 3.374 1.948 3.374h14.71c1.73 0 2.813-1.874 1.948-3.374L13.949 3.378c-.866-1.5-3.032-1.5-3.898 0L2.697 16.126zM12 15.75h.007v.008H12v-.008z" /></svg>
+                        <h3 class="mt-2 text-xl font-medium">Ничего не найдено</h3>
+                        <p class="mt-1 text-gray-500">Попробуйте изменить поисковый запрос.</p>
+                    </div>
+                </template>
+            </div>
+        </template>
+        
+        <div x-show="!isLoggedIn && !loading" class="text-center py-20">
+            <h2 class="text-2xl font-bold">Пожалуйста, войдите в систему</h2>
+            <p class="opacity-70 mt-2">Для доступа к заметкам необходимо авторизоваться.</p>
+            <a href="auth.html" class="mt-6 inline-block bg-indigo-600 text-white px-6 py-3 rounded-xl hover:bg-indigo-700">Перейти на страницу входа</a>
+        </div>
+        
+         <div x-show="loading" class="flex justify-center items-center py-20">
+             <svg class="w-12 h-12 spinner text-indigo-500" fill="none" viewBox="0 0 24 24"><circle class="opacity-25" cx="12" cy="12" r="10" stroke="currentColor" stroke-width="4"></circle><path class="opacity-75" fill="currentColor" d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4zm2 5.291A7.962 7.962 0 014 12H0c0 3.042 1.135 5.824 3 7.938l3-2.647z"></path></svg>
+         </div>
+    </main>
+
+    <button x-show="isLoggedIn" @click="openAddModal()" class="fixed bottom-6 right-6 bg-indigo-600 text-white w-14 h-14 rounded-full flex items-center justify-center shadow-lg hover:bg-indigo-700 transform hover:scale-110 transition-all duration-200">
+        <svg class="w-7 h-7" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 6v6m0 0v6m0-6h6m-6 0H6" /></svg>
+    </button>
+    
+    <div x-show="isModalOpen" @keydown.escape.window="isModalOpen = false" x-transition:enter="transition ease-out duration-300" x-transition:enter-start="opacity-0" x-transition:enter-end="opacity-100" x-transition:leave="transition ease-in duration-200" x-transition:leave-start="opacity-100" x-transition:leave-end="opacity-0" class="fixed inset-0 flex items-center justify-center z-50 p-4 modal-background">
+        <div @click.away="isModalOpen = false" class="bg-card-light dark:bg-card-dark rounded-3xl p-6 w-full max-w-lg shadow-xl" x-show="isModalOpen" x-transition:enter="transition ease-out duration-300" x-transition:enter-start="opacity-0 scale-95" x-transition:enter-end="opacity-100 scale-100" x-transition:leave="transition ease-in duration-200" x-transition:leave-start="opacity-100 scale-100" x-transition:leave-end="opacity-0 scale-95">
+            <div class="flex justify-between items-center mb-4">
+                <button @click="isModalOpen = false" class="p-2 rounded-full text-gray-500 hover:bg-gray-200 dark:hover:bg-gray-700" title="Назад">
+                    <svg class="w-6 h-6" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 19l-7-7 7-7" /></svg>
+                </button>
+                <h3 class="text-xl font-bold flex-grow text-center" x-text="isEditing ? 'Редактировать заметку' : 'Новая заметка'"></h3>
+                <button x-show="isEditing" @click="openDeleteConfirmation(currentNote.id)" class="p-2 rounded-full text-gray-500 hover:text-red-500 hover:bg-red-100 dark:hover:bg-red-500/20" title="Удалить">
+                     <svg class="w-5 h-5" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 7l-.867 12.142A2 2 0 0116.138 21H7.862a2 2 0 01-1.995-1.858L5 7m5 4v6m4-6v6m1-10V4a1 1 0 00-1-1h-4a1 1 0 00-1 1v3M4 7h16" /></svg>
+                </button>
+            </div>
+            <div class="space-y-4">
+                <input type="text" x-model="currentNote.subject" placeholder="Название предмета..." class="modern-input w-full p-3 rounded-xl">
+                <textarea x-model="currentNote.text" rows="8" class="modern-input w-full p-3 rounded-xl" placeholder="Введите текст..."></textarea>
                 <div>
-                    <label for="note-text" class="block text-sm font-medium opacity-80 mb-1">Текст заметки</label>
-                    <textarea id="note-text" x-model="currentNote.text" rows="6" class="modern-input w-full p-3 rounded-md" placeholder="Введите текст..."></textarea>
+                    <span class="text-sm font-medium opacity-80 mb-2 block">Цвет заметки</span>
+                    <div class="flex gap-3 flex-wrap">
+                        <template x-for="color in noteColors" :key="color">
+                             <button @click="currentNote.color = color" class="w-9 h-9 rounded-full border-2 border-transparent transition flex items-center justify-center" :class="{ 'ring-2 ring-offset-2 dark:ring-offset-gray-800 ring-indigo-500': currentNote.color === color, [`note-color-${color}`]: true }">
+                                <span class="sr-only" x-text="color"></span>
+                                <svg x-show="currentNote.color === color" class="w-5 h-5 text-gray-700 dark:text-gray-200" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2"><path stroke-linecap="round" stroke-linejoin="round" d="M5 13l4 4L19 7" /></svg>
+                             </button>
+                        </template>
+                    </div>
                 </div>
             </div>
             <div class="mt-6 flex justify-end gap-4">
-                <button @click="isModalOpen = false" class="px-4 py-2 rounded-md">Отмена</button>
-                <button @click="saveNote()" class="px-4 py-2 rounded-md bg-blue-500 text-white hover:bg-blue-600">Сохранить</button>
+                <button @click="isModalOpen = false" class="px-5 py-2 rounded-xl hover:bg-gray-200 dark:hover:bg-gray-700">Отмена</button>
+                <button @click="saveNote()" class="px-5 py-2 rounded-xl bg-indigo-600 text-white hover:bg-indigo-700">Сохранить</button>
+            </div>
+        </div>
+    </div>
+
+    <div x-show="isDeleteModalOpen" @keydown.escape.window="isDeleteModalOpen = false" x-transition class="fixed inset-0 flex items-center justify-center z-50 p-4 modal-background">
+        <div @click.away="isDeleteModalOpen = false" class="bg-card-light dark:bg-card-dark rounded-3xl p-6 w-full max-w-sm shadow-xl" x-show="isDeleteModalOpen" x-transition>
+            <h3 class="text-lg font-bold mb-2">Подтверждение</h3>
+            <p class="opacity-80 mb-6">Вы уверены, что хотите удалить эту заметку безвозвратно?</p>
+            <div class="flex justify-end gap-4">
+                <button @click="isDeleteModalOpen = false" class="px-5 py-2 rounded-xl hover:bg-gray-200 dark:hover:bg-gray-700">Отмена</button>
+                <button @click="confirmDelete()" class="px-5 py-2 rounded-xl bg-red-600 text-white hover:bg-red-700">Удалить</button>
             </div>
         </div>
     </div>
@@ -143,17 +283,19 @@
 
         document.addEventListener('alpine:init', () => {
             Alpine.data('notesManager', () => ({
-                isDark: false, mobileMenuOpen: false, isLoggedIn: false, user: null, loading: true,
-                isEditing: false, isModalOpen: false,
-                notes: [],
-                currentNote: { id: null, subject: '', text: '' },
+                isDark: false, isLoggedIn: false, user: null, loading: true,
+                isEditing: false, isModalOpen: false, isDeleteModalOpen: false, noteToDeleteId: null,
+                notes: [], searchTerm: '',
+                currentNote: { id: null, subject: '', text: '', isPinned: false, color: 'default' },
                 notesCollectionRef: null,
+                noteColors: ['default', 'red', 'yellow', 'green', 'blue', 'purple', 'teal'], // Добавлены новые цвета
 
                 init() {
                     this.isDark = localStorage.getItem('theme') === 'dark';
                     this.setTheme();
                     
                     auth.onAuthStateChanged(currentUser => {
+                        this.loading = true;
                         if (currentUser) {
                             this.isLoggedIn = true; 
                             this.user = currentUser;
@@ -161,64 +303,82 @@
                             this.loadNotes();
                         } else { 
                             this.loading = false;
-                            window.location.href = 'auth.html'; 
                         }
                     });
                 },
                 
                 loadNotes() {
                     this.loading = true;
-                    this.notesCollectionRef.orderBy("createdAt", "desc").onSnapshot(snapshot => {
+                    this.notesCollectionRef.onSnapshot(snapshot => { 
                         this.notes = snapshot.docs.map(doc => ({ id: doc.id, ...doc.data() }));
                         this.loading = false;
                     });
                 },
+
+                get filteredNotes() {
+                    if (!this.searchTerm.trim()) return this.notes;
+                    return this.notes.filter(note => 
+                        note.subject.toLowerCase().includes(this.searchTerm.toLowerCase()) || 
+                        note.text.toLowerCase().includes(this.searchTerm.toLowerCase())
+                    );
+                },
+                get pinnedNotes() {
+                    return this.filteredNotes.filter(note => note.isPinned).sort((a, b) => (b.createdAt?.seconds || 0) - (a.createdAt?.seconds || 0));
+                },
+                get unpinnedNotes() {
+                    return this.filteredNotes.filter(note => !note.isPinned).sort((a, b) => (b.createdAt?.seconds || 0) - (a.createdAt?.seconds || 0));
+                },
                 
                 openAddModal() {
                     this.isEditing = false;
-                    this.currentNote = { id: null, subject: '', text: '' };
+                    this.currentNote = { id: null, subject: '', text: '', isPinned: false, color: 'default' };
                     this.isModalOpen = true;
                 },
-
                 openEditModal(note) {
                     this.isEditing = true;
-                    // Создаем копию, чтобы не менять оригинал до сохранения
                     this.currentNote = { ...note };
                     this.isModalOpen = true;
+                },
+                openDeleteConfirmation(noteId) {
+                    this.noteToDeleteId = noteId;
+                    this.isDeleteModalOpen = true;
+                    this.isModalOpen = false; // Закрыть главное модальное окно при открытии подтверждения
                 },
 
                 saveNote() {
                     if (!this.currentNote.subject.trim()) {
-                        alert("Введите название предмета.");
-                        return;
+                        alert("Введите название предмета."); return;
                     }
-                    // Добавляем временную метку для сортировки
                     const noteData = {
                         subject: this.currentNote.subject,
                         text: this.currentNote.text,
-                        createdAt: firebase.firestore.FieldValue.serverTimestamp()
+                        isPinned: this.currentNote.isPinned || false,
+                        color: this.currentNote.color || 'default'
                     };
 
                     if (this.isEditing) {
-                        // Обновляем существующую заметку
                         this.notesCollectionRef.doc(this.currentNote.id).update(noteData)
                             .then(() => { this.isModalOpen = false; });
                     } else {
-                        // Добавляем новую заметку
+                        noteData.createdAt = firebase.firestore.FieldValue.serverTimestamp();
                         this.notesCollectionRef.add(noteData)
                             .then(() => { this.isModalOpen = false; });
                     }
                 },
-
-                deleteNote(noteId) {
-                    if (confirm(`Вы уверены, что хотите удалить эту заметку?`)) {
-                        this.notesCollectionRef.doc(noteId).delete();
+                confirmDelete() {
+                    if (this.noteToDeleteId) {
+                        this.notesCollectionRef.doc(this.noteToDeleteId).delete()
+                            .then(() => {
+                                this.isDeleteModalOpen = false;
+                                this.noteToDeleteId = null;
+                            });
                     }
+                },
+                toggleNotePin(note) {
+                    this.notesCollectionRef.doc(note.id).update({ isPinned: !note.isPinned });
                 },
 
                 setTheme() { document.documentElement.classList.toggle('dark', this.isDark); },
-                toggleTheme() { this.isDark = !this.isDark; localStorage.setItem('theme', this.isDark ? 'dark' : 'light'); this.setTheme(); },
-                toggleMenu() { this.mobileMenuOpen = !this.mobileMenuOpen; },
             }));
         });
     </script>
