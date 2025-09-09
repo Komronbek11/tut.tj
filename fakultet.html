@@ -27,7 +27,7 @@
         }
         .dark {
             background-color: var(--bg-dark); color: var(--text-dark);
-            --primary: #6366f1;
+            --primary: #503d85;;
         }
         .aurora-container { position: fixed; top: 0; left: 0; width: 100%; height: 100vh; overflow: hidden; z-index: -1; pointer-events: none;}
         @keyframes rotate { 0% { transform: rotate(0deg); } 100% { transform: rotate(360deg); } }
@@ -115,8 +115,8 @@
             }
             .mobile-nav-link.active {
                 opacity: 1;
-                background-color: var(--button-bg);
-                color: var(--card-bg);
+                background-color: var(--primary);
+                color: var(--text-dark);
             }
             .mobile-nav-link .icon-wrapper svg {
                 width: 28px;
@@ -153,7 +153,7 @@
             /* .mobile-nav-custom-style { backdrop-filter: var(--glass-blur); -webkit-backdrop-filter: var(--glass-blur); background-color: var(--card-bg); border: 1px solid var(--accent); box-shadow: 0 4px 20px rgba(0, 0, 0, 0.2); border-radius: 25px; padding: 5px; } */
             /* .mobile-nav-link { display: flex; flex: 1; justify-content: center; align-items: center; padding: 8px; border-radius: 20px; transition: all 0.3s ease; opacity: 0.7; } */
             /* .mobile-nav-link.active { opacity: 1; background-color: var(--accent); color: var(--button-text); } */
-            .mobile-nav-link.active svg { color: var(--button-text); }
+            .mobile-nav-link.active svg { color: var(--accent); }
             .mobile-nav-link svg { color: var(--accent); width: 26px; height: 26px; }
             .desktop-back-btn { display: none; }
             #update-toast.show { bottom: 95px; width: calc(100% - 2rem); }
@@ -218,11 +218,11 @@
                 <div class="icon-wrapper"><svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="currentColor" class="w-7 h-7 tap-highlight-transparent"><path d="M11.47 3.84a.75.75 0 011.06 0l8.69 8.69a.75.75 0 101.06-1.06l-8.689-8.69a2.25 2.25 0 00-3.182 0l-8.69 8.69a.75.75 0 001.061 1.06l8.69-8.69z" /><path d="M12 5.432l8.159 8.159c.03.03.06.058.091.086v6.198c0 1.035-.84 1.875-1.875 1.875H15a.75.75 0 01-.75-.75v-4.5a.75.75 0 00-.75-.75h-3a.75.75 0 00-.75.75V21a.75.75 0 01-.75.75H5.625a1.875 1.875 0 01-1.875-1.875v-6.198a2.29 2.29 0 00.091-.086L12 5.43z" /></svg></div>
                 <span class="text-xs font-medium mt-0.5"></span>
             </a>
-            <a href="jadvalidarsi.html" class="mobile-nav-link active">
+            <a href="jadvalidarsi.html" class="mobile-nav-link ">
                 <div class="icon-wrapper"><svg xmlns="http://www.w3.org/2000/svg" height="35px" viewBox="0 -960 960 960" width="40px" fill="currentColor"><path d="M186.67-633.33h586.66v-113.34H186.67v113.34Zm0 0v-113.34 113.34Zm0 553.33q-27 0-46.84-19.83Q120-119.67 120-146.67v-600q0-27 19.83-46.83 19.84-19.83 46.84-19.83h56.66V-880h70v66.67h333.34V-880h70v66.67h56.66q27 0 46.84 19.83Q840-773.67 840-746.67v280.34q-15.78-7.86-32.39-13.1-16.61-5.24-34.28-8.24v-79H186.67v420h296.66q6.34 18.67 14.84 35 8.5 16.34 20.16 31.67H186.67Zm540.66 40q-79.95 0-136.31-56.35-56.35-56.36-56.35-136.32 0-79.95 56.35-136.31 56.36-56.35 136.31-56.35 79.96 0 136.32 56.35Q920-312.62 920-232.67q0 79.96-56.35 136.32Q807.29-40 727.33-40Zm61.17-93.67 27.83-28-75-75v-112H702V-222l86.5 88.33Z"/></svg></div>
                 <span class="text-xs font-medium mt-0.5"></span>
             </a>
-            <a href="fakultet.html" class="mobile-nav-link ">
+            <a href="fakultet.html" class="mobile-nav-link active">
                 <div class="icon-wrapper"><svg xmlns="http://www.w3.org/2000/svg" height="35px" viewBox="0 -960 960 960" width="40px" fill="currentColor"><path d="M479.33-120 192.67-276.67v-240L40-600l439.33-240L920-600v318h-66.67v-280L766-516.67v240L479.33-120Zm0-316 301.34-164-301.34-162-300 162 300 164Zm0 240.33 220-120.66v-162.34L479.33-360l-220-120v163.67l220 120.66ZM480-436Zm-.67 79.33Zm0 0Z"/></svg></div>
                 <span class="text-xs font-medium mt-0.5"></span>
             </a>
