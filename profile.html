@@ -97,6 +97,44 @@
         .dark .modern-input-field .modern-input-icon {
             color: var(--icon);
         }
+                .header-actions {
+            display: flex;
+            align-items: center;
+            margin-bottom: 25px;
+        }
+
+        .btn-back {
+            background: none;
+            border: 1px solid rgba(255, 255, 255, 0.1);
+            border-radius: 50%;
+            width: 40px;
+            height: 40px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            cursor: pointer;
+            transition: background-color 0.3s ease, transform 0.2s ease;
+            margin-right: 20px;
+        }
+        .btn-back:hover {
+            background-color: rgba(255, 255, 255, 0.1);
+            transform: translateY(-2px);
+        }
+        .btn-back svg {
+            width: 20px;
+            height: 20px;
+            color: var(--text-color);
+        }
+        
+        h1 {
+            color: #ffffff;
+            margin: 0;
+            font-weight: 700;
+            font-size: 1.5rem;
+            text-shadow: 0 2px 8px rgba(0,0,0,0.2);
+            flex-grow: 1;
+        }
+
     </style>
 </head>
 <body x-data="pageManager()" x-init="init()" :class="{ 'dark': isDark }" x-cloak>
@@ -108,14 +146,14 @@
 
     <main class="container mx-auto p-4 md:p-6 min-h-screen">
        
-        <div class="mb-6">
-            <a href="javascript:history.back()" class="inline-flex items-center gap-2 bento-card px-4 py-2 rounded-lg hover:bg-gray-500/10 transition-colors text-sm font-semibold">
-                <svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5" viewBox="0 0 20 20" fill="currentColor">
-                    <path fill-rule="evenodd" d="M12.707 5.293a1 1 0 010 1.414L9.414 10l3.293 3.293a1 1 0 01-1.414 1.414l-4-4a1 1 0 010-1.414l4-4a1 1 0 011.414 0z" clip-rule="evenodd" />
-                </svg>
-                Назад
-            </a>
-        </div>
+       <div class="header-actions">
+                <a href="javascript:history.back()" class="btn-back" onclick="history.back()">
+                    <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2">
+                        <path stroke-linecap="round" stroke-linejoin="round" d="M15 19l-7-7 7-7" />
+                    </svg>
+                </a>
+                <h1>Профиль</h1>
+            </div>
 
         <div x-show="isLoadingProfile" x-transition class="max-w-5xl mx-auto">
             
@@ -529,3 +567,4 @@
     </script>
 </body>
 </html>
+
