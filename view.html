@@ -1,4 +1,4 @@
- <!DOCTYPE html>
+<!DOCTYPE html>
 <html lang="ru">
 <head>
     <meta charset="UTF-8">
@@ -9,13 +9,13 @@
     <style>
         :root {
             --bg-color: #f7f8fa; --text-color-primary: #111827; --text-color-secondary: #6b7280;
-            --card-bg: rgba(255, 255, 255, 0.65); --border-color: rgba(0, 0, 0, 0.08); 
-            --skeleton-bg: #e5e7eb; --aurora-opacity: 0.15; --accent-color: #2563eb;
+            --card-bg: #ffffff; --border-color: #e5e7eb; 
+            --skeleton-bg: #e5e7eb; --aurora-opacity: 0.1; --accent-color: #2563eb;
         }
         html.dark {
-            --bg-color: #0d1117; --text-color-primary: #e2e8f0; --text-color-secondary: #94a3b8;
-            --card-bg: rgba(22, 27, 34, 0.5); --border-color: rgba(255, 255, 255, 0.1);
-            --skeleton-bg: #21262d; --aurora-opacity: 0.2;
+            --bg-color: #0c0c0c; --text-color-primary: #f0f0f0; --text-color-secondary: #a0a0a0;
+            --card-bg: #161616; --border-color: #2f2f2f;
+            --skeleton-bg: #2a2a2a; --aurora-opacity: 0.15;
         }
         html { scroll-behavior: smooth; }
         body { 
@@ -26,63 +26,95 @@
         }
         .aurora-container { position: fixed; top: 0; left: 0; width: 100%; height: 100vh; overflow: hidden; z-index: -1; }
         @keyframes rotate { 0% { transform: rotate(0deg); } 100% { transform: rotate(360deg); } }
-        .aurora-shape { position: absolute; border-radius: 50%; filter: blur(120px); opacity: var(--aurora-opacity); animation: rotate 50s infinite linear alternate; }
-        .glass-card { 
-            background-color: var(--card-bg); 
-            border: 1px solid var(--border-color); 
-            backdrop-filter: blur(25px); 
-            -webkit-backdrop-filter: blur(25px);
-            box-shadow: 0 8px 32px rgba(0, 0, 0, 0.07);
-        }
-        .modal { position: fixed; top: 0; left: 0; right: 0; bottom: 0; background: rgba(0,0,0,0.6); display: none; align-items: center; justify-content: center; z-index: 1000; backdrop-filter: blur(5px); }
-        .modal.active { display: flex; }
+        .aurora-shape { position: absolute; border-radius: 50%; filter: blur(150px); opacity: var(--aurora-opacity); animation: rotate 50s infinite linear alternate; }
         
-        .assignment-post { transition: all 0.3s ease; }
-        .assignment-post:hover { transform: translateY(-5px); box-shadow: 0 10px 15px -3px rgba(0, 0, 0, 0.1), 0 4px 6px -2px rgba(0, 0, 0, 0.05); }
-        .post-content { max-height: 100px; overflow: hidden; position: relative; transition: max-height 0.5s ease-in-out; }
-        .post-content.is-expanded { max-height: 1000px; }
-        .post-content::after { content: ''; position: absolute; bottom: 0; left: 0; right: 0; height: 50px; background: linear-gradient(to top, var(--card-bg), transparent); pointer-events: none; transition: opacity 0.3s; }
+        .card {
+            background-color: var(--card-bg); 
+            border: 1px solid var(--border-color);
+            transition: all 0.3s ease;
+            box-shadow: 0 4px 6px -1px rgba(0,0,0,0.03), 0 2px 4px -2px rgba(0,0,0,0.03);
+        }
+        .card:hover {
+            transform: translateY(-5px);
+            box-shadow: 0 10px 15px -3px rgba(0,0,0,0.05), 0 4px 6px -4px rgba(0,0,0,0.05);
+        }
+
+        .modal { position: fixed; top: 0; left: 0; right: 0; bottom: 0; background: rgba(0,0,0,0.7); display: none; align-items: center; justify-content: center; z-index: 1000; backdrop-filter: blur(8px); animation: fadeIn 0.3s ease; }
+        .modal.active { display: flex; }
+        @keyframes fadeIn { from { opacity: 0; } to { opacity: 1; } }
+        
+        .post-content { max-height: 100px; overflow: hidden; position: relative; transition: max-height 0.5s cubic-bezier(0.4, 0, 0.2, 1); }
+        .post-content.is-expanded { max-height: 1500px; }
+        .post-content::after { content: ''; position: absolute; bottom: 0; left: 0; right: 0; height: 50px; background: linear-gradient(to top, var(--card-bg) 20%, transparent); pointer-events: none; transition: opacity 0.4s ease; }
         .post-content.is-expanded::after { opacity: 0; }
 
         @keyframes skeleton-pulse { 50% { opacity: 0.7; } }
         .skeleton-pulse { animation: skeleton-pulse 1.5s cubic-bezier(0.4, 0, 0.6, 1) infinite; }
+        
+        /* Кнопка "Наверх" */
+        #toTopBtn {
+            position: fixed;
+            bottom: 20px;
+            right: 20px;
+            z-index: 99;
+            background-color: var(--accent-color);
+            color: white;
+            border: none;
+            border-radius: 50%;
+            width: 50px;
+            height: 50px;
+            cursor: pointer;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            box-shadow: 0 4px 12px rgba(37, 99, 235, 0.3);
+            opacity: 0;
+            transform: translateY(20px);
+            visibility: hidden;
+            transition: opacity 0.3s ease, transform 0.3s ease, visibility 0.3s ease;
+        }
+        #toTopBtn.active {
+            opacity: 1;
+            transform: translateY(0);
+            visibility: visible;
+        }
     </style>
 </head>
 <body class="py-8 sm:py-12">
 
     <div class="aurora-container">
-        <div class="aurora-shape" style="width: 600px; height: 600px; background: #3b82f6; top: -20%; left: -10%;"></div>
+        <div class="aurora-shape" style="width: 600px; height: 600px; background: var(--accent-color); top: -20%; left: -10%;"></div>
         <div class="aurora-shape" style="width: 500px; height: 500px; background: #8b5cf6; bottom: -20%; right: -10%; animation-duration: 55s;"></div>
     </div>
 
+    <button id="toTopBtn" title="Вернуться наверх">
+        <svg xmlns="http://www.w3.org/2000/svg" class="h-6 w-6" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2">
+            <path stroke-linecap="round" stroke-linejoin="round" d="M5 15l7-7 7 7" />
+        </svg>
+    </button>
+
     <div id="selectionModal" class="modal">
-        <div class="modal-content glass-card rounded-2xl p-8">
-            <h2 class="text-2xl font-bold mb-6">Выберите вашу группу</h2>
+        <div class="modal-content card rounded-3xl p-8 w-11/12 max-w-md">
+            <h2 class="text-2xl font-bold mb-6 text-center">Выберите вашу группу</h2>
             <div class="space-y-4 text-left">
-                <div><label for="facultySelect" class="block text-sm font-medium mb-1" style="color: var(--text-color-secondary);">Факультет</label><select id="facultySelect" class="w-full p-3 rounded-lg border" style="background-color: var(--bg-color); border-color: var(--border-color);"></select></div>
-                <div><label for="courseSelect" class="block text-sm font-medium mb-1" style="color: var(--text-color-secondary);">Курс</label><select id="courseSelect" class="w-full p-3 rounded-lg border" style="background-color: var(--bg-color); border-color: var(--border-color);" disabled></select></div>
-                <div><label for="groupSelect" class="block text-sm font-medium mb-1" style="color: var(--text-color-secondary);">Группа</label><select id="groupSelect" class="w-full p-3 rounded-lg border" style="background-color: var(--bg-color); border-color: var(--border-color);" disabled></select></div>
+                <div><label for="facultySelect" class="block text-sm font-medium mb-1" style="color: var(--text-color-secondary);">Факультет</label><select id="facultySelect" class="w-full p-3 rounded-3xl border text-base" style="background-color: var(--bg-color); color: var(--text-color-primary); border-color: var(--border-color);"></select></div>
+                <div><label for="courseSelect" class="block text-sm font-medium mb-1" style="color: var(--text-color-secondary);">Курс</label><select id="courseSelect" class="w-full p-3 rounded-3xl border text-base" style="background-color: var(--bg-color); color: var(--text-color-primary); border-color: var(--border-color);" disabled></select></div>
+                <div><label for="groupSelect" class="block text-sm font-medium mb-1" style="color: var(--text-color-secondary);">Группа</label><select id="groupSelect" class="w-full p-3 rounded-3xl border text-base" style="background-color: var(--bg-color); color: var(--text-color-primary); border-color: var(--border-color);" disabled></select></div>
             </div>
-            <button id="saveSelectionBtn" class="w-full mt-6 py-3 px-4 text-white font-semibold rounded-lg transition-all duration-300" style="background-color: var(--accent-color);" disabled>Показать задания</button>
+            <button id="saveSelectionBtn" class="w-full mt-6 py-3 px-4 text-white font-semibold rounded-3xl transition-all duration-300 disabled:opacity-50 disabled:cursor-not-allowed" style="background-color: var(--accent-color);" disabled>Показать задания</button>
         </div>
     </div>
 
-    <div id="mainContent" class="container mx-auto px-4 max-w-5xl" style="display: none;">
+    <div id="mainContent" class="container mx-auto px-4 max-w-3xl" style="display: none;">
         <header class="text-center mb-12">
             <h1 class="text-4xl sm:text-5xl font-extrabold tracking-tight">Список СРС</h1>
-            <div id="group-info" class="text-lg mt-3 opacity-70 max-w-2xl mx-auto" style="color: var(--text-color-secondary);"></div>
+            <div id="group-info" class="text-lg mt-3" style="color: var(--text-color-secondary);"></div>
             <button id="changeGroupBtn" class="mt-4 text-sm font-semibold transition-opacity duration-300 hover:opacity-80" style="color: var(--accent-color);">Сменить группу</button>
         </header>
 
-        <main id="assignments-grid" class="grid grid-cols-1 lg:grid-cols-2 gap-8">
-            <div class="assignment-post glass-card p-6 space-y-4 rounded-2xl">
-                <div class="flex items-center gap-3"><div class="w-10 h-10 rounded-full skeleton-pulse" style="background-color: var(--skeleton-bg);"></div><div class="w-1/2 h-4 skeleton-pulse" style="background-color: var(--skeleton-bg); border-radius: 0.25rem;"></div></div>
-                <div class="space-y-3 pt-2"><div class="h-4 skeleton-pulse" style="background-color: var(--skeleton-bg); border-radius: 0.25rem;"></div><div class="h-4 w-3/4 skeleton-pulse" style="background-color: var(--skeleton-bg); border-radius: 0.25rem;"></div></div>
-            </div>
-             <div class="assignment-post glass-card p-6 space-y-4 rounded-2xl">
-                <div class="flex items-center gap-3"><div class="w-10 h-10 rounded-full skeleton-pulse" style="background-color: var(--skeleton-bg);"></div><div class="w-1/3 h-4 skeleton-pulse" style="background-color: var(--skeleton-bg); border-radius: 0.25rem;"></div></div>
-                <div class="space-y-3 pt-2"><div class="h-4 w-5/6 skeleton-pulse" style="background-color: var(--skeleton-bg); border-radius: 0.25rem;"></div><div class="h-4 skeleton-pulse" style="background-color: var(--skeleton-bg); border-radius: 0.25rem;"></div></div>
-            </div>
+        <main id="assignments-grid" class="space-y-8">
+            <div class="card p-6 space-y-4 rounded-3xl"><div class="w-3/4 h-6 mb-2 skeleton-pulse" style="background-color: var(--skeleton-bg); border-radius: 0.25rem;"></div><div class="w-1/2 h-4 skeleton-pulse" style="background-color: var(--skeleton-bg); border-radius: 0.25rem;"></div><div class="space-y-3 pt-2"><div class="h-4 skeleton-pulse" style="background-color: var(--skeleton-bg); border-radius: 0.25rem;"></div><div class="h-4 w-5/6 skeleton-pulse" style="background-color: var(--skeleton-bg); border-radius: 0.25rem;"></div></div></div>
+            <div class="card p-6 space-y-4 rounded-3xl"><div class="w-2/3 h-6 mb-2 skeleton-pulse" style="background-color: var(--skeleton-bg); border-radius: 0.25rem;"></div><div class="w-1/3 h-4 skeleton-pulse" style="background-color: var(--skeleton-bg); border-radius: 0.25rem;"></div><div class="space-y-3 pt-2"><div class="h-4 w-3/4 skeleton-pulse" style="background-color: var(--skeleton-bg); border-radius: 0.25rem;"></div><div class="h-4 skeleton-pulse" style="background-color: var(--skeleton-bg); border-radius: 0.25rem;"></div></div></div>
         </main>
     </div>
 
@@ -96,11 +128,24 @@
         let hierarchy = {}, assignmentsRef = null;
         const $ = (selector) => document.querySelector(selector);
         
+        // --- Dark Mode Theming ---
         const themeMatcher = window.matchMedia('(prefers-color-scheme: dark)');
         const toggleDarkTheme = (isDark) => document.documentElement.classList.toggle('dark', isDark);
         toggleDarkTheme(themeMatcher.matches);
         themeMatcher.addEventListener('change', e => toggleDarkTheme(e.matches));
         
+        // --- "Back to Top" Button Logic ---
+        const toTopBtn = $('#toTopBtn');
+        window.onscroll = () => {
+            if (document.body.scrollTop > 300 || document.documentElement.scrollTop > 300) {
+                toTopBtn.classList.add('active');
+            } else {
+                toTopBtn.classList.remove('active');
+            }
+        };
+        toTopBtn.addEventListener('click', () => { window.scrollTo({top: 0, behavior: 'smooth'}); });
+
+        // --- Main App Logic ---
         document.addEventListener('DOMContentLoaded', () => {
             db.ref('hierarchy').once('value', snapshot => {
                 if (!snapshot.exists()) {
@@ -142,7 +187,7 @@
                 renderAssignmentsHTML(assignments);
             }, error => {
                 console.error("Ошибка чтения заданий:", error);
-                $('#assignments-grid').innerHTML = '<p class="col-span-full text-center">Не удалось загрузить задания.</p>';
+                $('#assignments-grid').innerHTML = '<p class="text-center">Не удалось загрузить задания.</p>';
             });
         }
         
@@ -152,51 +197,87 @@
             const grid = $('#assignments-grid');
             grid.innerHTML = '';
             if (assignments.length === 0) {
-                grid.innerHTML = `<div class="lg:col-span-2 text-center py-12"><p class="opacity-70 text-lg" style="color: var(--text-color-secondary);">✨ На данный момент нет активных заданий.</p></div>`;
+                grid.innerHTML = `<div class="text-center py-12"><p class="text-lg" style="color: var(--text-color-secondary);">✨ На данный момент нет активных заданий.</p></div>`;
                 return;
             }
             
             assignments.forEach(item => {
                 const post = document.createElement('div');
-                post.className = 'assignment-post glass-card rounded-2xl';
-                const endDate = new Date(item.endDate), now = new Date();
+                post.className = 'card rounded-3xl';
+                
+                const endDate = new Date(item.endDate);
+                endDate.setHours(23, 59, 59, 999); // Срок до конца дня
+                const now = new Date();
                 const daysLeft = Math.ceil((endDate - now) / (1000 * 60 * 60 * 24));
-                let statusText, statusColorClass;
-                if (daysLeft < 0) { statusText = 'Срок истек'; statusColorClass = 'text-red-500'; } 
-                else if (daysLeft <= 3) { statusText = `Осталось: ${daysLeft} ${pluralizeDays(daysLeft)}`; statusColorClass = 'text-yellow-500'; }
-                else { statusText = `Осталось: ${daysLeft} ${pluralizeDays(daysLeft)}`; statusColorClass = 'text-green-500'; }
-                const nameParts = item.teacherName.split(" "), initials = nameParts.length > 1 ? nameParts[0][0] + nameParts[1][0] : nameParts[0][0];
-                const avatarUrl = `https://ui-avatars.com/api/?name=${encodeURIComponent(initials)}&background=random&color=fff&font-size=0.5`;
+                const formattedEndDate = endDate.toLocaleDateString('ru-RU', { day: '2-digit', month: '2-digit', year: 'numeric' });
+
+                let statusText, statusColorClass, statusSecondaryText;
+                if (now > endDate) {
+                    const daysOverdue = Math.floor((now - endDate) / (1000 * 60 * 60 * 24));
+                    statusText = `Срок истек ${formattedEndDate}`;
+                    statusSecondaryText = `(просрочено на ${daysOverdue} ${pluralizeDays(daysOverdue)})`;
+                    statusColorClass = 'text-red-500 bg-red-500/10';
+                } else if (daysLeft === 0) {
+                    statusText = `Срок истекает сегодня`;
+                    statusSecondaryText = `(${formattedEndDate})`;
+                    statusColorClass = 'text-yellow-500 bg-yellow-500/10';
+                } else {
+                    statusText = `Срок до: ${formattedEndDate}`;
+                    statusSecondaryText = `(осталось ${daysLeft} ${pluralizeDays(daysLeft)})`;
+                    statusColorClass = 'text-green-500 bg-green-500/10';
+                }
+                
+                const fileButtonHTML = item.fileLink ? `
+                    <div class="mt-6 pt-6 border-t border-[var(--border-color)] flex justify-center">
+                        <a href="${item.fileLink}" target="_blank" rel="noopener noreferrer" 
+                           class="inline-flex items-center gap-2.5 text-sm font-semibold py-2.5 px-5 rounded-3xl transition-colors bg-blue-50 dark:bg-blue-500/10 text-blue-600 dark:text-blue-300 hover:bg-blue-100 dark:hover:bg-blue-500/20">
+                           <svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5" viewBox="0 0 20 20" fill="currentColor"><path fill-rule="evenodd" d="M8 4a3 3 0 00-3 3v4a5 5 0 0010 0V7a3 3 0 10-6 0v4a3 3 0 106 0V7a1 1 0 10-2 0v4a1 1 0 102 0V7a3 3 0 00-3-3z" clip-rule="evenodd" /></svg>
+                           Открыть прикрепленный файл
+                        </a>
+                    </div>` : '';
 
                 post.innerHTML = `
-                    <div class="p-6">
-                        <div class="flex items-center gap-4 mb-4">
-                            <img class="w-11 h-11 rounded-full" src="${avatarUrl}" alt="Аватар">
+                    <div class="p-6 sm:p-8">
+                        <div class="flex items-start gap-4 mb-4">
+                            <div class="flex-shrink-0 w-10 h-10 flex items-center justify-center rounded-3xl bg-indigo-50 dark:bg-indigo-500/10 text-indigo-500">
+                                <svg xmlns="http://www.w3.org/2000/svg" class="h-6 w-6" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 6.253v11.494m-9-5.747h18" /></svg>
+                                <svg xmlns="http://www.w3.org/2000/svg" class="h-6 w-6" viewBox="0 0 20 20" fill="currentColor"><path d="M9 4.804A7.968 7.968 0 005.5 4c-1.255 0-2.443.29-3.5.804v10A7.969 7.969 0 015.5 15c1.255 0 2.443-.29 3.5-.804V4.804zM14.5 4c1.255 0 2.443.29 3.5.804v10a7.969 7.969 0 01-3.5-.804V4z" /></svg>
+                            </div>
                             <div>
-                                <h3 class="text-lg font-bold leading-tight">${item.subject}</h3>
-                                <p class="text-sm" style="color: var(--text-color-secondary);">${item.teacherName}</p>
+                                <h3 class="text-xl font-bold leading-tight">${item.subject}</h3>
+                                <div class="text-sm mt-1" style="color: var(--text-color-secondary);">${item.teacherName}</div>
                             </div>
                         </div>
-                        <div class="prose prose-sm max-w-none post-content" style="color: var(--text-color-secondary);">${item.description}</div>
-                        <div class="flex justify-between items-center mt-4 pt-4 border-t" style="border-color: var(--border-color);">
-                            <button class="read-more-btn text-sm font-semibold" style="color: var(--accent-color);">Читать далее...</button>
-                            <span class="text-xs font-semibold ${statusColorClass}">${statusText}</span>
+
+                        <div class="mt-4 p-4 rounded-3xl" style="background-color: var(--bg-color); border: 1px solid var(--border-color);">
+                            <div class="flex items-center gap-3 text-sm font-semibold ${statusColorClass.split(' ')[0]}">
+                                <svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5" viewBox="0 0 20 20" fill="currentColor"><path fill-rule="evenodd" d="M6 2a1 1 0 00-1 1v1H4a2 2 0 00-2 2v10a2 2 0 002 2h12a2 2 0 002-2V6a2 2 0 00-2-2h-1V3a1 1 0 10-2 0v1H7V3a1 1 0 00-1-1zm0 5a1 1 0 000 2h8a1 1 0 100-2H6z" clip-rule="evenodd" /></svg>
+                                <div>
+                                    <span>${statusText}</span>
+                                    <span class="font-normal opacity-80">${statusSecondaryText}</span>
+                                </div>
+                            </div>
                         </div>
+
+                        <div class="prose prose-sm max-w-none post-content mt-5" style="color: var(--text-color-secondary);">${item.description}</div>
+                        <button class="read-more-btn text-sm font-semibold mt-2" style="color: var(--accent-color);">Читать далее...</button>
+                        
+                        ${fileButtonHTML}
                     </div>`;
                 grid.appendChild(post);
 
                 const content = post.querySelector('.post-content');
                 const button = post.querySelector('.read-more-btn');
                 
-                // Проверяем высоту контента ПОСЛЕ того, как он добавлен на страницу
                 if (content.scrollHeight <= 100) { 
                     button.style.display = 'none';
                     content.classList.add('is-expanded');
+                    content.style.maxHeight = 'none';
                 }
 
                 button.addEventListener('click', () => {
-                    content.classList.toggle('is-expanded');
-                    button.textContent = content.classList.contains('is-expanded') ? 'Свернуть' : 'Читать далее...';
+                    const isExpanded = content.classList.toggle('is-expanded');
+                    button.textContent = isExpanded ? 'Свернуть' : 'Читать далее...';
                 });
             });
         }
@@ -206,8 +287,8 @@
             grid.innerHTML = '';
             for (let i = 0; i < 2; i++) {
                 const card = document.createElement('div');
-                card.className = 'assignment-post glass-card p-6 space-y-4 rounded-2xl';
-                card.innerHTML = `<div class="flex items-center gap-3"><div class="w-10 h-10 rounded-full skeleton-pulse" style="background-color: var(--skeleton-bg);"></div><div class="w-1/2 h-4 skeleton-pulse" style="background-color: var(--skeleton-bg); border-radius: 0.25rem;"></div></div><div class="space-y-3 pt-2"><div class="h-4 skeleton-pulse" style="background-color: var(--skeleton-bg); border-radius: 0.25rem;"></div><div class="h-4 w-3/4 skeleton-pulse" style="background-color: var(--skeleton-bg); border-radius: 0.25rem;"></div></div>`;
+                card.className = 'card p-6 sm:p-8 space-y-4 rounded-2xl';
+                card.innerHTML = `<div class="w-3/4 h-6 mb-2 skeleton-pulse" style="background-color: var(--skeleton-bg); border-radius: 0.25rem;"></div><div class="w-1/2 h-4 skeleton-pulse" style="background-color: var(--skeleton-bg); border-radius: 0.25rem;"></div><div class="space-y-3 pt-2"><div class="h-4 skeleton-pulse" style="background-color: var(--skeleton-bg); border-radius: 0.25rem;"></div><div class="h-4 w-5/6 skeleton-pulse" style="background-color: var(--skeleton-bg); border-radius: 0.25rem;"></div></div>`;
                 grid.appendChild(card);
             }
         }
