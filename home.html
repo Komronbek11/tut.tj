@@ -25,6 +25,14 @@
         body {
             font-family: 'Inter', sans-serif; background-color: var(--bg-light); color: var(--text-light);
             transition: background-color 0.5s ease, color 0.5s ease;
+            /* === MODIFICATION: Disable text selection === */
+            -webkit-user-select: none; /* Safari */
+            -ms-user-select: none; /* IE 10+ and Edge */
+            user-select: none; /* Standard syntax */
+        }
+        /* === MODIFICATION: Disable tap highlight globally === */
+        a, button, .interactive-press, .card-hover, [role="button"] {
+            -webkit-tap-highlight-color: transparent;
         }
         .dark body { background-color: var(--bg-dark); color: var(--text-dark); }
         .aurora-container { position: fixed; top: 0; left: 0; width: 100%; height: 100vh; overflow: hidden; z-index: -1; }
@@ -90,14 +98,14 @@
             position: relative; display: flex; flex-direction: column;
             align-items: center; justify-content: center; padding: 4px 12px;
             border-radius: 9999px; transition: background-color 0.3s ease, color 0.3s ease;
-            -webkit-tap-highlight-color: transparent; opacity: 0.7;
+            opacity: 0.7;
         }
         .mobile-nav-link.active { opacity: 1; background-color: rgba(99, 102, 241, 0.2); color: #4f46e5; }
         .dark .mobile-nav-link { color: var(--text-dark); }
         .dark .mobile-nav-link.active { background-color: rgba(129, 140, 248, 0.2); color: #a5b4fc; }
         #profile-image { width: 28px; height: 28px; border-radius: 50%; object-fit: cover; border: 1px solid var(--border-light); }
         .dark #profile-image { border: 1px solid var(--border-dark); }
-        .tap-highlight-transparent { -webkit-tap-highlight-color: transparent; }
+        
         .mobile-nav-link .icon-wrapper > svg,
         .mobile-nav-link .icon-wrapper > img { transition: transform 0.15s ease-out; transform: scale(1); }
         .mobile-nav-link:active .icon-wrapper > svg,
@@ -131,10 +139,10 @@
 
     <div :class="{ 'filter blur-sm': mobileMenuOpen }" class="transition-filter duration-300">
         <header class="sticky top-0 z-30 fade-in-up" :class="{'is-visible': contentLoaded}">
-            <nav class="container mx-auto px-4 py-3 mt-4 glass-card rounded-2xl">
+            <nav class="container mx-auto px-3 py-3 mt-3 glass-card rounded-3xl">
                 <div class="flex justify-between items-center">
                     <a href="#" class="flex items-center space-x-3">
-                        <img src="logo.png" alt="Logo" class="w-10 h-10" id="logo">
+                        <img src="https://asutut.netlify.app/logo.png" alt="Logo" class="w-10 h-10" id="logo">
                         <span class="text-lg font-bold sm:inline" data-translate="university_short_name">ФТИ ва ИС</span>
                     </a>
 
@@ -142,7 +150,7 @@
                         <a href="#" class="transition hover:text-indigo-500 dark:hover:text-indigo-400" data-translate="nav_home">Асосӣ</a>
                         <a href="jadvalidarsi.html" class="transition hover:text-indigo-500 dark:hover:text-indigo-400" data-translate="schedule">Ҷадвали дарсӣ</a>
                         <a href="fakultet.html" class="transition hover:text-indigo-500 dark:hover:text-indigo-400" data-translate="nav_faculties">Факултетҳо</a>
-                        <a href="#" class="transition hover:text-indigo-500 dark:hover:text-indigo-400" data-translate="nav_contact">Тамос</a>
+                        <a href="contact.html" class="transition hover:text-indigo-500 dark:hover:text-indigo-400" data-translate="nav_contact">Тамос</a>
                     </div>
 
                     <div class="flex items-center space-x-2">
@@ -192,28 +200,28 @@
                     <div x-show="imagesLoaded" class="h-full w-full" x-ref="carouselContainer" x-cloak>
                         <div class="carousel-images h-full" :style="`transform: translateX(-${currentSlide * 100}%)`">
                             <div class="carousel-slide" :class="{'active': currentSlide === 0}">
-                                <img src="logo3.jpg" alt="Студенческая жизнь" @load="imageLoaded()">
+                                <img src="https://asutut.netlify.app/logo3.jpg" alt="Студенческая жизнь" @load="imageLoaded()">
                                 <div class="carousel-text">
                                     <h3 class="font-bold text-lg">Студенческая жизнь</h3>
                                     <p class="text-sm opacity-90">Открытия, дружба и знания в самом сердце Таджикистана.</p>
                                 </div>
                             </div>
                             <div class="carousel-slide" :class="{'active': currentSlide === 1}">
-                                <img src="ai.jpg" id="ai" height="400px" alt="Инновации и технологии" @load="imageLoaded()">
+                                <img src="https://asutut.netlify.app/ai.jpg" id="ai" height="400px" alt="Инновации и технологии" @load="imageLoaded()">
                                 <div class="carousel-text">
                                     <h3 class="font-bold text-lg">Инновации и технологии</h3>
                                     <p class="text-sm opacity-90">Современные лаборатории для будущих инженеров и учёных.</p>
                                 </div>
                             </div>
                             <div class="carousel-slide" :class="{'active': currentSlide === 2}">
-                                <img src="logo2.jpg" alt="День открытых дверей" @load="imageLoaded()">
+                                <img src="https://asutut.netlify.app/logo2.jpg" alt="День открытых дверей" @load="imageLoaded()">
                                 <div class="carousel-text">
                                     <h3 class="font-bold text-lg">День открытых дверей</h3>
                                     <p class="text-sm opacity-90">Приглашаем абитуриентов познакомиться с университетом.</p>
                                 </div>
                             </div>
                             <div class="carousel-slide" :class="{'active': currentSlide === 3}">
-                                <img src="TUT.jpg" alt="Главный корпус ДТТ" @load="imageLoaded()">
+                                <img src="https://asutut.netlify.app/TUT.jpg" alt="Главный корпус ДТТ" @load="imageLoaded()">
                                 <div class="carousel-text">
                                     <h3 class="font-bold text-lg">Главный корпус ДТТ</h3>
                                     <p class="text-sm opacity-90">Архитектурная жемчужина и центр знаний нашего города.</p>
@@ -237,7 +245,7 @@
                  <a href="teachers_tut.html" class="col-span-2 md:col-span-1 row-span-1 glass-card card-hover interactive-press rounded-3xl p-4 flex flex-col justify-between group fade-in-up relative" :class="{'is-visible': contentLoaded}" style="transition-delay: 200ms;">
                     <div x-show="!contentLoaded" class="skeleton absolute inset-0 rounded-3xl m-0"></div>
                     <div x-show="contentLoaded" class="relative z-10 flex flex-col justify-between h-full">
-                        <img src="teacher.png" class="w-12 h-12 transition-transform duration-300 group-hover:rotate-12" alt="">
+                        <img src="https://asutut.netlify.app/teacher.png" class="w-12 h-12 transition-transform duration-300 group-hover:rotate-12" alt="">
                         <h3 class="font-bold text-lg self-start mt-auto" data-translate="teachers">Омӯзгорон</h3>
                     </div>
                 </a>
@@ -245,7 +253,7 @@
                 <a href="jadvalidarsi.html" class="col-span-2 md:col-span-1 row-span-1 glass-card card-hover interactive-press rounded-3xl p-4 flex flex-col justify-between group fade-in-up relative" :class="{'is-visible': contentLoaded}" style="transition-delay: 300ms;">
                     <div x-show="!contentLoaded" class="skeleton absolute inset-0 rounded-3xl m-0"></div>
                     <div x-show="contentLoaded" class="relative z-10 flex flex-col justify-between h-full">
-                        <img src="time-management.png" class="w-12 h-12 transition-transform duration-300 group-hover:rotate-12" alt="">
+                        <img src="https://asutut.netlify.app/time-management.png" class="w-12 h-12 transition-transform duration-300 group-hover:rotate-12" alt="">
                         <h3 class="font-bold text-lg self-start mt-auto" data-translate="schedule">Ҷадвали дарсӣ</h3>
                     </div>
                 </a>
@@ -253,7 +261,7 @@
                 <a href="app.html" class="col-span-2 md:col-span-1 row-span-1 glass-card card-hover interactive-press rounded-3xl p-4 flex flex-col justify-between group fade-in-up relative" :class="{'is-visible': contentLoaded}" style="transition-delay: 400ms;">
                     <div x-show="!contentLoaded" class="skeleton absolute inset-0 rounded-3xl m-0"></div>
                     <div x-show="contentLoaded" class="relative z-10 flex flex-col justify-between h-full">
-                        <img src="books.png" class="w-12 h-12 transition-transform duration-300 group-hover:rotate-12" alt="">
+                        <img src="https://asutut.netlify.app/books.png" class="w-12 h-12 transition-transform duration-300 group-hover:rotate-12" alt="">
                         <h3 class="font-bold text-lg self-start mt-auto" data-translate="ebooks">Китобҳои электронӣ</h3>
                     </div>
                 </a>
@@ -261,7 +269,7 @@
                 <a href="http://asu.tut.tj/?option=login" class="col-span-2 md:col-span-1 row-span-1 glass-card card-hover interactive-press rounded-3xl p-4 flex flex-col justify-between group fade-in-up relative" :class="{'is-visible': contentLoaded}" style="transition-delay: 500ms;">
                     <div x-show="!contentLoaded" class="skeleton absolute inset-0 rounded-3xl m-0"></div>
                     <div x-show="contentLoaded" class="relative z-10 flex flex-col justify-between h-full">
-                        <img src="testing.png" class="w-12 h-12 transition-transform duration-300 group-hover:rotate-12" alt="">
+                        <img src="https://asutut.netlify.app/testing.png" class="w-12 h-12 transition-transform duration-300 group-hover:rotate-12" alt="">
                         <h3 class="font-bold text-lg self-start mt-auto" data-translate="exam_results">Натиҷаи имтиҳонҳо</h3>
                     </div>
                 </a>
@@ -269,7 +277,7 @@
                 <a href="notifications.html" class="col-span-2 md:col-span-1 row-span-1 glass-card card-hover interactive-press rounded-3xl p-4 flex flex-col justify-between group fade-in-up relative" :class="{'is-visible': contentLoaded}" style="transition-delay: 400ms;">
                     <div x-show="!contentLoaded" class="skeleton absolute inset-0 rounded-3xl m-0"></div>
                     <div x-show="contentLoaded" class="relative z-10 flex flex-col justify-between h-full">
-                        <img src="information.png" class="w-12 h-12 transition-transform duration-300 group-hover:rotate-12" alt="">
+                        <img src="https://asutut.netlify.app/information.png" class="w-12 h-12 transition-transform duration-300 group-hover:rotate-12" alt="">
                         <h3 class="font-bold text-lg self-start mt-auto" data-translate="notifications">Огоҳиномаҳо</h3>
                     </div>
                 </a>
@@ -277,7 +285,7 @@
                 <a href="view.html" class="col-span-2 md:col-span-1 row-span-1 glass-card card-hover interactive-press rounded-3xl p-4 flex flex-col justify-between group fade-in-up relative" :class="{'is-visible': contentLoaded}" style="transition-delay: 500ms;">
                     <div x-show="!contentLoaded" class="skeleton absolute inset-0 rounded-3xl m-0"></div>
                     <div x-show="contentLoaded" class="relative z-10 flex flex-col justify-between h-full">
-                        <img src="workplace.png" class="w-12 h-12 transition-transform duration-300 group-hover:rotate-12" alt="">
+                        <img src="https://asutut.netlify.app/workplace.png" class="w-12 h-12 transition-transform duration-300 group-hover:rotate-12" alt="">
                         <h3 class="font-bold text-lg self-start mt-auto" data-translate="srs">Корхои маҷмуи донишҷӯён</h3>
                     </div>
                 </a>
@@ -285,7 +293,7 @@
                 <a href="imtihon.html" class="col-span-4 md:col-span-2 row-span-1 glass-card card-hover interactive-press rounded-3xl p-6 flex items-center space-x-4 group fade-in-up relative" :class="{'is-visible': contentLoaded}" style="transition-delay: 600ms;">
                     <div x-show="!contentLoaded" class="skeleton absolute inset-0 rounded-3xl m-0"></div>
                     <div x-show="contentLoaded" class="relative z-10 flex items-center space-x-4">
-                        <img src="exam.png" class="w-16 h-16 transition-transform duration-300 group-hover:scale-110" alt="">
+                        <img src="https://asutut.netlify.app/exam.png" class="w-16 h-16 transition-transform duration-300 group-hover:scale-110" alt="">
                         <div>
                             <h3 class="font-bold text-xl" data-translate="exam_schedule">Ҷадвали имтиҳонҳо</h3>
                             <p class="text-sm opacity-80" data-translate="exam_schedule_desc">Вақт, сана ва ҷои баргузории имтиҳонҳо.</p>
@@ -296,7 +304,7 @@
                 <a href="zametki.html" class="col-span-4 md:col-span-2 row-span-1 glass-card card-hover interactive-press rounded-3xl p-6 flex items-center space-x-4 group fade-in-up relative" :class="{'is-visible': contentLoaded}" style="transition-delay: 600ms;">
                      <div x-show="!contentLoaded" class="skeleton absolute inset-0 rounded-3xl m-0"></div>
                      <div x-show="contentLoaded" class="relative z-10 flex items-center space-x-4">
-                         <img src="diary.png" class="w-16 h-18 transition-transform duration-300 group-hover:scale-110" alt="">
+                         <img src="https://asutut.netlify.app/diary.png" class="w-16 h-18 transition-transform duration-300 group-hover:scale-110" alt="">
                          <div>
                              <h3 class="font-bold text-xl" data-translate="zametki">Қайдҳои КМД</h3>
                              <p class="text-sm opacity-80" data-translate="zametki_desc">Донишҷӯён метавонад, корҳои маҷмуи (КМД) - и худро сабт кунад.</p>
@@ -307,7 +315,7 @@
                 <a href="app.html" class="col-span-4 md:col-span-2 row-span-1 glass-card card-hover interactive-press rounded-3xl p-6 flex items-center space-x-4 group fade-in-up relative" :class="{'is-visible': contentLoaded}" style="transition-delay: 600ms;">
                      <div x-show="!contentLoaded" class="skeleton absolute inset-0 rounded-3xl m-0"></div>
                      <div x-show="contentLoaded" class="relative z-10 flex items-center space-x-4">
-                         <img src="studying.png" class="w-16 h-18 transition-transform duration-300 group-hover:scale-110" alt="">
+                         <img src="https://asutut.netlify.app/studying.png" class="w-16 h-18 transition-transform duration-300 group-hover:scale-110" alt="">
                          <div>
                              <h3 class="font-bold text-xl" data-translate="exam_calc">Ҳисобкунаки имтиҳон</h3>
                              <p class="text-sm opacity-80" data-translate="exam_calc_desc">Шумо акнун имконият доред,ки натиҷаи имтиҳонҳои худро хисоб мекунед ва онро хамчун файли таёр дар Excel гирифта метавонед. </p>
@@ -318,7 +326,7 @@
                 <a href="app.html" class="col-span-4 md:col-span-2 row-span-1 glass-card card-hover interactive-press rounded-3xl p-6 flex items-center space-x-4 group fade-in-up relative" :class="{'is-visible': contentLoaded}" style="transition-delay: 600ms;">
                      <div x-show="!contentLoaded" class="skeleton absolute inset-0 rounded-3xl m-0"></div>
                      <div x-show="contentLoaded" class="relative z-10 flex items-center space-x-4">
-                         <img src="time.png" class="w-16 h-18 transition-transform duration-300 group-hover:scale-110" alt="">
+                         <img src="https://asutut.netlify.app/time.png" class="w-16 h-18 transition-transform duration-300 group-hover:scale-110" alt="">
                          <div>
                              <h3 class="font-bold text-xl" data-translate="t_raspisanie">Ҷадвали дарсҳо барои омӯзгорон</h3>
                              <p class="text-sm opacity-80" data-translate="t_raspisanie_desc">Ҷадвали дарсӣ имконият медиҳад, ки интихоб кардани аудитория,гурӯҳҳо,омӯзгорон ба таври динамикӣ нишон медиҳад. </p>
@@ -381,7 +389,7 @@
         <div class="flex justify-around items-center h-full text-sm">
             <a href="#" @click.prevent="activeMobileTab = 'home'" class="mobile-nav-link" :class="{ 'active': activeMobileTab === 'home' }">
                 <div class="icon-wrapper">
-                    <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="currentColor" class="w-7 h-7 tap-highlight-transparent"><path d="M11.47 3.84a.75.75 0 011.06 0l8.69 8.69a.75.75 0 101.06-1.06l-8.689-8.69a2.25 2.25 0 00-3.182 0l-8.69 8.69a.75.75 0 001.061 1.06l8.69-8.69z" /><path d="M12 5.432l8.159 8.159c.03.03.06.058.091.086v6.198c0 1.035-.84 1.875-1.875 1.875H15a.75.75 0 01-.75-.75v-4.5a.75.75 0 00-.75-.75h-3a.75.75 0 00-.75.75V21a.75.75 0 01-.75.75H5.625a1.875 1.875 0 01-1.875-1.875v-6.198a2.29 2.29 0 00.091-.086L12 5.43z" /></svg>
+                    <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="currentColor" class="w-7 h-7"><path d="M11.47 3.84a.75.75 0 011.06 0l8.69 8.69a.75.75 0 101.06-1.06l-8.689-8.69a2.25 2.25 0 00-3.182 0l-8.69 8.69a.75.75 0 001.061 1.06l8.69-8.69z" /><path d="M12 5.432l8.159 8.159c.03.03.06.058.091.086v6.198c0 1.035-.84 1.875-1.875 1.875H15a.75.75 0 01-.75-.75v-4.5a.75.75 0 00-.75-.75h-3a.75.75 0 00-.75.75V21a.75.75 0 01-.75.75H5.625a1.875 1.875 0 01-1.875-1.875v-6.198a2.29 2.29 0 00.091-.086L12 5.43z" /></svg>
                 </div>
                 <span class="text-xs font-medium mt-0.5" data-translate="nav_home"></span>
             </a>
@@ -406,10 +414,10 @@
             <a href="profile.html" @click="activeMobileTab = 'profile'" class="mobile-nav-link" :class="{ 'active': activeMobileTab === 'profile' }">
                 <div class="icon-wrapper">
                     <template x-if="isUserLoggedIn && userProfileImageUrl">
-                        <img :src="userProfileImageUrl" alt="Profile" id="profile-image" class="tap-highlight-transparent">
+                        <img :src="userProfileImageUrl" alt="Profile" id="profile-image">
                     </template>
                     <template x-if="!isUserLoggedIn || !userProfileImageUrl">
-                        <svg xmlns="http://www.w3.org/2000/svg" height="28px" width="28px" class="tap-highlight-transparent" fill="currentColor" viewBox="0 0 24 24">
+                        <svg xmlns="http://www.w3.org/2000/svg" height="28px" width="28px" fill="currentColor" viewBox="0 0 24 24">
                             <path d="M12 12c2.21 0 4-1.79 4-4s-1.79-4-4-4-4 1.79-4 4 1.79 4 4 4zm0 2c-2.67 0-8 1.34-8 4v2h16v-2c0-2.66-5.33-4-8-4z"/>
                         </svg>
                     </template>
@@ -514,7 +522,6 @@
                     menu_title: { tj: 'Меню', ru: 'Меню' },
                 },
 
-                // ===== ОБНОВЛЕННАЯ ФУНКЦИЯ INIT С ИСПРАВЛЕНИЕМ АНИМАЦИИ =====
                 init() {
                     this.isDark = localStorage.getItem('theme') === 'dark' || (!('theme' in localStorage) && window.matchMedia('(prefers-color-scheme: dark)').matches);
                     this.updateHtmlClass();
@@ -524,27 +531,23 @@
                     
                     this.initFirebase();
 
-                    // Функция для запуска и перезапуска анимации
                     const startLoadingSequence = () => {
                         this.contentLoaded = false;
                         this.imagesLoaded = false;
                         this.loadedImageCount = 0;
                         
-                        // Failsafe timer: if images don't load in 5s, show the page anyway
                         setTimeout(() => {
                             if (!this.contentLoaded) {
-                                this.imagesLoaded = true; // Force show carousel
+                                this.imagesLoaded = true;
                                 this.finishLoading();
                             }
                         }, 1000);
                     };
 
-                    // Запускаем анимацию при первой загрузке
                     startLoadingSequence();
 
-                    // Добавляем слушатель, который будет перезапускать анимацию при возврате на страницу
                     window.addEventListener('pageshow', (event) => {
-                        if (event.persisted) { // event.persisted = true, когда страница восстановлена из bfcache
+                        if (event.persisted) {
                            this.$nextTick(() => startLoadingSequence());
                         }
                     });
@@ -552,7 +555,6 @@
                     this.$watch('currentSlide', () => this.updateCarousel());
                     this.startCarousel();
                 },
-                // ===== КОНЕЦ ОБНОВЛЕННОЙ ФУНКЦИИ INIT =====
                 
                 initFirebase() {
                     const firebaseConfig = {
@@ -617,7 +619,6 @@
                     });
                 },
 
-                // --- Carousel Logic ---
                 updateCarousel() {
                     if (this.$refs.carouselContainer) {
                         let carouselImages = this.$refs.carouselContainer.querySelector('.carousel-images');
@@ -657,7 +658,6 @@
             }));
         });
         
-        // Service Worker Registration
         if ('serviceWorker' in navigator) {
             window.addEventListener('load', () => {
                 navigator.serviceWorker.register('/s-w.js')
@@ -669,6 +669,31 @@
                     });
             });
         }
+    </script>
+
+    <script>
+        // Block right-click context menu
+        document.addEventListener('contextmenu', event => event.preventDefault());
+
+        // Block specific keyboard shortcuts
+        document.addEventListener('keydown', event => {
+            // Block F12
+            if (event.key === 'F12') {
+                event.preventDefault();
+            }
+            // Block Ctrl+Shift+I, Ctrl+Shift+J, Ctrl+Shift+C
+            if (event.ctrlKey && event.shiftKey && ['I', 'J', 'C'].includes(event.key.toUpperCase())) {
+                event.preventDefault();
+            }
+            // Block Ctrl+U (View Source)
+            if (event.ctrlKey && event.key.toUpperCase() === 'U') {
+                event.preventDefault();
+            }
+            // Block Ctrl+C (Copy)
+            if (event.ctrlKey && event.key.toUpperCase() === 'C') {
+                event.preventDefault();
+            }
+        });
     </script>
 </body>
 </html>
