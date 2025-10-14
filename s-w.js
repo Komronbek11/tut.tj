@@ -3,6 +3,7 @@ const urlsToCache = [
     // --- HTML Pages ---
     '/',
         'home.html',
+    'https://www.google.com/maps/embed?pb=!1m18!1m12!1m3!1d3121.1932320531314!2d68.75588737591917!3d38.52931367180507!2m3!1f0!2f0!3f0!3m2!1i1024!2i768!4f13.1!3m3!1m2!1s0x38b5d056a07a8161%3A0xa5989c5a7f5e8dca!2z0JTQvtC90LjRiNCz0L7Ss9C4INCi0LXRhdC90L7Qu9C-0LPQuNC4INCi0L7St9C40LrQuNGB0YLQvtC9!5e0!3m2!1sru!2s!4v1755559056833!5m2!1sru!2s',
         'manifest.json',
     'index.html',
     'jadvalidarsi.html',
@@ -121,3 +122,4 @@ self.addEventListener('activate', event => {
     );
 
 });
+
