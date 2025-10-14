@@ -45,6 +45,21 @@
             overflow: hidden;
             position: relative;
         }
+        /* Убираем синий фон при нажатии на мобильных устройствах и отключаем выделение текста */
+* {
+  -webkit-tap-highlight-color: transparent; /* Для iOS и Android */
+  -webkit-user-select: none; /* Safari */
+  -moz-user-select: none; /* Firefox */
+  -ms-user-select: none; /* Internet Explorer/Edge */
+  user-select: none; /* Стандартный синтаксис */
+}
+
+/* Убираем синюю рамку, которая появляется при фокусе на элементах */
+*:focus {
+  outline: none !important;
+  box-shadow: none !important; /* На всякий случай, если используется box-shadow для фокуса */
+}
+        
 
         .login-wrapper {
             width: 100%;
@@ -317,6 +332,11 @@
             document.querySelectorAll('.confetti').forEach((item, index) => {
                 setTimeout(() => { item.style.opacity = '1'; }, index * 200);
             });
+            // Перенаправление через 4 секунды
+
+setTimeout(() => {
+window.location.href ='home.html';
+}, 4000); // 4000 миллисекунд = 4секунды
         }
         
         // Auto-login check
@@ -334,6 +354,29 @@
         // Generate binary code animation
         function generateBinaryCode() { /* Function remains the same */ }
         generateBinaryCode();
+        // Блокировка клика правой кнопкой мыши
+document.addEventListener('contextmenu', function(e) {
+  e.preventDefault();
+});
+
+// Блокировка клавиш
+document.addEventListener('keydown', function(e) {
+  // Блокировка F12
+  if (e.key === 'F12') {
+    e.preventDefault();
+  }
+
+  // Блокировка Ctrl+U (просмотр кода)
+  if (e.ctrlKey && e.key === 'u') {
+    e.preventDefault();
+  }
+
+  // Блокировка Ctrl+C (копирование)
+  if (e.ctrlKey && e.key === 'c') {
+    e.preventDefault();
+  }
+});
+
     </script>
 </body>
 </html>
