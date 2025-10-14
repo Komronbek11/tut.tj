@@ -1,7 +1,9 @@
-const CACHE_NAME = 'tut-website-cache-v1';
+const CACHE_NAME = 'tut-website-cache-v2';
 const urlsToCache = [
     // --- HTML Pages ---
     '/',
+        'home.html',
+        'manifest.json',
     'index.html',
     'jadvalidarsi.html',
     'fakultet.html',
@@ -117,4 +119,5 @@ self.addEventListener('activate', event => {
             );
         })
     );
+
 });
