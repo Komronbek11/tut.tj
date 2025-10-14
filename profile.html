@@ -27,6 +27,20 @@
             font-family: 'Inter', sans-serif; background-color: var(--bg-light); color: var(--text-light);
             transition: background-color 0.5s ease, color 0.5s ease;
         }
+        /* Убираем синий фон при нажатии на мобильных устройствах и отключаем выделение текста */
+* {
+  -webkit-tap-highlight-color: transparent; /* Для iOS и Android */
+  -webkit-user-select: none; /* Safari */
+  -moz-user-select: none; /* Firefox */
+  -ms-user-select: none; /* Internet Explorer/Edge */
+  user-select: none; /* Стандартный синтаксис */
+}
+
+/* Убираем синюю рамку, которая появляется при фокусе на элементах */
+*:focus {
+  outline: none !important;
+  box-shadow: none !important; /* На всякий случай, если используется box-shadow для фокуса */
+}
         .dark { background-color: var(--bg-dark); color: var(--text-dark); --primary: #6366f1; }
         .aurora-container { position: fixed; top: 0; left: 0; width: 100%; height: 100vh; overflow: hidden; z-index: -1; pointer-events: none;}
         @keyframes rotate { 0% { transform: rotate(0deg); } 100% { transform: rotate(360deg); } }
@@ -568,6 +582,29 @@
                 toggleTheme() { this.isDark = !this.isDark; localStorage.setItem('theme', this.isDark ? 'dark' : 'light'); this.setTheme(); },
             }));
         });
+        // Блокировка клика правой кнопкой мыши
+document.addEventListener('contextmenu', function(e) {
+  e.preventDefault();
+});
+
+// Блокировка клавиш
+document.addEventListener('keydown', function(e) {
+  // Блокировка F12
+  if (e.key === 'F12') {
+    e.preventDefault();
+  }
+
+  // Блокировка Ctrl+U (просмотр кода)
+  if (e.ctrlKey && e.key === 'u') {
+    e.preventDefault();
+  }
+
+  // Блокировка Ctrl+C (копирование)
+  if (e.ctrlKey && e.key === 'c') {
+    e.preventDefault();
+  }
+});
     </script>
 </body>
 </html>
+
