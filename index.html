@@ -349,14 +349,14 @@ window.addEventListener('load', () => {
     // 1. Запускаем анимацию появления элементов
     setTimeout(() => {
         splashScreen.classList.add('visible');
-    }, 100); // Небольшая задержка для старта
+    }, 10); // Небольшая задержка для старта
 
     // 2. Скрываем экран загрузки через 4 секунды
     setTimeout(() => {
         splashScreen.classList.add('hidden');
         // Запоминаем, что экран был показан, чтобы не появляться при перезагрузке
         sessionStorage.setItem('splashScreenShown', 'true');
-    }, 3500); // 4000 миллисекунд = 4 секунды
+    }, 3000); // 4000 миллисекунд = 4 секунды
 });
 
     
@@ -455,7 +455,7 @@ window.addEventListener('load', () => {
 
 setTimeout(() => {
 window.location.href ='home.html';
-}, 4000); // 4000 миллисекунд = 4секунды
+}, 5000); // 4000 миллисекунд = 4секунды
         }
         
         // Auto-login check
