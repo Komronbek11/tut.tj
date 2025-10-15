@@ -201,7 +201,7 @@
     width: 100%;
     height: 100%;
     /* Используем тот же фон, что и у страницы, для бесшовного перехода */
-    background: linear-gradient(rgba(2, 0, 36, 0.9), rgba(9, 9, 121, 0.8));
+    background: #14213d;
     display: flex;
     flex-direction: column;
     justify-content: center;
@@ -356,7 +356,7 @@ window.addEventListener('load', () => {
         splashScreen.classList.add('hidden');
         // Запоминаем, что экран был показан, чтобы не появляться при перезагрузке
         sessionStorage.setItem('splashScreenShown', 'true');
-    }, 4000); // 4000 миллисекунд = 4 секунды
+    }, 3500); // 4000 миллисекунд = 4 секунды
 });
 
     
