@@ -446,7 +446,8 @@ window.addEventListener('load', () => {
             
             welcomeContainer.className = `welcome-container active ${timeClass}`;
             usernameElement.textContent = username;
-            greetingText.textContent = `${greeting}, ${username}!`;
+            greetingText.textContent = `${greeting} \n${username}!`
+                greetingText.style.whiteSpace = "pre-line";
 
             document.querySelectorAll('.confetti').forEach((item, index) => {
                 setTimeout(() => { item.style.opacity = '1'; }, index * 200);
