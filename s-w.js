@@ -1,4 +1,4 @@
-const CACHE_NAME = 'tut-website-cache-v2';
+const CACHE_NAME = 'tut-website-cache-v4';
 const urlsToCache = [
     // --- HTML Pages ---
     '/',
@@ -17,6 +17,10 @@ const urlsToCache = [
     'zametki.html',
     'contact.html',
     'profile.html',
+    'chatlist.html',
+    'chat.html',
+    'message-icon2.jpg',
+    'message-icon.jpg',
 
     // --- Styles & Scripts ---
     'https://cdn.jsdelivr.net/npm/tailwindcss@2.2.19/dist/tailwind.min.css',
@@ -122,4 +126,5 @@ self.addEventListener('activate', event => {
     );
 
 });
+
 
