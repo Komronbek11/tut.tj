@@ -3,14 +3,13 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Главная - ДТТ</title>
+    <title>Чаты - ДТТ</title>
     <link href="https://cdn.jsdelivr.net/npm/tailwindcss@2.2.19/dist/tailwind.min.css" rel="stylesheet">
-    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800&display=swap" rel="stylesheet">
-    <script src="https://cdn.jsdelivr.net/npm/alpinejs@3.13.10/dist/cdn.min.js" defer></script>
-    <link rel="icon" type="image/png" href="logo.png">
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800&display.swap" rel="stylesheet">
+    <link rel="icon" type="image/png" href="message_icon2.jpg">
     <style>
-        :root { --bg-light: #f7f9fc; --bg-dark: #000000; --card-light: rgba(255, 255, 255, 0.6); --card-dark: #1b1b1b; --border-light: rgba(0, 0, 0, 0.08); --border-dark: rgba(255, 255, 255, 0.12); --text-light: #0f172a; --text-dark: #e2e8f0; }
-        body { font-family: 'Inter', sans-serif; background-color: var(--bg-light); color: var(--text-light); transition: all 0.5s ease; }
+        :root { --bg-light: #f7f9fc; --bg-dark: #000000; --card-light: rgba(255, 255, 255, 0.6); --card-dark: #1b1b1b; --border-light: rgba(0, 0, 0, 0.08); --border-dark: rgba(255, 255, 255, 0.12); --text-light: #0f172a; --text-dark: gold; }
+        body { font-family: 'Inter', sans-serif; background-color: var(--bg-light); color: var(--text-light); transition: all 0.5s ease; overflow-x: hidden; }
         .dark { background-color: var(--bg-dark); color: var(--text-dark); }
         .bento-card { background-color: var(--card-light); border: 1px solid var(--border-light); backdrop-filter: blur(24px); -webkit-backdrop-filter: blur(24px); transition: all 0.3s ease; }
         .dark .bento-card { background-color: var(--card-dark); border: 1px solid var(--border-dark); }
@@ -20,135 +19,175 @@
 </head>
 <body x-data="homeManager()" x-init="init()" :class="{ 'dark': isDark }" x-cloak>
 
-    <main class="container mx-auto p-4 md:p-6 min-h-screen max-w-3xl">
+    <main class="container mx-auto p-4 md:p-6 min-h-screen max-w-3xl overflow-x-hidden">
         
         <header class="flex justify-between items-center mb-6">
             <h1 class="text-3xl font-bold">Чаты</h1>
-            <div class="flex items-center gap-4">
-                <a href="notifications_chat.html" class="p-2 rounded-full bento-card hover:bg-gray-500/10 transition-colors relative" title="Уведомления">
+            <div class="flex items-center gap-2 md:gap-4">
+                
+                <button @click="showGroupModal = true" class="p-2 rounded-full bento-card hover:bg-gray-500/10 transition-colors" title="Создать группу">
+                    <svg xmlns="http://www.w3.org/2000/svg" class="h-6 w-6" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2">
+                        <path stroke-linecap="round" stroke-linejoin="round" d="M12 4v16m8-8H4" />
+                    </svg>
+                </button>
+                <a href="notifications.html" class="p-2 rounded-full bento-card hover:bg-gray-500/10 transition-colors relative" title="Уведомления">
                     <svg xmlns="http://www.w3.org/2000/svg" class="h-6 w-6" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 17h5l-1.405-1.405A2.032 2.032 0 0118 14.158V11a6.002 6.002 0 00-4-5.659V5a2 2 0 10-4 0v.341A6.002 6.002 0 006 11v3.159c0 .538-.214 1.055-.595 1.436L4 17h5m6 0v1a3 3 0 11-6 0v-1m6 0H9" /></svg>
                     <span x-show="requestsCount > 0" class="absolute -top-1 -right-1 bg-red-500 text-white text-xs w-5 h-5 rounded-full flex items-center justify-center" x-text="requestsCount"></span>
                 </a>
-                <a href="profile.html" class="p-2 rounded-full bento-card hover:bg-gray-500/10 transition-colors" title="Профиль"><img :src="currentUser.photoURL || 'userphoto.jpg'" class="w-10 h-10 rounded-full object-cover"></a>
-                <button @click="toggleTheme()" class="p-2 rounded-2xl bento-card hover:bg-gray-500/10 transition-colors" title="Сменить тему">
+                 <button @click="toggleTheme()" class="p-2 rounded-full bento-card hover:bg-gray-500/10 transition-colors" title="Сменить тему">
                     <svg x-show="!isDark" xmlns="http://www.w3.org/2000/svg" class="h-6 w-6" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2"><path stroke-linecap="round" stroke-linejoin="round" d="M20.354 15.354A9 9 0 018.646 3.646 9.003 9.003 0 0012 21a9.003 9.003 0 008.354-5.646z" /></svg>
                     <svg x-show="isDark" xmlns="http://www.w3.org/2000/svg" class="h-6 w-6" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2"><path stroke-linecap="round" stroke-linejoin="round" d="M12 3v1m0 16v1m9-9h-1M4 12H3m15.364 6.364l-.707-.707M6.343 6.343l-.707-.707m12.728 0l-.707.707M6.343 17.657l-.707.707M16 12a4 4 0 11-8 0 4 4 0 018 0z" /></svg>
                 </button>
+                <a href="profile.html" class="p-2 rounded-full bento-card hover:bg-gray-500/10 transition-colors" title="Профиль"><img :src="currentUser.photoURL || 'https://asutut.netlify.app/userphoto.jpg'" class="w-10 h-10 rounded-full object-cover"></a>
+               
             </div>
         </header>
 
         <div class="bento-card p-4 rounded-3xl mb-6">
             <h2 class="text-xl font-semibold mb-4 px-2">Найти контакт</h2>
-            <div class="flex gap-2">
-                <input type="text" x-model="searchQuery" 
-                       x-on:input.debounce.500ms="searchUser" 
-                       placeholder="Поиск по Email или Имени (минимум 3 символа)..." 
-                       class="flex-grow bg-gray-100 dark:bg-gray-800 rounded-3xl px-4 py-2 outline-none">
-                
-                <button @click="searchUser" :disabled="isLoading" class="bg-indigo-500 text-white px-4 py-2 rounded-lg hover:bg-indigo-600 transition-colors">
-                    <svg x-show="isLoading" class="w-5 h-5 spinner" fill="none" viewBox="0 0 24 24"><circle class="opacity-25" cx="12" cy="12" r="10" stroke="currentColor" stroke-width="4"></circle><path class="opacity-75" fill="currentColor" d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4z"></path></svg>
-                    <span x-show="!isLoading">Найти</span>
-                </button>
+            <div class="relative">
+                <div class="absolute inset-y-0 left-0 pl-3 flex items-center pointer-events-none">
+                    <svg class="h-5 w-5 text-gray-400" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2"><path stroke-linecap="round" stroke-linejoin="round" d="M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0z" /></svg>
+                </div>
+                <input type="text" x-model="searchQuery" x-on:input.debounce.500ms="searchUser"
+                       placeholder="Поиск по email или имени (от 3 букв)"
+                       class="flex-grow w-full bg-gray-100 dark:bg-gray-800 rounded-3xl pl-10 pr-4 py-3 outline-none focus:ring-2 focus:ring-indigo-500 transition-shadow">
             </div>
-            
             <div x-show="searchResults.length > 0" class="mt-4 space-y-2">
                 <template x-for="result in searchResults" :key="result.uid">
-                    <div class="flex items-center justify-between gap-4 p-3 rounded-xl bg-gray-500/10 transition-shadow hover:shadow-md">
-                        <div class="flex items-center gap-3">
-                            <img :src="result.photoURL || 'userphoto.jpg'" class="w-10 h-10 rounded-full object-cover">
-                            <div>
-                                <h3 class="font-semibold" x-text="result.displayName"></h3>
-<p class="text-sm truncate" 
-   :class="{'font-bold text-gray-900 dark:text-gray-100': convo.isUnread, 'opacity-60': !convo.isUnread}" 
-   x-text="convo.lastMessage.text">
-</p>                            </div>
+                    <div class="flex items-center justify-between gap-4 p-3 rounded-xl bg-gray-500/10">
+                        <div class="flex items-center gap-3 overflow-hidden">
+                            <img :src="result.photoURL || 'https://asutut.netlify.app/userphoto.jpg'" class="w-10 h-10 rounded-full object-cover flex-shrink-0">
+                            <div class="overflow-hidden">
+                                <h3 class="font-semibold truncate" x-text="result.displayName"></h3>
+                                <p class="text-sm opacity-60 truncate" x-text="result.email"></p>
+                            </div>
                         </div>
-                        <button 
-                            @click="sendChatRequest(result.uid)" 
-                            :disabled="result.requestSent"
-                            class="px-3 py-1 rounded-lg text-sm transition-colors"
-                            :class="result.requestSent ? 'bg-gray-400 text-gray-700' : 'bg-green-500 text-white hover:bg-green-600'">
+                        <button @click="sendChatRequest(result.uid)" :disabled="result.requestSent" 
+                                class="px-3 py-1 rounded-lg text-sm transition-colors flex-shrink-0"
+                                :class="result.requestSent ? 'bg-gray-400 text-gray-700' : 'bg-green-500 text-white hover:bg-green-600'">
                             <span x-text="result.requestSent ? 'Отправлено' : 'Пригласить'"></span>
                         </button>
                     </div>
                 </template>
             </div>
-            
             <p x-show="searchMessage" x-text="searchMessage" class="text-sm opacity-70 mt-3"></p>
         </div>
 
-
-        <div class="bento-card p-4 rounded-2xl">
+        <div class="bento-card p-4 rounded-2xl relative z-10">
             <h2 class="text-xl font-semibold mb-4 px-2">Мои чаты</h2>
-            
-            <div x-show="isLoading" class="space-y-3 animate-pulse">
-                <template x-for="i in 3" :key="i"><div class="flex items-center gap-4 p-2"><div class="w-12 h-12 bg-gray-300 dark:bg-gray-700 rounded-full"></div><div class="flex-1 space-y-2"><div class="h-4 bg-gray-300 dark:bg-gray-700 rounded w-1/2"></div><div class="h-3 bg-gray-300 dark:bg-gray-700 rounded w-1/3"></div></div></div></template>
+            <div x-show="isLoading" class="space-y-3 animate-pulse"> 
+                <div class="flex items-center gap-4 p-2"><div class="w-12 h-12 bg-gray-300 dark:bg-gray-700 rounded-full"></div><div class="flex-1 space-y-2"><div class="h-4 bg-gray-300 dark:bg-gray-700 rounded w-1/2"></div><div class="h-3 bg-gray-300 dark:bg-gray-700 rounded w-1/3"></div></div></div>
             </div>
-
             <ul x-show="!isLoading && conversations.length > 0" class="space-y-1">
                 <template x-for="convo in conversations" :key="convo.id">
-                    <li>
-                        <a :href="'chat.html?uid=' + convo.otherParticipant.uid" class="flex items-center gap-4 p-3 rounded-xl hover:bg-gray-500/10 transition-colors">
-                            <img :src="convo.otherParticipant.photoURL || 'userphoto.jpg'" alt="Avatar" class="w-12 h-12 rounded-full object-cover shadow-sm">
+                    <li class="flex items-center gap-2 group">
+                        <a :href="convo.type === 'dm' ? 'chat.html?uid=' + convo.otherParticipant.uid : 'chat.html?group_id=' + convo.id" 
+                           class="flex-grow flex items-center gap-4 p-3 rounded-xl hover:bg-gray-500/10 transition-colors">
+                            <img :src="convo.otherParticipant.photoURL || (convo.type === 'group' ? 'https://asutut.netlify.app/userphoto.jpg' : 'https://asutut.netlify.app/userphoto.jpg')" alt="Avatar" class="w-12 h-12 rounded-full object-cover shadow-sm">
                             <div class="flex-grow overflow-hidden">
-                                <div class="flex justify-between">
-                                    <h3 class="font-semibold" x-text="convo.otherParticipant.displayName || 'Пользователь'"></h3>
-                                    <span class="text-xs opacity-60 flex-shrink-0" x-text="formatTimestamp(convo.lastMessage.timestamp)"></span>
-                                </div>
-                                <p class="text-sm opacity-60 truncate" x-text="convo.lastMessage.text"></p>
+                                <div class="flex justify-between"><h3 class="font-semibold" x-text="convo.otherParticipant.displayName || '...'"></h3><span class="text-xs opacity-60 flex-shrink-0" x-text="formatTimestamp(convo.lastMessage.timestamp)"></span></div>
+                                <p class="text-sm truncate" :class="{'font-bold text-gray-900 dark:text-gray-100': convo.isUnread, 'opacity-60': !convo.isUnread}" x-text="convo.lastMessage.text"></p>
                             </div>
                         </a>
+                        <div x-data="{ open: false }" class="relative flex-shrink-0">
+                            <button @click="open = !open" class="p-2 rounded-full hover:bg-gray-500/10"><svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 5v.01M12 12v.01M12 19v.01M12 6a1 1 0 110-2 1 1 0 010 2zm0 7a1 1 0 110-2 1 1 0 010 2zm0 7a1 1 0 110-2 1 1 0 010 2z" /></svg></button>
+                            <div x-show="open" @click.away="open = false" x-transition class="absolute right-0 top-10 z-50 w-48 bento-card rounded-lg shadow-xl py-1">
+                                <a @click="toggleChatVisibility(convo.id, true); open = false" href="#" class="block px-4 py-2 text-sm hover:bg-gray-500/10">Скрыть (в Архив)</a>
+                                <a @click="deleteChat(convo.id); open = false" href="#" class="block px-4 py-2 text-sm text-red-500 hover:bg-red-500/10">Удалить чат</a>
+                            </div>
+                        </div>
                     </li>
                 </template>
             </ul>
-            <p x-show="!isLoading && conversations.length === 0" class="text-sm opacity-70 px-2">У вас пока нет активных чатов. Воспользуйтесь поиском, чтобы начать беседу.</p>
+            <p x-show="!isLoading && conversations.length === 0" class="text-sm opacity-70 px-2">У вас пока нет активных чатов.</p>
+        </div>
+        
+        <div x-show="hiddenConversations.length > 0" class="bento-card p-4 rounded-2xl mt-6 relative z-0">
+            <button @click="showArchived = !showArchived" class="w-full flex justify-between items-center">
+                <h2 class="text-lg font-semibold">Архив (<span x-text="hiddenConversations.length"></span>)</h2>
+                <svg class="w-5 h-5 transition-transform" :class="{'transform rotate-180': showArchived}" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 9l-7 7-7-7" /></svg>
+            </button>
+            <div x-show="showArchived" x-collapse class="mt-4">
+                <ul class="space-y-1">
+                    <template x-for="convo in hiddenConversations" :key="convo.id">
+                         <li class="flex items-center gap-2 group">
+                            <a :href="convo.type === 'dm' ? 'chat.html?uid=' + convo.otherParticipant.uid : 'chat.html?group_id=' + convo.id" class="flex-grow flex items-center gap-4 p-3 rounded-xl hover:bg-gray-500/10 transition-colors">
+                                <img :src="convo.otherParticipant.photoURL || (convo.type === 'group' ? 'https://asutut.netlify.app/userphoto.jpg' : 'https://asutut.netlify.app/userphoto.jpg')" class="w-12 h-12 rounded-full object-cover">
+                                <div class="flex-grow overflow-hidden">
+                                    <h3 class="font-semibold" x-text="convo.otherParticipant.displayName || 'Пользователь'"></h3>
+                                    <p class="text-sm truncate opacity-60" x-text="convo.lastMessage.text"></p>
+                                </div>
+                            </a>
+                            <div x-data="{ open: false }" class="relative flex-shrink-0">
+                                <button @click="open = !open" class="p-2 rounded-full hover:bg-gray-500/10"><svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 5v.01M12 12v.01M12 19v.01M12 6a1 1 0 110-2 1 1 0 010 2zm0 7a1 1 0 110-2 1 1 0 010 2zm0 7a1 1 0 110-2 1 1 0 010 2z" /></svg></button>
+                                <div x-show="open" @click.away="open = false" x-transition class="absolute right-0 top-10 z-50 w-48 bento-card rounded-lg shadow-xl py-1">
+                                    <a @click="toggleChatVisibility(convo.id, false); open = false" href="#" class="block px-4 py-2 text-sm hover:bg-gray-500/10">Вернуть из Архива</a>
+                                    <a @click="deleteChat(convo.id); open = false" href="#" class="block px-4 py-2 text-sm text-red-500 hover:bg-red-500/10">Удалить чат</a>
+                                </div>
+                            </div>
+                        </li>
+                    </template>
+                </ul>
+            </div>
         </div>
     </main>
+
+    <div x-show="showGroupModal" x-transition class="fixed inset-0 z-50 flex items-center justify-center bg-black bg-opacity-50 backdrop-blur-sm">
+        <div @click.away="showGroupModal = false" class="bento-card p-6 rounded-2xl w-full max-w-md">
+            <h3 class="text-xl font-bold mb-4">Новая группа</h3>
+            <form @submit.prevent="createGroup">
+                <label class="text-sm font-medium opacity-70">Название группы</label>
+                <input x-model="newGroupName" type="text" placeholder="Введите название..." required class="w-full mt-1 mb-4 p-2 bg-gray-100 dark:bg-gray-800 rounded-lg outline-none">
+                
+                <label class="text-sm font-medium opacity-70">Выберите участников (из ваших чатов)</label>
+                <div class="max-h-48 overflow-y-auto space-y-2 mt-2 p-2 bg-gray-100 dark:bg-gray-800 rounded-lg">
+                    <template x-for="contact in contacts" :key="contact.uid">
+                        <label class="flex items-center gap-3 p-2 rounded-lg hover:bg-gray-200 dark:hover:bg-gray-700 cursor-pointer">
+                            <input type="checkbox" :value="contact.uid" x-model="newGroupMembers" class="rounded text-indigo-500">
+                            <img :src="contact.photoURL || 'https://asutut.netlify.app/userphoto.jpg'" class="w-8 h-8 rounded-full object-cover">
+                            <span x-text="contact.displayName"></span>
+                        </label>
+                    </template>
+                    <p x-show="contacts.length === 0" class="text-sm opacity-70 text-center p-4">У вас нет контактов для добавления.</p>
+                </div>
+
+                <div class="mt-4 flex justify-end gap-2">
+                    <button type="button" @click="showGroupModal = false" class="px-4 py-2 rounded-lg bg-gray-200 dark:bg-gray-700 hover:bg-gray-300 dark:hover:bg-gray-600 transition-colors">Отмена</button>
+                    <button type="submit" :disabled="newGroupName.trim() === '' || newGroupMembers.length === 0" class="px-4 py-2 rounded-lg bg-indigo-500 text-white hover:bg-indigo-600 transition-colors disabled:opacity-50">Создать</button>
+                </div>
+            </form>
+        </div>
+    </div>
+
 
     <script src="https://www.gstatic.com/firebasejs/8.10.0/firebase-app.js"></script>
     <script src="https://www.gstatic.com/firebasejs/8.10.0/firebase-auth.js"></script>
     <script src="https://www.gstatic.com/firebasejs/8.10.0/firebase-database.js"></script>
+    <script src="global.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/alpinejs@3.13.10/dist/cdn.min.js" defer></script>
+    <script src="https://cdn.jsdelivr.net/npm/@alpinejs/collapse@3.x.x/dist/cdn.min.js" defer></script>
 
     <script>
-       const firebaseConfig = {
-                        apiKey: "AIzaSyCAOfxPW5m2UqtulWzuh3egOjJ-ti-rDf8",
-                        authDomain: "register-221e5.firebaseapp.com",
-                        databaseURL: "https://register-221e5-default-rtdb.firebaseio.com",
-                        projectId: "register-221e5",
-                        storageBucket: "register-221e5.appspot.com",
-                        messagingSenderId: "588640206529",
-                        appId: "1:588640206529:web:b2abf5413387e251935e40"
-                    };
-        firebase.initializeApp(firebaseConfig);
-        const auth = firebase.auth();
-        const database = firebase.database();
-
-        // 🟢 Система Присутствия (функция)
-        function setupPresence(user) {
-            if (!user) return;
-            const uid = user.uid;
-            const userLastOnlineRef = database.ref('/users/' + uid + '/lastOnline');
-            const connectedRef = database.ref('.info/connected');
-            connectedRef.on('value', (snap) => {
-                if (snap.val() === true) {
-                    userLastOnlineRef.set(firebase.database.ServerValue.TIMESTAMP);
-                    userLastOnlineRef.onDisconnect().set(firebase.database.ServerValue.TIMESTAMP);
-                }
-            });
-        }
-
         document.addEventListener('alpine:init', () => {
             Alpine.data('homeManager', () => ({
                 isDark: false, isLoading: true, currentUser: {},
-                conversations: [], requestsCount: 0,
+                conversations: [], 
+                hiddenConversations: [],
+                contacts: [], 
+                showArchived: false,
+                requestsCount: 0,
                 searchQuery: '', searchResults: [], searchMessage: '',
+                showGroupModal: false,
+                newGroupName: '',
+                newGroupMembers: [],
 
                 init() {
                     this.isDark = localStorage.getItem('theme') === 'dark';
                     this.setTheme();
                     auth.onAuthStateChanged(user => {
                         if (user) {
-                            this.currentUser = user;
+                            this.currentUser = { ...user, photoURL: user.photoURL || 'userphoto.jpg' };
                             this.loadConversations();
                             this.listenForRequests();
                             setupPresence(user); 
@@ -160,86 +199,183 @@
 
                 listenForRequests() {
                     const requestsRef = database.ref(`chat_requests/${this.currentUser.uid}`);
-                    requestsRef.on('value', (snapshot) => {
-                        this.requestsCount = snapshot.numChildren();
-                    });
+                    requestsRef.on('value', (snapshot) => { this.requestsCount = snapshot.numChildren(); });
                 },
 
                 async loadConversations() {
                     this.isLoading = true;
                     const userConvoRef = database.ref(`user_conversations/${this.currentUser.uid}`);
+                    
                     userConvoRef.on('value', async (snapshot) => {
-                        if (!snapshot.exists()) { this.isLoading = false; this.conversations = []; return; }
-                        const convoIds = Object.keys(snapshot.val());
-                        let convos = [];
+                        if (!snapshot.exists()) { this.isLoading = false; this.conversations = []; this.hiddenConversations = []; return; }
+                        
+                        const convoDataMap = snapshot.val();
+                        const convoIds = Object.keys(convoDataMap);
+                        let activeConvos = [];
+                        let hiddenConvos = [];
+                        let contactList = [];
 
                         for (const id of convoIds) {
-                            const convoRef = database.ref(`conversations/${id}`);
-                            const convoSnap = await convoRef.once('value');
-                            if (!convoSnap.exists()) continue;
-                            const convoData = convoSnap.val();
+                            const convoPrefs = convoDataMap[id];
+                            if (!convoPrefs) continue;
                             
-                            const otherUid = Object.keys(convoData.participants).find(uid => uid !== this.currentUser.uid);
-                            if (!otherUid) continue;
+                            const isHidden = (typeof convoPrefs === 'object' && convoPrefs.hidden === true);
+                            const type = (typeof convoPrefs === 'object' && convoPrefs.type) ? convoPrefs.type : 'dm';
 
-                            const userSnap = await database.ref(`users/${otherUid}`).once('value');
-                            const userData = userSnap.val() || { displayName: 'Неизвестный', photoURL: '' };
+                            let convoObject = null;
+                            let lastMessage = { text: '...', timestamp: 0 };
+                            let isUnread = false;
+
+                            if (type === 'dm') {
+                                const convoSnap = await database.ref(`conversations/${id}`).once('value');
+                                if (!convoSnap.exists()) continue;
+                                const convoData = convoSnap.val();
+                                const otherUid = Object.keys(convoData.participants || {}).find(uid => uid !== this.currentUser.uid);
+                                if (!otherUid) continue;
+
+                                const userSnap = await database.ref(`users/${otherUid}`).once('value');
+                                const userData = userSnap.val() || { displayName: 'Неизвестный', photoURL: '' };
+                                lastMessage = convoData.lastMessage || { text: 'Начать чат', timestamp: convoData.createdAt || 0 };
+                                isUnread = lastMessage.senderId !== this.currentUser.uid && !lastMessage.readBy?.[this.currentUser.uid];
+
+                                const participantData = { uid: otherUid, ...userData };
+                                convoObject = {
+                                    id: id, type: 'dm', isUnread: isUnread, lastMessage: lastMessage,
+                                    otherParticipant: participantData
+                                };
+                                contactList.push(participantData);
+
+                            } else if (type === 'group') {
+                                const groupSnap = await database.ref(`groups/${id}`).once('value');
+                                if (!groupSnap.exists()) continue;
+                                const groupData = groupSnap.val();
+                                
+                                const lastMsgSnap = await database.ref(`messages/${id}`).limitToLast(1).once('value');
+                                if (lastMsgSnap.exists()) {
+                                    const msgData = lastMsgSnap.val();
+                                    const msgId = Object.keys(msgData)[0];
+                                    const msg = msgData[msgId];
+                                    lastMessage = { ...msg, text: msg.text || (msg.type === 'image' ? '📷 Изображение' : '...') };
+                                    isUnread = lastMessage.senderId !== this.currentUser.uid && !lastMessage.readBy?.[this.currentUser.uid];
+                                } else {
+                                    lastMessage = { text: 'Группа создана', timestamp: groupData.createdAt || 0 };
+                                }
+
+                                convoObject = {
+                                    id: id, type: 'group', isUnread: isUnread, lastMessage: lastMessage,
+                                    otherParticipant: {
+                                        uid: null,
+                                        displayName: groupData.name,
+                                        photoURL: groupData.photoURL || 'group.png'
+                                    }
+                                };
+                            }
                             
-                           // Старый код (внутри цикла)
-convos.push({
-    id: id,
-    lastMessage: convoData.lastMessage || { text: 'Начать чат', timestamp: convoData.createdAt || 0 },
-    otherParticipant: { uid: otherUid, ...userData }
-});
+                            if (convoObject) {
+                                if (isHidden) { hiddenConvos.push(convoObject); } 
+                                else { activeConvos.push(convoObject); }
+                            }
                         }
-                        this.conversations = convos.sort((a, b) => b.lastMessage.timestamp - a.lastMessage.timestamp);
+                        
+                        this.conversations = activeConvos.sort((a, b) => b.lastMessage.timestamp - a.lastMessage.timestamp);
+                        this.hiddenConversations = hiddenConvos.sort((a, b) => b.lastMessage.timestamp - a.lastMessage.timestamp);
+                        this.contacts = contactList;
                         this.isLoading = false;
                     });
                 },
 
+                // === ИСПРАВЛЕНО: Двухэтапное создание группы ===
+                async createGroup() {
+                    const myUid = this.currentUser.uid;
+                    const groupId = database.ref('groups').push().key;
+
+                    const members = { [myUid]: true };
+                    this.newGroupMembers.forEach(uid => { members[uid] = true; });
+
+                    // Шаг 1: Создаем саму группу
+                    const groupData = {
+                        name: this.newGroupName,
+                        admin: myUid,
+                        members: members,
+                        createdAt: firebase.database.ServerValue.TIMESTAMP
+                    };
+
+                    database.ref('groups/' + groupId).set(groupData)
+                        .then(() => {
+                            // Шаг 2: Группа создана. Теперь добавляем ее в чаты участников.
+                            // Это сработает, т.к. правило 'user_conversations' УСПЕШНО
+                            // найдет `root.child('groups/' + groupId + '/admin').val()`
+                            const updates = {};
+                            Object.keys(members).forEach(uid => {
+                                updates[`/user_conversations/${uid}/${groupId}`] = { type: 'group', hidden: false };
+                            });
+                            
+                            return database.ref().update(updates);
+                        })
+                        .then(() => {
+                            // Шаг 3: Все готово, переходим в чат
+                            this.showGroupModal = false;
+                            this.newGroupName = '';
+                            this.newGroupMembers = [];
+                            window.location.href = `chat.html?group_id=${groupId}`;
+                        })
+                        .catch((err) => {
+                            alert('Ошибка создания группы: ' + err.message);
+                            // Если ошибка, пытаемся удалить группу (на всякий случай)
+                            database.ref('groups/' + groupId).remove();
+                        });
+                },
+
+                toggleChatVisibility(convoId, hide) {
+                    const convo = this.conversations.find(c => c.id === convoId) || this.hiddenConversations.find(c => c.id === convoId);
+                    if (!convo) return;
+                    const path = `user_conversations/${this.currentUser.uid}/${convoId}`;
+                    database.ref(path).set({ hidden: hide, type: convo.type });
+                },
+                
+                deleteChat(convoId) {
+                    const confirmationText = "УДАЛИТЬ";
+                    const promptMessage = `Вы покинете этот чат. Это действие нельзя отменить.\n\nЧтобы подтвердить, введите: ${confirmationText}`;
+                    const userInput = prompt(promptMessage);
+                    if (userInput === confirmationText) {
+                        const path = `user_conversations/${this.currentUser.uid}/${convoId}`;
+                        database.ref(path).remove()
+                            .then(() => { alert('Вы покинули чат.'); })
+                            .catch((err) => { alert('Ошибка: ' + err.message); });
+                    } else if (userInput !== null) { 
+                        alert('Текст не совпал. Действие отменено.');
+                    }
+                },
+
                 async searchUser() {
                     const query = this.searchQuery.trim().toLowerCase();
-                    this.searchMessage = '';
-                    this.searchResults = [];
-
+                    this.searchMessage = ''; this.searchResults = [];
                     if (query.length < 3) {
-                        if (query.length > 0) { this.searchMessage = 'Введите минимум 3 символа для поиска.'; }
+                        if (query.length > 0) { this.searchMessage = 'Введите минимум 3 символа.'; }
                         return;
                     }
-                    
-                    this.isLoading = true;
-
-                    // Поиск по email (по префиксу)
                     const emailSnap = await database.ref('users').orderByChild('email').startAt(query).endAt(query + '\uf8ff').once('value');
-
-                    const results = [];
+                    const results = new Map();
                     emailSnap.forEach(childSnap => {
-                        const userData = childSnap.val();
-                        const uid = childSnap.key;
-
-                        if (uid === this.currentUser.uid) return; 
-
-                        const displayNameLower = (userData.displayName || '').toLowerCase();
-                        
-                        if (userData.email.toLowerCase().startsWith(query) || displayNameLower.includes(query)) {
-                            results.push({ uid: uid, ...userData, requestSent: false });
+                        const userData = childSnap.val(); const uid = childSnap.key;
+                        if (uid !== this.currentUser.uid) {
+                            results.set(uid, { uid, ...userData, requestSent: false });
                         }
                     });
-
-                    if (results.length > 0) {
-                        this.searchResults = results;
-                    } else {
-                        this.searchMessage = 'Пользователи не найдены.';
-                    }
-
-                    this.isLoading = false;
+                    const nameSnap = await database.ref('users').orderByChild('displayName').startAt(query.charAt(0).toUpperCase() + query.slice(1)).endAt(query.charAt(0).toUpperCase() + query.slice(1) + '\uf8ff').once('value');
+                    nameSnap.forEach(childSnap => {
+                        const userData = childSnap.val(); const uid = childSnap.key;
+                        if (uid !== this.currentUser.uid && !results.has(uid) && userData.displayName.toLowerCase().includes(query)) {
+                            results.set(uid, { uid, ...userData, requestSent: false });
+                        }
+                    });
+                    if (results.size > 0) { this.searchResults = Array.from(results.values()); } 
+                    else { this.searchMessage = 'Пользователи не найдены.'; }
                 },
 
                 sendChatRequest(recipientId) {
                     const requestRef = database.ref(`chat_requests/${recipientId}/${this.currentUser.uid}`);
-                    
                     this.searchResults = this.searchResults.map(r => r.uid === recipientId ? { ...r, requestSent: true } : r);
-                    
                     requestRef.set(firebase.database.ServerValue.TIMESTAMP)
                         .then(() => { this.searchMessage = 'Приглашение отправлено! ✅'; })
                         .catch((err) => {
@@ -255,7 +391,11 @@ convos.push({
                 },
 
                 setTheme() { document.documentElement.classList.toggle('dark', this.isDark); },
-                toggleTheme() { this.isDark = !this.isDark; localStorage.setItem('theme', this.isDark ? 'dark' : 'light'); this.setTheme(); },
+                toggleTheme() {
+                    this.isDark = !this.isDark;
+                    localStorage.setItem('theme', this.isDark ? 'dark' : 'light');
+                    this.setTheme();
+                },
             }));
         });
     </script>
