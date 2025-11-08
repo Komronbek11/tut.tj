@@ -6,520 +6,747 @@
     <title x-text="displayName || 'Чат'">Чат</title>
     
     <link href="https://cdn.jsdelivr.net/npm/tailwindcss@2.2.19/dist/tailwind.min.css" rel="stylesheet">
-    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;600;700;800&display=swap" rel="stylesheet">
-    <script src="https://cdn.jsdelivr.net/npm/alpinejs@3.13.10/dist/cdn.min.js" defer></script>
-    <link rel="icon" type="image/png" href="logo.png">
-
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;600;700;800&display.swap" rel="stylesheet">
+    
     <style>
-        /* --- Дизайн-токены --- */
         :root { --bg-light: #f0f2f5; --bg-dark: #121212; --card-light: #ffffff; --card-dark: #1f1f1f; --shadow-light: rgba(189, 200, 213, 0.4), rgba(255, 255, 255, 0.9); --shadow-dark: rgba(0, 0, 0, 0.6), rgba(35, 35, 35, 0.5); --primary-color: #5d50f8; }
-        body { font-family: 'Inter', sans-serif; background-color: var(--bg-light); color: #1f2937; transition: all 0.5s ease; }
+        body { font-family: 'Inter', sans-serif; background-color: var(--bg-light); color: #1f2937; transition: all 0.5s ease; overflow-x: hidden; }
         .dark { background-color: var(--bg-dark); color: #e5e7eb; }
         .bento-card { background-color: var(--card-light); box-shadow: 8px 8px 15px var(--shadow-light), -8px -8px 15px var(--shadow-light); border: 1px solid rgba(255, 255, 255, 0.5); transition: all 0.3s ease; }
         .dark .bento-card { background-color: rgba(31, 31, 31, 0.6); backdrop-filter: blur(10px); box-shadow: 6px 6px 12px var(--shadow-dark), -6px -6px 12px var(--shadow-dark); border: 1px solid rgba(255, 255, 255, 0.05); }
-        .message-bubble { max-width: 75%; padding: 10px 14px; border-radius: 20px; margin-bottom: 8px; word-wrap: break-word; position: relative; }
+        .message-bubble { max-width: 75%; padding: 10px 14px; border-radius: 20px; margin-bottom: 4px; word-wrap: break-word; position: relative; cursor: pointer; }
         .sent { background-color: var(--primary-color); color: white; border-bottom-right-radius: 4px; margin-left: auto; }
         .received { background-color: #e5e7eb; color: #1f2937; border-bottom-left-radius: 4px; margin-right: auto; }
         .dark .received { background-color: #374151; color: #e5e7eb; }
-        .message-status { position: absolute; bottom: 0; right: 8px; font-size: 10px; opacity: 0; transition: opacity 0.2s; white-space: nowrap; }
-        .message-bubble:hover .message-status { opacity: 1; }
         [x-cloak] { display: none !important; }
-        .messages-container { height: calc(100vh - 160px); overflow-y: auto; scroll-behavior: smooth; padding: 16px; }
-        /* Стиль для сообщения-изображения */
-        .message-image {
-            max-width: 100%;
-            max-height: 250px;
-            border-radius: 12px;
-            cursor: pointer;
-            object-fit: cover;
-        }
+        .messages-container { height: calc(100vh - 160px); overflow-y: auto; scroll-behavior: smooth; padding: 16px; overflow-x: hidden; }
+        .message-image { max-width: 100%; max-height: 250px; border-radius: 12px; cursor: pointer; object-fit: cover; }
+        .reply-preview { background-color: rgba(0, 0, 0, 0.05); border-left: 4px solid var(--primary-color); padding: 8px 12px; margin-bottom: 8px; border-radius: 4px; }
+        .dark .reply-preview { background-color: rgba(255, 255, 255, 0.05); }
+        .reply-text { font-style: italic; opacity: 0.8; display: -webkit-box; -webkit-line-clamp: 1; -webkit-box-orient: vertical; overflow: hidden; }
+        
+        /* Стили Поповера */
+        .popover-menu { position: fixed; z-index: 50; background-color: var(--card-light); border-radius: 12px; box-shadow: 0 10px 30px rgba(0, 0, 0, 0.2); backdrop-filter: blur(10px); border: 1px solid rgba(255, 255, 255, 0.2); width: 280px; transform-origin: top; transition: all 0.1s ease-out; }
+        .dark .popover-menu { background-color: rgba(31, 31, 31, 0.8); border: 1px solid rgba(255, 255, 255, 0.1); }
+        .popover-menu-item { display: flex; align-items: center; gap: 12px; padding: 10px 12px; border-radius: 8px; cursor: pointer; transition: background-color 0.2s; }
+        .popover-menu-item:hover { background-color: rgba(0, 0, 0, 0.05); }
+        .dark .popover-menu-item:hover { background-color: rgba(255, 255, 255, 0.05); }
+        .popover-menu-item.danger { color: #ef4444; }
+        .popover-menu-item svg { width: 20px; height: 20px; }
+        
+        /* НОВЫЕ Стили для Реакций и Статуса */
+        .popover-reactions { display: flex; justify-content: space-around; padding: 8px; border-bottom: 1px solid rgba(0,0,0,0.08); }
+        .dark .popover-reactions { border-bottom-color: rgba(255,255,255,0.12); }
+        .popover-reaction-btn { font-size: 24px; padding: 4px; border-radius: 8px; transition: all 0.2s ease; }
+        .popover-reaction-btn:hover { transform: scale(1.2); }
+        .popover-body { padding: 8px; }
+        .popover-read-status { padding: 8px 12px; border-top: 1px solid rgba(0,0,0,0.08); }
+        .dark .popover-read-status { border-top-color: rgba(255,255,255,0.12); }
+        .message-reaction { position: absolute; bottom: -10px; right: -5px; font-size: 16px; background-color: var(--card-light); border-radius: 50%; padding: 1px; box-shadow: 0 1px 3px rgba(0,0,0,0.1); }
+        .dark .message-reaction { background-color: var(--card-dark); }
+        
+        /* Стили для модалок */
+        .modal-input { width: 100%; margin-top: 4px; padding: 8px; background-color: #f3f4f6; border: 1px solid #d1d5db; border-radius: 8px; outline: none; }
+        .dark .modal-input { background-color: #374151; border-color: #4b5563; color: #e5e7eb; }
     </style>
 </head>
-<body x-data="chatManager()" x-init="init()" x-cloak>
+<body x-data="chatManager()" x-init="init()" :class="{ 'dark': isDark }" x-cloak>
 
-    <div class="flex flex-col h-screen max-w-xl mx-auto bento-card">
+    <div class="flex flex-col h-screen max-w-xl mx-auto bento-card overflow-hidden relative">
         
         <header class="flex items-center p-4 shadow-lg sticky top-0 z-10 bento-card rounded-b-xl border-b dark:border-gray-800">
             <a href="chatlist.html" class="p-2 rounded-full hover:bg-gray-100 dark:hover:bg-gray-800 transition-colors"><svg xmlns="http://www.w3.org/2000/svg" class="h-6 w-6" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 19l-7-7 7-7" /></svg></a>
-            <img :src="photoURL || 'userphoto.jpg'" class="w-10 h-10 rounded-full object-cover ml-3">
+            <img :src="photoURL || 'https://asutut.netlify.app/userphoto.jpg'" class="w-10 h-10 rounded-full object-cover ml-3">
             <div class="ml-4 flex-1">
                 <h2 class="text-lg font-bold" x-text="displayName"></h2>
                 <span id="userStatus" 
-                      x-text="isTyping ? 'печатает...' : userStatus" 
+                      x-text="isGroupChat ? memberCount + ' участн.' : (isTyping ? 'печатает...' : userStatus)" 
                       :class="isTyping ? 'text-indigo-500 font-semibold italic' : (userStatus === 'В сети' ? 'text-green-500' : 'text-gray-500')" 
                       class="text-sm">
                 </span>
             </div>
+            
+            <div x-show="isGroupChat && isAdmin" x-data="{ open: false }" class="relative ml-2">
+                <button @click="open = !open" class="p-2 rounded-full hover:bg-gray-100 dark:hover:bg-gray-800 transition-colors">
+                    <svg xmlns="http://www.w3.org/2000/svg" class="h-6 w-6" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 5v.01M12 12v.01M12 19v.01M12 6a1 1 0 110-2 1 1 0 010 2zm0 7a1 1 0 110-2 1 1 0 010 2zm0 7a1 1 0 110-2 1 1 0 010 2z" /></svg>
+                </button>
+                <div x-show="open" @click.away="open = false" x-transition
+                     class="absolute right-0 top-12 z-50 w-64 bento-card rounded-lg shadow-xl py-2">
+                    <a @click="showAddMemberModal = true; open = false" href="#" class="popover-menu-item">
+                        <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2"><path stroke-linecap="round" stroke-linejoin="round" d="M18 9v3m0 0v3m0-3h3m-3 0h-3m-2-5a4 4 0 11-8 0 4 4 0 018 0zM3 20a6 6 0 0112 0v1H3v-1z" /></svg>
+                        <span>Добавить участников</span>
+                    </a>
+                    <a @click="showChangeNameModal = true; open = false" href="#" class="popover-menu-item">
+                        <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2"><path stroke-linecap="round" stroke-linejoin="round" d="M15.232 5.232l3.536 3.536m-2.036-5.036a2.5 2.5 0 113.536 3.536L6.5 21.036H3v-3.536L16.732 3.732z" /></svg>
+                        <span>Изменить название</span>
+                    </a>
+                    <a @click="showChangePhotoModal = true; open = false" href="#" class="popover-menu-item">
+                        <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2"><path stroke-linecap="round" stroke-linejoin="round" d="M4 16l4.586-4.586a2 2 0 012.828 0L16 16m-2-2l1.586-1.586a2 2 0 012.828 0L20 14m-6-6h.01M6 20h12a2 2 0 002-2V6a2 2 0 00-2-2H6a2 2 0 00-2 2v12a2 2 0 002 2z" /></svg>
+                        <span>Изменить фото</span>
+                    </a>
+                </div>
+            </div>
         </header>
 
-        <div x-ref="messages" class="messages-container flex-1 space-y-2">
-            <div x-show="isLoading" class="text-center text-gray-500 dark:text-gray-400 p-8">Загрузка сообщений...</div>
+        <div x-ref="messages" class="messages-container flex-1">
+            <div x-show="isLoading" class="space-y-4 animate-pulse"> </div>
             
             <template x-for="message in messages" :key="message.id">
-                <div class="flex" :class="message.senderId === currentUser.uid ? 'justify-end' : 'justify-start'">
+                <div class="flex flex-col" :class="message.senderId === currentUser.uid ? 'items-end' : 'items-start'">
                     
+                    <span x-show="isGroupChat && message.senderId !== currentUser.uid"
+                          class="text-xs font-semibold ml-4 mb-1 opacity-70"
+                          x-text="groupMembers[message.senderId] || '...'">
+                    </span>
+
                     <div class="message-bubble group" 
                          :class="[message.senderId === currentUser.uid ? 'sent' : 'received', message.type === 'image' ? 'p-1' : '']"
-                         @contextmenu.prevent="contextMenuHandler($event, message)"
-                         @dblclick="message.type !== 'image' && message.senderId === otherUid ? reactToMessage(message.id, message.reaction) : (message.type !== 'image' && startEdit(message.id, message.text, message.timestamp))">
+                         @click="selectMessage($event, message)">
                         
-                        <div x-show="message.reaction === 'like'" 
-                             class="absolute -top-3 -right-3 text-2xl transform rotate-12 transition-transform duration-300"
-                             :class="message.senderId === currentUser.uid ? 'text-white' : 'text-red-500'">
-                             ❤️
+                        <div x-show="message.replyTo" class="reply-preview mb-2">
+                            <div class="font-bold text-sm" x-text="message.replyTo.senderName || '...'"></div>
+                            <div class="reply-text text-sm" x-text="message.replyTo.text || '...'"></div>
                         </div>
-
-                        <p x-show="message.type === 'text'" x-text="message.text" class="text-sm" :id="'msg-' + message.id"></p>
                         
+                        <span x-show="message.reaction" class="message-reaction" x-text="message.reaction"></span>
+                        
+                        <p x-show="message.type === 'text'" x-text="message.text" class="text-sm break-all" :id="'msg-' + message.id"></p>
                         <div x-show="message.type === 'image'" class="flex flex-col items-end">
                             <img :src="message.imageUrl" class="message-image" alt="Изображение">
-                            <span class="text-xs italic opacity-70 mt-1" :class="message.senderId === currentUser.uid ? 'text-white' : 'text-gray-600 dark:text-gray-300'">Фото</span>
                         </div>
-                        
-                        <span class="message-status" 
-                              :class="{'group-hover:opacity-100': message.senderId === currentUser.uid, 
-                                       'text-white': message.type === 'image' && message.senderId === currentUser.uid,
-                                       'text-gray-300': message.type === 'image' && message.senderId !== currentUser.uid}">
-                            <span x-text="formatTime(message.timestamp)"></span>
-                            <span x-show="message.senderId === currentUser.uid && message.readBy?.[otherUid] !== undefined">
-                                <svg xmlns="http://www.w3.org/2000/svg" :class="message.readBy?.[otherUid] > message.timestamp ? 'text-green-300' : 'text-gray-300'" class="h-4 w-4 inline-block ml-1" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2"><path stroke-linecap="round" stroke-linejoin="round" d="M5 13l4 4L19 7" /></svg>
-                            </span>
-                        </span>
-                        
                     </div>
                 </div>
             </template>
             <div x-show="messages.length === 0 && !isLoading" class="text-center text-gray-500 dark:text-gray-400 p-8">Начните чат!</div>
         </div>
 
-        <div class="p-4 border-t dark:border-gray-800">
+        <div class="p-4 border-t dark:border-gray-800 relative">
              <div x-show="editingMessageId" class="mb-3 p-2 rounded-lg bg-yellow-100 dark:bg-yellow-800 flex justify-between items-center text-sm">
                 <span>Редактирование: <span x-text="editingOriginalText.substring(0, 20) + '...'"></span></span>
                 <button @click="cancelEdit()" class="text-red-600 dark:text-red-400 hover:underline">Отмена</button>
             </div>
+            
+            <div x-show="replyMessage.id" class="reply-preview flex justify-between items-center" x-transition>
+                <div>
+                    <div class="font-bold text-sm" x-text="replyMessage.senderName"></div>
+                    <div class="reply-text text-sm" x-text="replyMessage.text"></div>
+                </div>
+                <button @click="cancelReply()" class="p-1 rounded-full hover:bg-gray-300 dark:hover:bg-gray-700">
+                    <svg xmlns="http://www.w3.org/2000/svg" class="h-4 w-4" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M6 18L18 6M6 6l12 12" /></svg>
+                </button>
+            </div>
 
-            <form @submit.prevent="editingMessageId ? saveEdit() : sendMessage()" class="flex gap-3">
-                
-                <button type="button" @click="showUrlModal = true"
-                        class="p-3 rounded-full hover:bg-gray-100 dark:hover:bg-gray-800 transition-colors flex-shrink-0">
+            <form @submit.prevent="editingMessageId ? saveEdit() : sendMessage()" class="flex gap-3 items-center">
+                <button type="button" @click="showUrlModal = true" class="p-3 rounded-full hover:bg-gray-100 dark:hover:bg-gray-800 transition-colors flex-shrink-0">
                     <svg xmlns="http://www.w3.org/2000/svg" class="h-6 w-6 text-indigo-500" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2"><path stroke-linecap="round" stroke-linejoin="round" d="M4 16l4.586-4.586a2 2 0 012.828 0L16 16m-2-2l1.586-1.586a2 2 0 012.828 0L20 14m-6-6h.01M6 20h12a2 2 0 002-2V6a2 2 0 00-2-2H6a2 2 0 00-2 2v12a2 2 0 002 2z" /></svg>
                 </button>
-
                 <input x-model="newMessage" type="text" placeholder="Напишите сообщение..." required
                        @input.debounce.500ms="setTypingStatus(true)"
                        @keyup.enter.prevent="editingMessageId ? saveEdit() : sendMessage()"
-                       class="flex-1 px-4 py-2 rounded-full border border-gray-300 dark:border-gray-600 bg-gray-50 dark:bg-gray-700 dark:text-white focus:outline-none focus:ring-2 focus:ring-indigo-500 transition-shadow">
-                <button type="submit" 
-                        :disabled="newMessage.trim() === ''"
-                        class="p-3 rounded-full bg-indigo-500 text-white hover:bg-indigo-600 disabled:bg-indigo-300 transition-colors shadow-md">
+                       class="flex-1 px-2 py-3 rounded-full border border-gray-300 dark:border-gray-600 bg-gray-50 dark:bg-gray-700 dark:text-white focus:outline-none focus:ring-2 focus:ring-indigo-500 transition-shadow">
+                <button type="submit" :disabled="newMessage.trim() === ''" class="p-3 rounded-full bg-indigo-500 text-white hover:bg-indigo-600 disabled:bg-indigo-300 transition-colors shadow-md">
                     <svg x-show="!editingMessageId" xmlns="http://www.w3.org/2000/svg" class="h-6 w-6 transform rotate-90" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2"><path stroke-linecap="round" stroke-linejoin="round" d="M12 19l9 2-9-18-9 18 9-2zm0 0v-8" /></svg>
                     <svg x-show="editingMessageId" xmlns="http://www.w3.org/2000/svg" class="h-6 w-6" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2"><path stroke-linecap="round" stroke-linejoin="round" d="M5 13l4 4L19 7" /></svg>
                 </button>
             </form>
         </div>
+    </div>
+    
+    <div x-show="selectedMessage.visible" @click.away="selectedMessage.visible = false" class="popover-menu" :style="popoverPosition()" x-transition>
         
-        <div x-show="contextMenu.visible" @click.away="contextMenu.visible = false" 
-             class="fixed z-20 bento-card rounded-lg py-1 shadow-2xl" 
-             :style="{ top: contextMenu.y + 'px', left: contextMenu.x + 'px' }">
-            
-            <button x-show="contextMenu.type === 'text'"
-                    @click="startEdit(contextMenu.id, contextMenu.text, contextMenu.timestamp)" 
-                    class="block w-full text-left px-4 py-2 text-sm hover:bg-gray-100 dark:hover:bg-gray-700 transition-colors">
-                Редактировать
+        <div class="popover-reactions">
+            <template x-for="emoji in reactionEmojis" :key="emoji">
+                <button @click="reactToMessage(selectedMessage.id, emoji)" class="popover-reaction-btn" x-text="emoji"></button>
+            </template>
+        </div>
+
+        <div class="popover-body">
+            <button @click="startReply()" class="popover-menu-item">
+                <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2"><path stroke-linecap="round" stroke-linejoin="round" d="M3 10h10a8 8 0 018 8v2M3 10l6 6m-6-6l6-6" /></svg>
+                <span>Ответить</span>
             </button>
-            <button @click="deleteMessage(contextMenu.id)" 
-                    class="block w-full text-left px-4 py-2 text-sm text-red-500 hover:bg-red-50 dark:hover:bg-red-900 transition-colors">
-                Удалить сообщение
+            <button x-show="selectedMessage.canEdit" @click="startEditFromMenu()" class="popover-menu-item">
+                <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15.232 5.232l3.536 3.536m-2.036-5.036a2.5 2.5 0 113.536 3.536L6.5 21.036H3v-3.536L16.732 3.732z" /></svg>
+                <span>Изменить</span>
             </button>
+            <button x-show="selectedMessage.canDelete" @click="deleteMessageFromMenu()" class="popover-menu-item danger">
+                <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 7l-.867 12.142A2 2 0 0116.138 21H7.862a2 2 0 01-1.995-1.858L5 7m5 4v6m4-6v6m1-10V4a1 1 0 00-1-1h-4a1 1 0 00-1 1v3M4 7h16" /></svg>
+                <span>Удалить</span>
+            </button>
+        </div>
+        
+        <div class="popover-read-status">
+            <div class="text-sm font-semibold mb-1" x-text="formatFullTimestamp(selectedMessage.timestamp)"></div>
+            <div x-show="!isGroupChat" class="text-xs text-gray-500 dark:text-gray-400" x-text="selectedMessage.status"></div>
+            <div x-show="isGroupChat && selectedMessage.readReceipts.length > 0">
+                <h4 class="text-xs font-bold mt-2 mb-1">Прочитали:</h4>
+                <div class="max-h-20 overflow-y-auto text-xs space-y-1">
+                    <template x-for="receipt in selectedMessage.readReceipts" :key="receipt.name">
+                        <div class="flex justify-between">
+                            <span x-text="receipt.name"></span>
+                            <span class="text-gray-500" x-text="receipt.time"></span>
+                        </div>
+                    </template>
+                </div>
+            </div>
+            <div x-show="isGroupChat && selectedMessage.readReceipts.length === 0 && selectedMessage.senderId === currentUser.uid" class="text-xs text-gray-500 dark:text-gray-400">
+                Доставлено (пока никто не прочел)
+            </div>
         </div>
     </div>
     
-    <div x-show="showUrlModal" x-transition class="fixed inset-0 z-50 flex items-center justify-center bg-black bg-opacity-50 backdrop-blur-sm">
-        <div @click.away="showUrlModal = false" class="bento-card p-6 rounded-2xl w-full max-w-sm">
+    <div x-show="showUrlModal" x-transition class="fixed inset-0 z-50 ...">
+        <div @click.away="showUrlModal = false" class="bento-card p-6 ...">
             <h3 class="text-xl font-bold mb-4">Отправить фото по URL</h3>
             <form @submit.prevent="sendImageUrl">
-                <input x-model="imageUrlInput" type="url" placeholder="Вставьте URL изображения (.jpg, .png и т.д.)" required
-                       class="w-full px-4 py-2 rounded-lg border border-gray-300 dark:border-gray-600 bg-gray-50 dark:bg-gray-700 dark:text-white focus:outline-none focus:ring-2 focus:ring-indigo-500 transition-shadow">
-                
+                <input x-model="imageUrlInput" type="url" placeholder="Вставьте URL изображения (.jpg, .png и т.д.)" required class="modal-input">
                 <div class="mt-4 flex justify-end gap-2">
-                    <button type="button" @click="showUrlModal = false" class="px-4 py-2 rounded-lg bg-gray-200 dark:bg-gray-700 hover:bg-gray-300 dark:hover:bg-gray-600 transition-colors">Отмена</button>
-                    <button type="submit" :disabled="!imageUrlInput" class="px-4 py-2 rounded-lg bg-indigo-500 text-white hover:bg-indigo-600 transition-colors">Отправить</button>
+                    <button type="button" @click="showUrlModal = false" class="px-4 py-2 rounded-lg bg-gray-200 dark:bg-gray-700 ...">Отмена</button>
+                    <button type="submit" :disabled="!imageUrlInput" class="px-4 py-2 rounded-lg bg-indigo-500 text-white ...">Отправить</button>
                 </div>
             </form>
         </div>
     </div>
     
-    <div x-show="$store.toast.visible" x-transition class="fixed bottom-5 right-5 w-auto max-w-sm p-4 rounded-xl shadow-xl z-50 bento-card font-semibold" :class="$store.toast.type === 'success' ? 'text-green-800 dark:text-green-300 bg-green-500/20' : 'text-red-800 dark:text-red-300 bg-red-500/20'" style="display: none;"><p x-text="$store.toast.message"></p></div>
+    <div x-show="showChangeNameModal" x-transition class="fixed inset-0 z-50 flex items-center justify-center bg-black bg-opacity-50 backdrop-blur-sm">
+        <div @click.away="showChangeNameModal = false" class="bento-card p-6 rounded-2xl w-full max-w-sm">
+            <h3 class="text-xl font-bold mb-4">Изменить название группы</h3>
+            <form @submit.prevent="saveGroupName">
+                <input x-model="newGroupName" type="text" placeholder="Новое название" required class="modal-input">
+                <div class="mt-4 flex justify-end gap-2">
+                    <button type="button" @click="showChangeNameModal = false" class="px-4 py-2 rounded-lg bg-gray-200 dark:bg-gray-700 ...">Отмена</button>
+                    <button type="submit" class="px-4 py-2 rounded-lg bg-indigo-500 text-white ...">Сохранить</button>
+                </div>
+            </form>
+        </div>
+    </div>
 
+    <div x-show="showChangePhotoModal" x-transition class="fixed inset-0 z-50 flex items-center justify-center bg-black bg-opacity-50 backdrop-blur-sm">
+        <div @click.away="showChangePhotoModal = false" class="bento-card p-6 rounded-2xl w-full max-w-sm">
+            <h3 class="text-xl font-bold mb-4">Изменить фото группы</h3>
+            <form @submit.prevent="saveGroupPhoto">
+                <input x-model="newGroupPhotoURL" type="url" placeholder="Вставьте URL изображения..." required class="modal-input">
+                <div class="mt-4 flex justify-end gap-2">
+                    <button type="button" @click="showChangePhotoModal = false" class="px-4 py-2 rounded-lg bg-gray-200 dark:bg-gray-700 ...">Отмена</button>
+                    <button type="submit" class="px-4 py-2 rounded-lg bg-indigo-500 text-white ...">Сохранить</button>
+                </div>
+            </form>
+        </div>
+    </div>
+    
+    <div x-show="showAddMemberModal" x-transition class="fixed inset-0 z-50 flex items-center justify-center bg-black bg-opacity-50 backdrop-blur-sm">
+        <div @click.away="showAddMemberModal = false" class="bento-card p-6 rounded-2xl w-full max-w-sm">
+            <h3 class="text-xl font-bold mb-4">Добавить участников</h3>
+            <div class="max-h-60 overflow-y-auto space-y-2 p-2 bg-gray-100 dark:bg-gray-800 rounded-lg">
+                <template x-for="contact in filteredContacts" :key="contact.uid">
+                    <label class="flex items-center gap-3 p-2 rounded-lg hover:bg-gray-200 dark:hover:bg-gray-700 cursor-pointer">
+                        <input type="checkbox" :value="contact.uid" x-model="membersToAdd" class="rounded text-indigo-500">
+                        <img :src="contact.photoURL || 'https://asutut.netlify.app/userphoto.jpg'" class="w-8 h-8 rounded-full object-cover">
+                        <span x-text="contact.displayName"></span>
+                    </label>
+                </template>
+                <p x-show="filteredContacts.length === 0" class="text-sm opacity-70 text-center p-4">
+                    Все ваши контакты уже в этой группе.
+                </p>
+            </div>
+            <div class="mt-4 flex justify-end gap-2">
+                <button type="button" @click="showAddMemberModal = false" class="px-4 py-2 rounded-lg bg-gray-200 dark:bg-gray-700 ...">Отмена</button>
+                <button @click="addMembers" :disabled="membersToAdd.length === 0" class="px-4 py-2 rounded-lg bg-indigo-500 text-white ...">Добавить</button>
+            </div>
+        </div>
+    </div>
+
+    
+    <div x-show="$store.toast.visible" x-transition class="fixed bottom-5 right-5 ..."> </div>
 
     <script src="https://www.gstatic.com/firebasejs/8.10.0/firebase-app.js"></script>
     <script src="https://www.gstatic.com/firebasejs/8.10.0/firebase-auth.js"></script>
     <script src="https://www.gstatic.com/firebasejs/8.10.0/firebase-database.js"></script>
-
+    <script src="global.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/alpinejs@3.13.10/dist/cdn.min.js" defer></script>
+    
     <script>
-             const firebaseConfig = {
-                        apiKey: "AIzaSyCAOfxPW5m2UqtulWzuh3egOjJ-ti-rDf8",
-                        authDomain: "register-221e5.firebaseapp.com",
-                        databaseURL: "https://register-221e5-default-rtdb.firebaseio.com",
-                        projectId: "register-221e5",
-                        storageBucket: "register-221e5.appspot.com",
-                        messagingSenderId: "588640206529",
-                        appId: "1:588640206529:web:b2abf5413387e251935e40"
-                    };
-        firebase.initializeApp(firebaseConfig);
-        const auth = firebase.auth();
-        const database = firebase.database();
-
-        // 🟢 Система Присутствия (функция)
-        function setupPresence(user) {
-            if (!user) return;
-            const uid = user.uid;
-            const userLastOnlineRef = database.ref('/users/' + uid + '/lastOnline');
-            const connectedRef = database.ref('.info/connected');
-            connectedRef.on('value', (snap) => {
-                if (snap.val() === true) {
-                    userLastOnlineRef.set(firebase.database.ServerValue.TIMESTAMP);
-                    userLastOnlineRef.onDisconnect().set(firebase.database.ServerValue.TIMESTAMP);
-                }
-            });
-        }
-        
-        // ⏰ ВСПОМОГАТЕЛЬНАЯ ФУНКЦИЯ ДЛЯ СТАТУСА
-        function getTimeAgo(timestamp) {
-            if (!timestamp) return 'Неизвестно';
-            const seconds = Math.floor((new Date() - timestamp) / 1000);
-            if (seconds < 30) return "В сети";
-            if (seconds < 60) return "недавно";
-            const minutes = Math.floor(seconds / 60);
-            if (minutes < 60) return `${minutes} мин назад`;
-            const hours = Math.floor(minutes / 60);
-            if (hours < 24) return `${hours} ч назад`;
-            const date = new Date(timestamp);
-            return date.toLocaleDateString('ru-RU', { day: 'numeric', month: 'short' });
-        }
-
-
         document.addEventListener('alpine:init', () => {
-            Alpine.store('toast', {
-                visible: false, message: '', type: 'success', timer: null,
-                show(message, type = 'success') {
-                    this.message = message; this.type = type; this.visible = true;
-                    clearTimeout(this.timer);
-                    this.timer = setTimeout(() => this.visible = false, 4000);
+            
+    Alpine.store('toast', {
+        visible: false, message: '', type: 'success', timer: null,
+        show(message, type = 'success') {
+            this.message = message; this.type = type; this.visible = true;
+            clearTimeout(this.timer);
+            this.timer = setTimeout(() => this.visible = false, 3000);
+        }
+    });
+    
+    Alpine.data('chatManager', () => ({
+        isDark: false,
+        currentUser: null, 
+        conversationId: null,
+        isGroupChat: false,
+        otherUid: null,
+        groupId: null,
+        
+        displayName: 'Загрузка...', photoURL: 'userphoto.jpg',
+        userStatus: 'Неизвестно',
+        memberCount: 0,
+        groupMembers: {},
+        isAdmin: false, // НОВОЕ
+        contacts: [], // НОВЫЙ список контактов для добавления
+
+        isTyping: false, typingTimeout: null,
+        messages: [], newMessage: '', isLoading: true,
+        
+        editingMessageId: null, editingOriginalText: '',
+        replyMessage: { id: null, text: '', senderName: '' },
+        selectedMessage: { 
+            visible: false, id: null, text: '', timestamp: 0, readBy: null, reaction: null,
+            senderId: null,
+            canEdit: false, canDelete: false, status: '', el: null,
+            readReceipts: [] // НОВОЕ для инфо о прочтении
+        },
+        showUrlModal: false, imageUrlInput: '',
+
+        // НОВЫЕ СВОЙСТВА ДЛЯ МОДАЛОК
+        reactionEmojis: ['❤️', '👍', '😂', '🔥', '😢', '😮'],
+        showChangeNameModal: false, newGroupName: '',
+        showChangePhotoModal: false, newGroupPhotoURL: '',
+        showAddMemberModal: false, membersToAdd: [],
+
+        // НОВЫЙ GETTER: Фильтрует контакты, которых еще нет в группе
+        get filteredContacts() {
+            return this.contacts.filter(contact => !this.groupMembers[contact.uid]);
+        },
+
+        init() {
+            this.isDark = localStorage.getItem('theme') === 'dark';
+            document.documentElement.classList.toggle('dark', this.isDark);
+        
+            auth.onAuthStateChanged(user => {
+                if (user) {
+                    this.currentUser = user;
+                    setupPresence(user);
+                    
+                    const urlParams = new URLSearchParams(window.location.search);
+                    this.groupId = urlParams.get('group_id');
+                    this.otherUid = urlParams.get('uid');
+
+                    if (this.groupId) {
+                        this.isGroupChat = true;
+                        this.conversationId = this.groupId;
+                        this.loadGroupInfo();
+                        this.loadContacts(); // Загружаем контакты для модалки
+                    } else if (this.otherUid) {
+                        this.isGroupChat = false;
+                        this.conversationId = [this.currentUser.uid, this.otherUid].sort().join('_');
+                        this.loadOtherUserInfo();
+                    } else {
+                        Alpine.store('toast').show('Ошибка: Чат не найден.', 'error');
+                        setTimeout(() => window.location.href = 'home.html', 1500);
+                        return;
+                    }
+                    
+                    this.loadInitialMessages();
+                    this.listenForNewMessages();
+                    if (!this.isGroupChat) {
+                        this.listenForTypingStatus();
+                    }
+                } else {
+                    window.location.href = 'index.html'; 
                 }
             });
-            
-            Alpine.data('chatManager', () => ({
-                currentUser: null, otherUid: null, conversationId: null,
-                displayName: 'Загрузка...', photoURL: 'userphoto.jpg',
-                userStatus: 'Неизвестно', lastOnlineTimestamp: 0,
-                isTyping: false, typingTimeout: null,
-                messages: [], newMessage: '', isLoading: true,
-                
-                // Для редактирования/удаления
-                editingMessageId: null, editingOriginalText: '',
-                contextMenu: { visible: false, x: 0, y: 0, id: null, text: null, timestamp: 0, type: 'text' },
-
-                // Для отправки фото по URL
-                showUrlModal: false,
-                imageUrlInput: '',
-
-                init() {
-                    auth.onAuthStateChanged(user => {
-                        if (user) {
-                            this.currentUser = user;
-                            setupPresence(user);
-                            const urlParams = new URLSearchParams(window.location.search);
-                            this.otherUid = urlParams.get('uid');
-
-                            this.conversationId = [this.currentUser.uid, this.otherUid].sort().join('_');
-                            this.loadMessages();
-                            this.loadOtherUserInfo();
-                            this.listenForReadStatus();
-                            this.listenForTypingStatus();
-                        } else {
-                            window.location.href = 'index.html'; 
-                        }
-                    });
-                },
-                
-                loadOtherUserInfo() {
-                    database.ref(`users/${this.otherUid}`).on('value', snapshot => {
-                        if (snapshot.exists()) {
-                            const data = snapshot.val();
-                            this.displayName = data.displayName || 'Пользователь';
-                            this.photoURL = data.photoURL || 'userphoto.jpg';
-                            this.lastOnlineTimestamp = data.lastOnline || 0;
-                            this.userStatus = getTimeAgo(this.lastOnlineTimestamp);
-                        } else {
-                            this.displayName = 'Пользователь удален';
-                            this.userStatus = 'Офлайн';
-                        }
-                    });
-                },
-                
-                loadMessages() {
-                    this.isLoading = true;
-                    database.ref(`messages/${this.conversationId}`).limitToLast(50).on('value', snapshot => {
-                        this.messages = [];
-                        snapshot.forEach(childSnapshot => {
-                            this.messages.push({
-                                id: childSnapshot.key,
-                                ...childSnapshot.val(),
-                                readBy: childSnapshot.val().readBy || {}
-                            });
-                        });
-                        this.isLoading = false;
-                        this.$nextTick(() => {
-                            this.markMessagesAsRead();
-                            this.scrollToBottom();
-                        });
-                    });
-                },
-
-                // --- ФУНКЦИИ ПРИСУТСТВИЯ ("ПЕЧАТАЕТ...") ---
-                setTypingStatus(isTyping) {
-                    const typingRef = database.ref(`typing/${this.conversationId}/${this.currentUser.uid}`);
-
-                    if (isTyping && this.newMessage.trim().length > 0) {
-                        typingRef.set(true);
-                        if (this.typingTimeout) clearTimeout(this.typingTimeout);
-                        
-                        this.typingTimeout = setTimeout(() => {
-                            typingRef.set(false);
-                            this.typingTimeout = null;
-                        }, 2500); 
-                    } else if (!isTyping) {
-                        typingRef.set(false);
-                        if (this.typingTimeout) clearTimeout(this.typingTimeout);
-                    }
-                },
-                
-                listenForTypingStatus() {
-                    const typingRef = database.ref(`typing/${this.conversationId}/${this.otherUid}`);
-                    typingRef.on('value', (snapshot) => {
-                        this.isTyping = snapshot.val() === true;
-                        if (this.isTyping) this.scrollToBottom(); 
-                    });
-                },
-
-                // --- ФУНКЦИИ ЧТЕНИЯ (READ RECEIPTS) ---
-                listenForReadStatus() {
-                    database.ref(`conversations/${this.conversationId}/lastMessage/readBy`).on('value', (snapshot) => {
-                        this.messages = [...this.messages]; 
-                    });
-                },
-
-                markMessagesAsRead() {
-                    if (this.messages.length === 0) return;
-                    
-                    const lastMessage = this.messages[this.messages.length - 1];
-
-                    if (lastMessage.senderId === this.otherUid && !lastMessage.readBy?.[this.currentUser.uid]) {
-                        
-                        const updates = {};
-                        const timestamp = firebase.database.ServerValue.TIMESTAMP;
-                        const readPath = `readBy/${this.currentUser.uid}`;
-
-                        updates[`/messages/${this.conversationId}/${lastMessage.id}/${readPath}`] = timestamp;
-                        updates[`/conversations/${this.conversationId}/lastMessage/${readPath}`] = timestamp;
-                        
-                        database.ref().update(updates)
-                            .catch(e => console.error("Failed to mark message as read:", e));
-                    }
-                },
-                
-                // --- ФУНКЦИИ РЕДАКТИРОВАНИЯ/УДАЛЕНИЯ/ЛАЙКОВ ---
-                reactToMessage(messageId, currentReaction) {
-                    const updates = {};
-                    const path = `/messages/${this.conversationId}/${messageId}/reaction`;
-                    const newReaction = currentReaction === 'like' ? null : 'like';
-                    updates[path] = newReaction;
-                    
-                    database.ref().update(updates)
-                        .catch(e => Alpine.store('toast').show('Ошибка установки реакции.', 'error'));
-                },
-
-                startEdit(messageId, text, timestamp) {
-                    const fifteenMinutes = 15 * 60 * 1000;
-                    const timeElapsed = new Date().getTime() - timestamp;
-                    
-                    this.contextMenu.visible = false;
-                    
-                    if (timeElapsed > fifteenMinutes) {
-                        Alpine.store('toast').show('Редактирование разрешено только в течение 15 минут.', 'error');
-                        return;
-                    }
-
-                    this.editingMessageId = messageId;
-                    this.editingOriginalText = text;
-                    this.newMessage = text;
-                    this.$nextTick(() => document.querySelector('input[type="text"]').focus());
-                },
-
-                cancelEdit() {
-                    this.editingMessageId = null;
-                    this.editingOriginalText = '';
-                    this.newMessage = '';
-                },
-
-                saveEdit() {
-                    const newText = this.newMessage.trim();
-                    if (newText === this.editingOriginalText) {
-                        this.cancelEdit();
-                        return;
-                    }
-                    
-                    const messageId = this.editingMessageId;
-                    
-                    const updates = {};
-                    updates[`/messages/${this.conversationId}/${messageId}/text`] = newText;
-                    updates[`/messages/${this.conversationId}/${messageId}/edited`] = firebase.database.ServerValue.TIMESTAMP;
-                    
-                    const isLastMessage = this.messages[this.messages.length - 1]?.id === messageId;
-                    if (isLastMessage) {
-                        updates[`/conversations/${this.conversationId}/lastMessage/text`] = newText;
-                    }
-
-                    database.ref().update(updates)
-                        .then(() => {
-                            Alpine.store('toast').show('Сообщение изменено!', 'success');
-                            this.cancelEdit();
-                        })
-                        .catch(e => Alpine.store('toast').show('Ошибка сохранения изменений.', 'error'));
-                },
-
-                // ФУНКЦИЯ УДАЛЕНИЯ СООБЩЕНИЯ
-                deleteMessage(messageId) {
-                    const fifteenMinutes = 15 * 60 * 1000;
-                    const message = this.messages.find(m => m.id === messageId);
-
-                    if (!message) return;
-                    
-                    const timeElapsed = new Date().getTime() - message.timestamp;
-                    
-                    if (timeElapsed > fifteenMinutes) {
-                        Alpine.store('toast').show('Удаление разрешено только в течение 15 минут.', 'error');
-                        this.contextMenu.visible = false;
-                        return;
-                    }
-                    
-                    if (confirm('Вы уверены, что хотите удалить это сообщение?')) {
-                        database.ref(`/messages/${this.conversationId}/${messageId}`).remove()
-                            .then(() => {
-                                Alpine.store('toast').show('Сообщение удалено!', 'success');
-                                this.contextMenu.visible = false;
-                                
-                                // Логика обновления lastMessage после удаления
-                                if (this.messages.length > 0 && this.messages[this.messages.length - 1].id === messageId) {
-                                    // Нужно найти предыдущее сообщение
-                                    const prevMessage = this.messages.filter(m => m.id !== messageId).slice(-1)[0];
-                                    if (prevMessage) {
-                                        database.ref(`/conversations/${this.conversationId}/lastMessage`).set({
-                                            text: prevMessage.text,
-                                            senderId: prevMessage.senderId,
-                                            timestamp: prevMessage.timestamp,
-                                            type: prevMessage.type
-                                        });
-                                    } else {
-                                         database.ref(`/conversations/${this.conversationId}/lastMessage`).remove();
-                                    }
-                                }
-                            })
-                            .catch(e => Alpine.store('toast').show('Ошибка удаления.', 'error'));
-                    }
-                },
-                
-                // --- ФУНКЦИИ ОТПРАВКИ СООБЩЕНИЯ И ФОТО ---
-                async sendMessage(imageUrl = null) {
-                    const messageText = this.newMessage.trim();
-                    if (!messageText && !imageUrl) return;
-
-                    this.setTypingStatus(false);
-                    
-                    const messageId = database.ref(`messages/${this.conversationId}`).push().key;
-                    const timestamp = firebase.database.ServerValue.TIMESTAMP;
-                    const imageUrlRegex = /\.(jpeg|jpg|gif|png|webp)$/i;
-                    
-                    let messageData = {};
-                    let lastMessageText;
-
-                    if (imageUrl) {
-                        // Отправка фото через модальное окно
-                         if (!imageUrl.startsWith('http') || !imageUrlRegex.test(imageUrl)) {
-                            Alpine.store('toast').show('Неверный формат URL. Используйте прямую ссылку на .jpg/.png.', 'error');
-                            return;
-                        }
-                        messageData = { senderId: this.currentUser.uid, type: 'image', imageUrl: imageUrl, timestamp: timestamp };
-                        lastMessageText = '📷 Изображение';
-                    } 
-                    else if (messageText.startsWith('http') && imageUrlRegex.test(messageText)) {
-                        // Отправка фото через поле ввода (быстрый способ)
-                        messageData = { senderId: this.currentUser.uid, type: 'image', imageUrl: messageText, timestamp: timestamp };
-                        lastMessageText = '📷 Изображение';
-                    } 
-                    else {
-                        // Отправка обычного текста
-                        messageData = { senderId: this.currentUser.uid, type: 'text', text: messageText, timestamp: timestamp };
-                        lastMessageText = messageText;
-                    }
-
-                    const updates = {};
-                    updates[`/messages/${this.conversationId}/${messageId}`] = messageData;
-                    updates[`/conversations/${this.conversationId}/lastMessage`] = {
-                        text: lastMessageText,
-                        senderId: this.currentUser.uid,
-                        timestamp: timestamp,
-                        type: messageData.type
-                    };
-
-                    try {
-                        await database.ref().update(updates);
-                        this.newMessage = ''; 
-                        this.scrollToBottom();
-                        if (imageUrl) this.showUrlModal = false; // Закрываем модалку, если было фото
-                    } catch(err) {
-                        Alpine.store('toast').show(`Ошибка отправки. Проверьте правила БД.`, 'error');
-                        console.error('Message Send Error:', err);
-                    }
-                },
-                
-                sendImageUrl() {
-                    const url = this.imageUrlInput.trim();
-                    if (url) {
-                        this.sendMessage(url);
-                        this.imageUrlInput = '';
-                    }
-                },
-
-
-                // --- ВСПОМОГАТЕЛЬНЫЕ ФУНКЦИИ ---
-                scrollToBottom() {
-                    const messagesContainer = this.$refs.messages;
-                    messagesContainer.scrollTop = messagesContainer.scrollHeight;
-                },
-                formatTime(timestamp) {
-                    const date = new Date(timestamp);
-                    return date.toLocaleTimeString('ru-RU', { hour: '2-digit', minute: '2-digit' });
-                },
-                
-                // Функция для вызова контекстного меню
-                contextMenuHandler(event, message) {
-                    // Только для своих сообщений
-                    if (message.senderId !== this.currentUser.uid) return;
-                    
-                    this.contextMenu = {
-                        visible: true,
-                        x: event.clientX,
-                        y: event.clientY,
-                        id: message.id,
-                        text: message.text,
-                        timestamp: message.timestamp,
-                        type: message.type
-                    };
+        },
+        
+        loadOtherUserInfo() {
+            database.ref(`users/${this.otherUid}`).on('value', snapshot => {
+                if (snapshot.exists()) {
+                    const data = snapshot.val();
+                    this.displayName = data.displayName || 'Пользователь';
+                    this.photoURL = data.photoURL || 'userphoto.jpg';
+                    this.lastOnlineTimestamp = data.lastOnline || 0;
+                    this.userStatus = getTimeAgo(this.lastOnlineTimestamp);
+                } else {
+                    this.displayName = 'Пользователь удален';
+                    this.userStatus = 'Офлайн';
                 }
-            }));
-        });
+            });
+        },
+
+        async loadGroupInfo() {
+            database.ref(`groups/${this.groupId}`).on('value', async (snapshot) => {
+                if (snapshot.exists()) {
+                    const data = snapshot.val();
+                    this.displayName = data.name;
+                    this.photoURL = data.photoURL || 'group.png';
+                    this.isAdmin = data.admin === this.currentUser.uid; // ПРОВЕРКА АДМИНА
+                    
+                    const memberUids = Object.keys(data.members || {});
+                    this.memberCount = memberUids.length;
+
+                    let membersCache = {};
+                    for (const uid of memberUids) {
+                        const userSnap = await database.ref(`users/${uid}`).once('value');
+                        membersCache[uid] = userSnap.val()?.displayName || 'Участник';
+                    }
+                    this.groupMembers = membersCache;
+                } else {
+                    Alpine.store('toast').show('Ошибка: Группа не найдена.', 'error');
+                    window.location.href = 'home.html';
+                }
+            });
+        },
+
+        // НОВАЯ ФУНКЦИЯ: Загрузка 1-на-1 контактов
+        async loadContacts() {
+            const userConvoRef = database.ref(`user_conversations/${this.currentUser.uid}`);
+            userConvoRef.once('value', async (snapshot) => {
+                if (!snapshot.exists()) return;
+                const convoDataMap = snapshot.val();
+                let contactList = [];
+                for (const id in convoDataMap) {
+                    if (convoDataMap[id].type === 'dm') {
+                        const otherUid = id.replace('_', '').replace(this.currentUser.uid, '');
+                        const userSnap = await database.ref(`users/${otherUid}`).once('value');
+                        if (userSnap.exists()) {
+                            contactList.push({ uid: otherUid, ...userSnap.val() });
+                        }
+                    }
+                }
+                this.contacts = contactList;
+            });
+        },
+
+        selectMessage(event, message) {
+            if (message.type === 'image') return;
+            
+            const fifteenMinutes = 15 * 60 * 1000;
+            const timeElapsed = new Date().getTime() - message.timestamp;
+            const isOwnMessage = message.senderId === this.currentUser.uid;
+            
+            let readStatus = "Доставлено";
+            let readReceipts = [];
+
+            if (isOwnMessage) {
+                if (this.isGroupChat) {
+                    // Логика для Группы
+                    Object.keys(message.readBy || {}).forEach(uid => {
+                        if (uid !== this.currentUser.uid) {
+                            readReceipts.push({
+                                name: this.groupMembers[uid] || '...',
+                                time: this.formatTime(message.readBy[uid])
+                            });
+                        }
+                    });
+                } else {
+                    // Логика для 1-на-1
+                    if (message.readBy?.[this.otherUid]) {
+                        readStatus = `Прочитано ${this.formatFullTimestamp(message.readBy[this.otherUid])}`;
+                    }
+                }
+            } else {
+                // Чужое сообщение
+                readStatus = `Отправлено ${this.groupMembers[message.senderId] || this.displayName}`;
+            }
+            
+            this.selectedMessage = {
+                visible: true, id: message.id, text: message.text, timestamp: message.timestamp,
+                readBy: message.readBy, reaction: message.reaction,
+                senderId: message.senderId,
+                canEdit: isOwnMessage && timeElapsed <= fifteenMinutes,
+                canDelete: isOwnMessage && timeElapsed <= fifteenMinutes,
+                status: readStatus, 
+                readReceipts: readReceipts, // Сохраняем список
+                el: event.currentTarget 
+            };
+        },
+        
+        popoverPosition() {
+            if (!this.selectedMessage.el) return { top: '-9999px', left: '-9999px' };
+            const rect = this.selectedMessage.el.getBoundingClientRect();
+            const menuHeight = 300; // Увеличено для реакций и статуса
+            let top = rect.top - menuHeight - 10; 
+            if (top < 10) { top = rect.bottom + 10; }
+            let left = rect.left;
+            if (left + 280 > window.innerWidth - 10) { left = window.innerWidth - 290; }
+            if (left < 10) left = 10;
+            return { top: `${top}px`, left: `${left}px` };
+        },
+        
+        startReply() {
+            this.cancelEdit();
+            const senderName = this.selectedMessage.senderId === this.currentUser.uid
+                ? 'Вы'
+                : (this.groupMembers[this.selectedMessage.senderId] || this.displayName);
+            this.replyMessage = {
+                id: this.selectedMessage.id,
+                text: this.selectedMessage.text,
+                senderName: senderName
+            };
+            this.selectedMessage.visible = false;
+            this.$nextTick(() => document.querySelector('input[type="text"]').focus());
+        },
+        cancelReply() {
+            this.replyMessage = { id: null, text: '', senderName: '' };
+        },
+
+        startEditFromMenu() {
+            this.cancelReply();
+            const { id, text, timestamp } = this.selectedMessage;
+            this.startEdit(id, text, timestamp);
+            this.selectedMessage.visible = false;
+        },
+
+        deleteMessageFromMenu() {
+            this.deleteMessage(this.selectedMessage.id);
+            this.selectedMessage.visible = false;
+        },
+        
+        loadInitialMessages() {
+            this.isLoading = true;
+            const messagesRef = database.ref(`messages/${this.conversationId}`).limitToLast(50);
+            messagesRef.once('value', snapshot => {
+                this.messages = [];
+                snapshot.forEach(childSnapshot => {
+                    this.messages.push({ id: childSnapshot.key, ...childSnapshot.val(), readBy: childSnapshot.val().readBy || {} });
+                });
+                this.isLoading = false;
+                this.$nextTick(() => { this.markMessagesAsRead(); this.scrollToBottom(); });
+            });
+        },
+
+        listenForNewMessages() {
+            const messagesRef = database.ref(`messages/${this.conversationId}`).limitToLast(1);
+            messagesRef.on('child_added', (snapshot) => {
+                const exists = this.messages.some(m => m.id === snapshot.key);
+                if (!exists) {
+                    this.messages.push({ id: snapshot.key, ...snapshot.val(), readBy: snapshot.val().readBy || {} });
+                    this.$nextTick(() => { this.markMessagesAsRead(); this.scrollToBottom(); });
+                }
+            });
+        },
+
+        setTypingStatus(isTyping) {
+            if (this.isGroupChat) return;
+            const typingRef = database.ref(`typing/${this.conversationId}/${this.currentUser.uid}`);
+            if (isTyping && this.newMessage.trim().length > 0) {
+                typingRef.set(true);
+                if (this.typingTimeout) clearTimeout(this.typingTimeout);
+                this.typingTimeout = setTimeout(() => { typingRef.set(false); this.typingTimeout = null; }, 2500); 
+            } else if (!isTyping) {
+                typingRef.set(false);
+                if (this.typingTimeout) clearTimeout(this.typingTimeout);
+            }
+        },
+        
+        listenForTypingStatus() {
+            if (this.isGroupChat) return;
+            const typingRef = database.ref(`typing/${this.conversationId}/${this.otherUid}`);
+            typingRef.on('value', (snapshot) => { this.isTyping = snapshot.val() === true; if (this.isTyping) this.scrollToBottom(); });
+        },
+
+        markMessagesAsRead() {
+            if (this.messages.length === 0) return;
+            const lastMessage = this.messages[this.messages.length - 1];
+            
+            // Работает и для 1-на-1, и для групп
+            if (lastMessage.senderId !== this.currentUser.uid && !lastMessage.readBy?.[this.currentUser.uid]) {
+                const updates = {};
+                const timestamp = firebase.database.ServerValue.TIMESTAMP;
+                const readPath = `readBy/${this.currentUser.uid}`;
+                updates[`/messages/${this.conversationId}/${lastMessage.id}/${readPath}`] = timestamp;
+                
+                // Обновляем lastMessage только для 1-на-1
+                if (!this.isGroupChat) {
+                    updates[`/conversations/${this.conversationId}/lastMessage/${readPath}`] = timestamp;
+                }
+                database.ref().update(updates).catch(e => console.error("Failed to mark message as read:", e));
+            }
+        },
+        
+        // НОВАЯ: Логика Реакций
+        reactToMessage(messageId, emoji) {
+            const currentReaction = this.selectedMessage.reaction;
+            const newReaction = (currentReaction === emoji) ? null : emoji;
+            const path = `/messages/${this.conversationId}/${messageId}/reaction`;
+            
+            database.ref().update({ [path]: newReaction })
+                .catch(e => Alpine.store('toast').show('Ошибка установки реакции.', 'error'));
+            
+            this.selectedMessage.visible = false;
+        },
+
+        startEdit(messageId, text, timestamp) {
+            const fifteenMinutes = 15 * 60 * 1000;
+            const timeElapsed = new Date().getTime() - timestamp;
+            if (timeElapsed > fifteenMinutes) { Alpine.store('toast').show('Редактирование разрешено только в течение 15 минут.', 'error'); return; }
+            this.editingMessageId = messageId;
+            this.editingOriginalText = text;
+            this.newMessage = text;
+            this.$nextTick(() => document.querySelector('input[type="text"]').focus());
+        },
+
+        cancelEdit() { this.editingMessageId = null; this.editingOriginalText = ''; this.newMessage = ''; },
+
+        saveEdit() {
+            const newText = this.newMessage.trim();
+            if (newText === this.editingOriginalText) { this.cancelEdit(); return; }
+            const messageId = this.editingMessageId;
+            const updates = {};
+            updates[`/messages/${this.conversationId}/${messageId}/text`] = newText;
+            updates[`/messages/${this.conversationId}/${messageId}/edited`] = firebase.database.ServerValue.TIMESTAMP;
+            if (!this.isGroupChat) {
+                const isLastMessage = this.messages[this.messages.length - 1]?.id === messageId;
+                if (isLastMessage) { updates[`/conversations/${this.conversationId}/lastMessage/text`] = newText; }
+            }
+            database.ref().update(updates).then(() => { Alpine.store('toast').show('Сообщение изменено!', 'success'); this.cancelEdit(); }).catch(e => Alpine.store('toast').show('Ошибка сохранения изменений.', 'error'));
+        },
+
+        deleteMessage(messageId) {
+            const fifteenMinutes = 15 * 60 * 1000;
+            const message = this.messages.find(m => m.id === messageId);
+            if (!message) return;
+            const timeElapsed = new Date().getTime() - message.timestamp;
+            if (timeElapsed > fifteenMinutes) { Alpine.store('toast').show('Удаление разрешено только в течение 15 минут.', 'error'); return; }
+            
+            if (confirm('Вы уверены, что хотите удалить это сообщение?')) {
+                database.ref(`/messages/${this.conversationId}/${messageId}`).remove()
+                    .then(() => {
+                        Alpine.store('toast').show('Сообщение удалено!', 'success');
+                        if (!this.isGroupChat && this.messages.length > 0 && this.messages[this.messages.length - 1].id === messageId) {
+                            this.messages.pop();
+                            const prevMessage = this.messages[this.messages.length - 1];
+                            if (prevMessage) {
+                                database.ref(`/conversations/${this.conversationId}/lastMessage`).set({
+                                    text: prevMessage.text, senderId: prevMessage.senderId, timestamp: prevMessage.timestamp, type: prevMessage.type
+                                });
+                            } else {
+                                 database.ref(`/conversations/${this.conversationId}/lastMessage`).remove();
+                            }
+                        }
+                    })
+                    .catch(e => Alpine.store('toast').show('Ошибка удаления.', 'error'));
+            }
+        },
+        
+        async sendMessage(imageUrl = null) {
+            const messageText = this.newMessage.trim();
+            if (!messageText && !imageUrl) return;
+            
+            this.setTypingStatus(false);
+            
+            const messageId = database.ref(`messages/${this.conversationId}`).push().key;
+            const timestamp = firebase.database.ServerValue.TIMESTAMP;
+            const imageUrlRegex = /\.(jpeg|jpg|gif|png|webp)$/i;
+            let messageData = {};
+            let lastMessageText;
+
+            if (imageUrl) {
+                if (!imageUrl.startsWith('http') || !imageUrlRegex.test(imageUrl)) { Alpine.store('toast').show('Неверный формат URL. Используйте прямую ссылку на .jpg/.png.', 'error'); return; }
+                messageData = { senderId: this.currentUser.uid, type: 'image', imageUrl: imageUrl, timestamp: timestamp };
+                lastMessageText = '📷 Изображение';
+            } 
+            else if (messageText.startsWith('http') && imageUrlRegex.test(messageText)) {
+                messageData = { senderId: this.currentUser.uid, type: 'image', imageUrl: messageText, timestamp: timestamp };
+                lastMessageText = '📷 Изображение';
+            } 
+            else {
+                messageData = { senderId: this.currentUser.uid, type: 'text', text: messageText, timestamp: timestamp };
+                lastMessageText = messageText;
+            }
+
+            if (this.replyMessage.id) {
+                messageData.replyTo = {
+                    id: this.replyMessage.id,
+                    text: this.replyMessage.text,
+                    senderName: this.replyMessage.senderName
+                };
+                this.cancelReply();
+            }
+
+            const updates = {};
+            updates[`/messages/${this.conversationId}/${messageId}`] = messageData;
+            
+            if (!this.isGroupChat) {
+                updates[`/conversations/${this.conversationId}/lastMessage`] = {
+                    text: lastMessageText, senderId: this.currentUser.uid, timestamp: timestamp, type: messageData.type
+                };
+            }
+
+            try {
+                await database.ref().update(updates);
+                this.newMessage = ''; 
+                if (imageUrl) this.showUrlModal = false;
+            } catch(err) {
+                Alpine.store('toast').show(`Ошибка отправки. Проверьте правила БД.`, 'error');
+                console.error('Message Send Error:', err);
+            }
+        },
+        
+        sendImageUrl() {
+            const url = this.imageUrlInput.trim();
+            if (url) { this.sendMessage(url); this.imageUrlInput = ''; }
+        },
+        
+        // --- НОВЫЕ ФУНКЦИИ УПРАВЛЕНИЯ ГРУППОЙ ---
+        saveGroupName() {
+            if (!this.newGroupName.trim() || !this.isAdmin) return;
+            database.ref(`groups/${this.groupId}`).update({ name: this.newGroupName })
+                .then(() => {
+                    Alpine.store('toast').show('Название группы обновлено!', 'success');
+                    this.showChangeNameModal = false;
+                    this.newGroupName = '';
+                })
+                .catch(e => Alpine.store('toast').show('Ошибка: ' + e.message, 'error'));
+        },
+
+        saveGroupPhoto() {
+            if (!this.newGroupPhotoURL.trim() || !this.isAdmin) return;
+            // Простая проверка URL
+            if (!this.newGroupPhotoURL.startsWith('http') || !/\.(jpeg|jpg|gif|png|webp)$/i.test(this.newGroupPhotoURL)) {
+                Alpine.store('toast').show('Неверный формат URL. Ссылка должна вести на .jpg, .png и т.д.', 'error');
+                return;
+            }
+            database.ref(`groups/${this.groupId}`).update({ photoURL: this.newGroupPhotoURL })
+                .then(() => {
+                    Alpine.store('toast').show('Фото группы обновлено!', 'success');
+                    this.showChangePhotoModal = false;
+                    this.newGroupPhotoURL = '';
+                })
+                .catch(e => Alpine.store('toast').show('Ошибка: ' + e.message, 'error'));
+        },
+
+        addMembers() {
+            if (this.membersToAdd.length === 0 || !this.isAdmin) return;
+            
+            const updates = {};
+            this.membersToAdd.forEach(uid => {
+                updates[`/groups/${this.groupId}/members/${uid}`] = true;
+                updates[`/user_conversations/${uid}/${this.groupId}`] = { type: 'group', hidden: false };
+            });
+
+            database.ref().update(updates)
+                .then(() => {
+                    Alpine.store('toast').show('Участники добавлены!', 'success');
+                    this.showAddMemberModal = false;
+                    this.membersToAdd = [];
+                    // this.loadGroupInfo(); // Обновит счетчик участников (уже делается .on('value'))
+                })
+                .catch(e => Alpine.store('toast').show('Ошибка: ' + e.message, 'error'));
+        },
+        // --- КОНЕЦ НОВЫХ ФУНКЦИЙ ---
+
+        scrollToBottom() {
+            this.$refs.messages.scrollTop = this.$refs.messages.scrollHeight;
+        },
+        formatTime(timestamp) {
+            const date = new Date(timestamp);
+            return date.toLocaleTimeString('ru-RU', { hour: '2-digit', minute: '2-digit' });
+        },
+        formatFullTimestamp(timestamp) {
+            const date = new Date(timestamp);
+            return date.toLocaleString('ru-RU', { day: 'numeric', month: 'short', year:'numeric', hour: '2-digit', minute: '2-digit' });
+        }
+    }));
+});
+
     </script>
 </body>
 </html>
