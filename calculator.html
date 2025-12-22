@@ -253,7 +253,7 @@
     <script src="https://www.gstatic.com/firebasejs/8.10.0/firebase-auth.js"></script>
     <script src="https://www.gstatic.com/firebasejs/8.10.0/firebase-database.js"></script>
 
-    <script>
+                    <script>
         const firebaseConfig = {
             apiKey: "AIzaSyCAOfxPW5m2UqtulWzuh3egOjJ-ti-rDf8",
             authDomain: "register-221e5.firebaseapp.com",
@@ -271,7 +271,6 @@
             Alpine.data('gradeApp', () => ({
                 isDark: localStorage.getItem('theme') === 'dark',
                 isSaving: false,
-                // Начальное состояние данных пользователя
                 userData: { 
                     name: '', 
                     email: '',
@@ -285,19 +284,20 @@
                 toast: { visible: false, message: '' },
                 
                 init() {
+                    // Слушатель состояния авторизации
                     auth.onAuthStateChanged(user => {
                         if (user) {
+                            // Если пользователь вошел в систему — загружаем его данные
                             this.loadUserData(user.uid);
                             this.loadGrades(user.uid);
                         } else {
-                            // Режим демо/оффлайн
-                            this.userData.name = 'Гость';
-                            this.loadLocalGrades(); 
+                            // Если пользователь НЕ вошел — перенаправляем на главную
+                            window.location.href = 'index.html';
                         }
                     });
                 },
 
-                // ЗАГРУЗКА ВСЕХ ДАННЫХ ПРОФИЛЯ
+                // Остальные функции без изменений...
                 loadUserData(uid) {
                     db.ref('users/' + uid).once('value').then(snap => {
                         const data = snap.val() || {};
@@ -307,8 +307,6 @@
                             name: data.displayName || user.displayName || 'Студент',
                             email: user.email,
                             photoURL: data.photoURL || user.photoURL,
-                            
-                            // Получаем поля, если их нет — будут undefined (Alpine покажет "Нет данных")
                             group: data.group,
                             faculty: data.faculty,
                             course: data.course,
@@ -323,16 +321,13 @@
                         if (data) {
                             this.subjects = data;
                         } else {
-                            this.loadLocalGrades();
+                            // Если у пользователя нет данных в БД, создаем пустую строку
+                            this.addSubject();
                         }
                     });
                 },
 
-                loadLocalGrades() {
-                    const local = localStorage.getItem('gradeData');
-                    if (local) this.subjects = JSON.parse(local);
-                    else this.addSubject();
-                },
+                // loadLocalGrades удален, так как он больше не нужен для гостей
 
                 addSubject() {
                     this.subjects.push({ id: Date.now(), name: '', p1: '', p2: '', exam: '', total: 0, grade: '-' });
@@ -399,18 +394,15 @@
 
                 saveData() {
                     this.isSaving = true;
+                    // Сохраняем локально как кеш
                     localStorage.setItem('gradeData', JSON.stringify(this.subjects));
                     
+                    // Сохраняем в Firebase (так как мы теперь точно знаем, что пользователь залогинен)
                     if (auth.currentUser) {
                         db.ref('users/' + auth.currentUser.uid + '/grades').set(this.subjects)
                             .then(() => { this.showToast('Успешно сохранено!'); })
                             .catch(e => { this.showToast('Ошибка: ' + e.message); })
                             .finally(() => this.isSaving = false);
-                    } else {
-                        setTimeout(() => {
-                            this.isSaving = false;
-                            this.showToast('Сохранено локально');
-                        }, 800);
                     }
                 },
 
@@ -445,6 +437,8 @@
         document.addEventListener('keydown', e => {
             if(e.key === 'F12' || (e.ctrlKey && (e.key === 'u' || e.key === 'c'))) e.preventDefault();
         });
-    </script>
+                    </script>
+    
+                
 </body>
 </html>
