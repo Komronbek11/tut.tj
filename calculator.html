@@ -2,418 +2,449 @@
 <html lang="ru">
 <head>
     <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Таблица расчета экзаменов</title>
-    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+    <title>Калькулятор оценок - ДТТ</title>
+    
+    <link href="https://cdn.jsdelivr.net/npm/tailwindcss@2.2.19/dist/tailwind.min.css" rel="stylesheet">
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800&display=swap" rel="stylesheet">
+    <script src="https://cdn.jsdelivr.net/npm/alpinejs@3.13.10/dist/cdn.min.js" defer></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/xlsx/0.17.0/xlsx.full.min.js"></script>
+    <link rel="icon" type="image/png" href="logo.png">
+
     <style>
         :root {
-            --primary-color: #4361ee;
-            --secondary-color: #3f37c9;
-            --success-color: #4cc9f0;
-            --danger-color: #f72585;
-            --light-color: #f8f9fa;
-            --dark-color: #212529;
-            --border-radius: 12px;
-            --box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
-            --transition: all 0.3s ease;
+            --bg-light: #f7f9fc; --bg-dark: #0f172a;
+            --card-light: rgba(255, 255, 255, 0.65); --card-dark: rgba(30, 41, 59, 0.7);
+            --text-light: #0f172a; --text-dark: #f1f5f9;
+            --primary: #4f46e5;
         }
-
-        * {
-            box-sizing: border-box;
-            margin: 0;
-            padding: 0;
-        }
-
+        
         body {
-            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
-            line-height: 1.6;
-            background-color: #f0f2f5;
-            color: var(--dark-color);
-            padding: 10px;
+            font-family: 'Inter', sans-serif;
+            background-color: var(--bg-light);
+            color: var(--text-light);
+            transition: background-color 0.5s ease, color 0.5s ease;
+            -webkit-tap-highlight-color: transparent;
+        }
+        
+        .dark { background-color: var(--bg-dark); color: var(--text-dark); }
+
+        /* Aurora Background */
+        .aurora-container { position: fixed; top: 0; left: 0; width: 100%; height: 100vh; overflow: hidden; z-index: -1; pointer-events: none;}
+        .aurora-shape { position: absolute; border-radius: 50%; filter: blur(100px); opacity: 0.3; animation: float 20s infinite ease-in-out alternate; }
+        .dark .aurora-shape { opacity: 0.15; }
+        .shape-1 { top: -10%; left: -10%; width: 50vw; height: 50vw; background: #6366f1; }
+        .shape-2 { bottom: -10%; right: -10%; width: 60vw; height: 60vw; background: #ec4899; animation-delay: -5s; }
+        
+        @keyframes float { 0% { transform: translate(0, 0) rotate(0deg); } 100% { transform: translate(30px, 50px) rotate(10deg); } }
+
+        /* Glass Cards */
+        .glass-card {
+            background-color: var(--card-light);
+            backdrop-filter: blur(20px); -webkit-backdrop-filter: blur(20px);
+            border: 1px solid rgba(255,255,255,0.2);
+            box-shadow: 0 8px 32px rgba(0,0,0,0.05);
+        }
+        .dark .glass-card {
+            background-color: var(--card-dark);
+            border: 1px solid rgba(255,255,255,0.05);
         }
 
-        .container {
-            max-width: 1200px;
-            margin: 0 auto;
-            padding: 0 15px;
-        }
-
-        .header {
-            display: flex;
-            align-items: center;
-            margin-bottom: 25px;
-            gap: 15px;
-        }
-
-        .back-btn {
-            display: inline-flex;
-            align-items: center;
-            justify-content: center;
-            width: 40px;
-            height: 40px;
-            border-radius: 50%;
-            background-color: var(--primary-color);
-            color: white;
-            border: none;
-            cursor: pointer;
-            transition: var(--transition);
-            box-shadow: var(--box-shadow);
-        }
-
-        .back-btn:hover {
-            background-color: var(--secondary-color);
-            transform: translateY(-2px);
-        }
-
-        h2 {
-            color: var(--primary-color);
-            margin: 0;
-            font-size: 1.8rem;
-        }
-
-        .actions {
-            display: flex;
-            flex-wrap: wrap;
-            gap: 10px;
-            margin-bottom: 20px;
-        }
-
-        .btn {
-            padding: 10px 20px;
-            border-radius: var(--border-radius);
-            border: none;
-            font-weight: 600;
-            cursor: pointer;
-            transition: var(--transition);
-            display: inline-flex;
-            align-items: center;
-            justify-content: center;
-            gap: 8px;
-            box-shadow: var(--box-shadow);
-        }
-
-        .btn i {
-            font-size: 1rem;
-        }
-
-        .btn-primary {
-            background-color: var(--primary-color);
-            color: white;
-        }
-
-        .btn-primary:hover {
-            background-color: var(--secondary-color);
-        }
-
-        .btn-success {
-            background-color: var(--success-color);
-            color: white;
-        }
-
-        .btn-success:hover {
-            background-color: #38b6db;
-        }
-
-        .btn-danger {
-            background-color: var(--danger-color);
-            color: white;
-        }
-
-        .btn-danger:hover {
-            background-color: #e5177b;
-        }
-
-        .table-container {
-            width: 100%;
-            overflow-x: auto;
-            margin-bottom: 30px;
-            border-radius: var(--border-radius);
-            box-shadow: var(--box-shadow);
-            background-color: white;
-        }
-
-        table {
-            width: 100%;
-            border-collapse: collapse;
-            min-width: 600px;
-        }
-
-        th, td {
-            padding: 12px 15px;
+        /* Modern Inputs */
+        .table-input {
+            background: transparent;
             text-align: center;
-            border-bottom: 1px solid #e0e0e0;
-        }
-
-        th {
-            background-color: var(--primary-color);
-            color: white;
             font-weight: 600;
-            position: sticky;
-            top: 0;
-        }
-
-        tr:nth-child(even) {
-            background-color: #f9f9f9;
-        }
-
-        tr:hover {
-            background-color: #f1f1f1;
-        }
-
-        select, input {
             width: 100%;
-            padding: 8px 12px;
-            border: 1px solid #ddd;
-            border-radius: 6px;
-            font-family: inherit;
-            font-size: inherit;
-            transition: var(--transition);
-        }
-
-        select:focus, input:focus {
+            height: 100%;
             outline: none;
-            border-color: var(--primary-color);
-            box-shadow: 0 0 0 2px rgba(67, 97, 238, 0.2);
+            transition: 0.2s;
+            border-radius: 8px;
+        }
+        .table-input:focus {
+            background: rgba(var(--primary), 0.1);
+            box-shadow: inset 0 0 0 2px var(--primary);
+        }
+        
+        /* STICKY COLUMN MAGIC */
+        .sticky-col {
+            position: sticky;
+            left: 0;
+            z-index: 20;
+            background-color: #fcfdfe; 
+        }
+        .dark .sticky-col { background-color: #1e293b; }
+        
+        .sticky-shadow::after {
+            content: ''; position: absolute; top: 0; right: -5px; bottom: 0; width: 5px;
+            background: linear-gradient(to right, rgba(0,0,0,0.1), transparent);
+            pointer-events: none;
         }
 
-        .grade-A { color: #2ecc71; font-weight: bold; }
-        .grade-B { color: #3498db; font-weight: bold; }
-        .grade-C { color: #f39c12; font-weight: bold; }
-        .grade-D { color: #e74c3c; font-weight: bold; }
-        .grade-F { color: #c0392b; font-weight: bold; }
-
-        /* Responsive adjustments */
-        @media (max-width: 768px) {
-            .header {
-                flex-direction: column;
-                align-items: flex-start;
-                gap: 10px;
-            }
-            
-            .actions {
-                flex-direction: column;
-            }
-            
-            .btn {
-                width: 100%;
-            }
-            
-            th, td {
-                padding: 8px 10px;
-                font-size: 0.9rem;
-            }
+        /* Status Badge for Empty Data */
+        .empty-data {
+            font-style: italic;
+            opacity: 0.5;
+            font-weight: 400;
         }
 
-        @media (max-width: 480px) {
-            body {
-                padding: 1px;
-            }
-            
-            h2 {
-                font-size: 1.5rem;
-            }
-            
-            th, td {
-                padding: 6px;
-                font-size: 0.8rem;
-            }
-            
-            select, input {
-                padding: 6px 8px;
-            }
-        }
+        input[type=number]::-webkit-inner-spin-button, 
+        input[type=number]::-webkit-outer-spin-button { -webkit-appearance: none; margin: 0; }
+
+        [x-cloak] { display: none !important; }
     </style>
 </head>
-<body>
-    <div class="container">
-        <div class="header">
-            <button class="back-btn" onclick="goBack()">
-                <i class="fas fa-arrow-left"></i>
-            </button>
-            <h2>Таблица расчета экзаменов</h2>
-        </div>
-        
-        <div class="actions">
-            <button class="btn btn-success" onclick="saveData()">
-                <i class="fas fa-save"></i> Сохранить данные
-            </button>
-            <button class="btn btn-danger" onclick="exportToExcel()">
-                <i class="fas fa-file-excel"></i> Экспорт в Excel
-            </button>
-            <button class="btn btn-primary" onclick="addRow()">
-                <i class="fas fa-plus"></i> Добавить предмет
-            </button>
-        </div>
-        
-        <div class="table-container">
-            <table id="examTable">
-                <thead>
-                    <tr>
-                        <th>Фан</th>
-                        <th>P1</th>
-                        <th>P2</th>
-                        <th>Имтиҳон</th>
-                        <th>Холи умӯми ретингҳо</th>
-                        <th>Холи умӯми имтиҳонҳо</th>
-                        <th>Ҷамъи ҳолҳо</th>
-                        <th>Баҳо</th>
-                    </tr>
-                </thead>
-                <tbody>
-                </tbody>
-            </table>
-        </div>
+<body x-data="gradeApp()" x-init="init()" :class="{ 'dark': isDark }" x-cloak>
+
+    <div class="aurora-container">
+        <div class="aurora-shape shape-1"></div>
+        <div class="aurora-shape shape-2"></div>
     </div>
 
-    <script>
-        const subjects = [
-            "Фани дарсӣ-ро интихоб кунед",
-            "База данных",
-            "Политология",
-            "Этика и эстетика",
-            "Статистика и КОД",
-            "Усул ва ВХИ",
-            "Програм. на Java"
-        ];
-
-        function goBack() {
-            window.location.href = "home.html";
-        }
+    <main class="container mx-auto p-4 md:p-6 min-h-screen max-w-6xl">
         
-        function addRow() {
-            let table = document.getElementById('examTable').getElementsByTagName('tbody')[0];
-            let newRow = table.insertRow();
-            
-            let subjectCell = newRow.insertCell(0);
-            let p1Cell = newRow.insertCell(1);
-            let p2Cell = newRow.insertCell(2);
-            let examCell = newRow.insertCell(3);
-            let results1Cell = newRow.insertCell(4);
-            let results2Cell = newRow.insertCell(5);
-            let totalCell = newRow.insertCell(6);
-            let gradeCell = newRow.insertCell(7);
-            
-            let select = document.createElement("select");
-            subjects.forEach(subject => {
-                let option = document.createElement("option");
-                option.value = subject;
-                option.textContent = subject;
-                select.appendChild(option);
-            });
-            subjectCell.appendChild(select);
-            
-            p1Cell.innerHTML = `<input type="number" min="0" max="100" step="0.01" oninput="calculateResults(this)">`;
-            p2Cell.innerHTML = `<input type="number" min="0" max="100" step="0.01" oninput="calculateResults(this)">`;
-            examCell.innerHTML = `<input type="number" min="0" max="100" step="0.01" oninput="calculateResults(this)">`;
-            results1Cell.textContent = "0.00";
-            results2Cell.textContent = "0.00";
-            totalCell.textContent = "0.00";
-            gradeCell.textContent = "-";
-            gradeCell.className = "";
-        }
+        <div class="flex items-center justify-between mb-6">
+            <div class="flex items-center gap-4">
+                <button @click="window.location.href='profile.html'" class="w-10 h-10 rounded-full glass-card flex items-center justify-center hover:scale-105 transition-transform group">
+                    <svg class="w-5 h-5 group-hover:-translate-x-1 transition-transform" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M10 19l-7-7m0 0l7-7m-7 7h18"/></svg>
+                </button>
+                <div>
+                    <h1 class="text-2xl font-bold bg-clip-text text-transparent bg-gradient-to-r from-indigo-500 to-pink-500">GradeFlow</h1>
+                    <p class="text-xs opacity-60 font-medium tracking-wider uppercase">Калькулятор рейтинга</p>
+                </div>
+            </div>
+        </div>
 
-        function calculateResults(input) {
-            let row = input.parentElement.parentElement;
-            let p1 = parseFloat(row.cells[1].getElementsByTagName('input')[0].value) || 0;
-            let p2 = parseFloat(row.cells[2].getElementsByTagName('input')[0].value) || 0;
-            let exam = parseFloat(row.cells[3].getElementsByTagName('input')[0].value) || 0;
-            
-            // Validate input values
-            p1 = Math.min(100, Math.max(0, p1));
-            p2 = Math.min(100, Math.max(0, p2));
-            exam = Math.min(100, Math.max(0, exam));
-            
-            // Update input fields with validated values
-            row.cells[1].getElementsByTagName('input')[0].value = p1;
-            row.cells[2].getElementsByTagName('input')[0].value = p2;
-            row.cells[3].getElementsByTagName('input')[0].value = exam;
-            
-            let results1 = ((p1 + p2) / 2) * 0.6;
-            let results2 = exam * 0.4;
-            let total = results1 + results2;
-            
-            row.cells[4].textContent = results1.toFixed(2);
-            row.cells[5].textContent = results2.toFixed(2);
-            row.cells[6].textContent = total.toFixed(2);
-            
-            let grade = getGrade(total);
-            row.cells[7].textContent = grade.text;
-            row.cells[7].className = grade.class;
-        }
+        <div class="glass-card rounded-2xl p-6 mb-6 transition-all hover:shadow-lg">
+            <div class="flex flex-col md:flex-row items-center md:items-start gap-6">
+                
+                <div class="relative group flex-shrink-0">
+                    <div class="w-20 h-20 md:w-24 md:h-24 rounded-full p-1 border-2 border-indigo-500/30">
+                        <img :src="userData.photoURL || 'userphoto.jpg'" class="w-full h-full rounded-full object-cover bg-gray-200">
+                    </div>
+                    <div class="absolute bottom-1 right-1 w-5 h-5 bg-green-500 border-4 border-white dark:border-gray-800 rounded-full"></div>
+                </div>
 
-        function getGrade(score) {
-            if (score >= 95) return { text: "A (5)", class: "grade-A" };
-            if (score >= 90) return { text: "A- (-5)", class: "grade-A" };
-            if (score >= 85) return { text: "B+", class: "grade-B" };
-            if (score >= 80) return { text: "B", class: "grade-B" };
-            if (score >= 75) return { text: "B-", class: "grade-B" };
-            if (score >= 70) return { text: "C+", class: "grade-C" };
-            if (score >= 65) return { text: "C", class: "grade-C" };
-            if (score >= 60) return { text: "C", class: "grade-C" };
-            if (score >= 55) return { text: "D+", class: "grade-D" };
-            if (score >= 50) return { text: "D", class: "grade-D" };
-            if (score >= 25) return { text: "E", class: "grade-D" };
-            return { text: "F", class: "grade-F" };
-        }
+                <div class="flex-grow w-full text-center md:text-left">
+                    <h2 class="text-2xl font-bold mb-1" x-text="userData.name || 'Студент'"></h2>
+                    <p class="text-sm opacity-60 mb-4" x-text="userData.email || 'email@example.com'"></p>
 
-        function saveData() {
-            let tableData = [];
-            let rows = document.querySelectorAll("#examTable tbody tr");
-            rows.forEach(row => {
-                let rowData = {
-                    subject: row.cells[0].querySelector("select").value,
-                    p1: row.cells[1].querySelector("input").value,
-                    p2: row.cells[2].querySelector("input").value,
-                    exam: row.cells[3].querySelector("input").value,
-                    total: row.cells[6].textContent,
-                    grade: row.cells[7].textContent
-                };
-                tableData.push(rowData);
-            });
-            localStorage.setItem("examData", JSON.stringify(tableData));
-            
-            // Show success notification
-            alert("Данные успешно сохранены!");
-        }
-
-        function loadData() {
-            let savedData = localStorage.getItem("examData");
-            if (savedData) {
-                let data = JSON.parse(savedData);
-                if (data.length === 0) {
-                    // Add one empty row if no data exists
-                    addRow();
-                } else {
-                    data.forEach(item => {
-                        addRow();
-                        let lastRow = document.querySelector("#examTable tbody tr:last-child");
-                        lastRow.cells[0].querySelector("select").value = item.subject;
-                        lastRow.cells[1].querySelector("input").value = item.p1;
-                        lastRow.cells[2].querySelector("input").value = item.p2;
-                        lastRow.cells[3].querySelector("input").value = item.exam;
-                        lastRow.cells[6].textContent = item.total;
-                        lastRow.cells[7].textContent = item.grade;
+                    <div class="grid grid-cols-2 md:grid-cols-4 gap-4 pt-4 border-t border-gray-200/20">
                         
-                        // Recalculate to set the grade class
-                        if (item.p1 || item.p2 || item.exam) {
-                            calculateResults(lastRow.cells[1].querySelector("input"));
+                        <div class="flex flex-col">
+                            <span class="text-xs uppercase tracking-wider opacity-50 mb-1">Факультет</span>
+                            <span class="font-semibold text-sm truncate" 
+                                  :class="{'empty-data': !userData.faculty}"
+                                  x-text="userData.faculty || 'Нет данных'"></span>
+                        </div>
+
+                        <div class="flex flex-col">
+                            <span class="text-xs uppercase tracking-wider opacity-50 mb-1">Группа</span>
+                            <span class="font-semibold text-sm truncate"
+                                  :class="{'empty-data': !userData.group}"
+                                  x-text="userData.group || 'Нет данных'"></span>
+                        </div>
+
+                        <div class="flex flex-col">
+                            <span class="text-xs uppercase tracking-wider opacity-50 mb-1">Курс</span>
+                            <span class="font-semibold text-sm"
+                                  :class="{'empty-data': !userData.course}"
+                                  x-text="userData.course ? userData.course + '-й' : 'Нет данных'"></span>
+                        </div>
+
+                        <div class="flex flex-col">
+                            <span class="text-xs uppercase tracking-wider opacity-50 mb-1">Телефон</span>
+                            <span class="font-semibold text-sm truncate"
+                                  :class="{'empty-data': !userData.phoneNumber}"
+                                  x-text="userData.phoneNumber || 'Нет данных'"></span>
+                        </div>
+
+                    </div>
+                </div>
+            </div>
+        </div>
+        <div class="grid grid-cols-1 md:grid-cols-4 gap-4 mb-6">
+            <div class="glass-card p-5 rounded-2xl flex flex-col justify-between md:col-span-1 relative overflow-hidden group">
+                <div class="absolute -right-6 -top-6 w-24 h-24 bg-indigo-500/20 rounded-full blur-xl group-hover:bg-indigo-500/30 transition-colors"></div>
+                <p class="text-sm opacity-60 font-medium">Средний балл</p>
+                <div class="flex items-baseline gap-2 mt-2">
+                    <h2 class="text-4xl font-bold" x-text="calculateAverage()">0</h2>
+                    <span class="text-sm opacity-60">/ 100</span>
+                </div>
+            </div>
+
+            <div class="glass-card p-2 rounded-2xl md:col-span-3 flex items-center gap-2 overflow-x-auto">
+                <button @click="addSubject()" class="flex-1 min-w-[140px] bg-indigo-600 hover:bg-indigo-700 text-white py-3 px-4 rounded-xl font-medium transition-all flex items-center justify-center gap-2 shadow-lg shadow-indigo-500/30">
+                    <svg class="w-5 h-5" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 4v16m8-8H4"/></svg>
+                    <span>Добавить</span>
+                </button>
+                
+                <button @click="saveData()" class="flex-1 min-w-[140px] bg-emerald-500 hover:bg-emerald-600 text-white py-3 px-4 rounded-xl font-medium transition-all flex items-center justify-center gap-2 shadow-lg shadow-emerald-500/30">
+                    <span x-show="!isSaving" class="flex items-center gap-2">
+                        <svg class="w-5 h-5" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M8 7H5a2 2 0 00-2 2v9a2 2 0 002 2h14a2 2 0 002-2V9a2 2 0 00-2-2h-3m-1 4l-3 3m0 0l-3-3m3 3V4"/></svg>
+                        Сохранить
+                    </span>
+                    <svg x-show="isSaving" class="w-5 h-5 animate-spin" fill="none" viewBox="0 0 24 24"><circle class="opacity-25" cx="12" cy="12" r="10" stroke="currentColor" stroke-width="4"></circle><path class="opacity-75" fill="currentColor" d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4zm2 5.291A7.962 7.962 0 014 12H0c0 3.042 1.135 5.824 3 7.938l3-2.647z"></path></svg>
+                </button>
+
+                <button @click="exportExcel()" class="flex-1 min-w-[140px] glass-card hover:bg-white/20 py-3 px-4 rounded-xl font-medium transition-all flex items-center justify-center gap-2 text-current border border-gray-200 dark:border-gray-700">
+                    <svg class="w-5 h-5 text-green-600" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 16v1a3 3 0 003 3h10a3 3 0 003-3v-1m-4-4l-4 4m0 0l-4-4m4 4V4"/></svg>
+                    <span>Excel</span>
+                </button>
+            </div>
+        </div>
+
+        <div class="glass-card rounded-2xl overflow-hidden relative shadow-2xl">
+            <div class="overflow-x-auto" @scroll="handleScroll($event)" id="tableContainer">
+                <table class="w-full min-w-[650px] border-collapse" id="gradeTable">
+                    <thead>
+                        <tr class="text-xs uppercase tracking-wider text-left border-b border-gray-200/20">
+                            <th class="p-4 sticky-col sticky-shadow min-w-[160px]">Предмет</th>
+                            <th class="p-4 text-center text-gray-500 w-[80px]">Р1</th>
+                            <th class="p-4 text-center text-gray-500 w-[80px]">Р2</th>
+                            <th class="p-4 text-center text-gray-500 w-[80px]">Экзамен</th>
+                            <th class="p-4 text-center">Итог</th>
+                            <th class="p-4 text-center">Оценка</th>
+                            <th class="p-4 w-[50px]"></th>
+                        </tr>
+                    </thead>
+                    <tbody class="divide-y divide-gray-200/10">
+                        <template x-for="(subject, index) in subjects" :key="subject.id">
+                            <tr class="group hover:bg-black/5 dark:hover:bg-white/5 transition-colors">
+                                <td class="p-2 sticky-col sticky-shadow">
+                                    <input type="text" x-model="subject.name" placeholder="Название..." class="w-full bg-transparent font-semibold placeholder-gray-400 outline-none py-2 border-b border-transparent focus:border-indigo-500 transition-colors">
+                                </td>
+                                <td class="p-2"><input type="number" x-model.number="subject.p1" @input="calcRow(index)" placeholder="-" class="table-input" min="0" max="100"></td>
+                                <td class="p-2"><input type="number" x-model.number="subject.p2" @input="calcRow(index)" placeholder="-" class="table-input" min="0" max="100"></td>
+                                <td class="p-2"><input type="number" x-model.number="subject.exam" @input="calcRow(index)" placeholder="-" class="table-input font-bold text-indigo-500" min="0" max="100"></td>
+                                <td class="p-4 text-center font-bold text-lg" x-text="subject.total">0</td>
+                                <td class="p-4 text-center">
+                                    <span class="px-3 py-1 rounded-full text-xs font-bold shadow-sm" :class="getGradeColor(subject.grade)" x-text="subject.grade">F</span>
+                                </td>
+                                <td class="p-2 text-center">
+                                    <button @click="removeSubject(index)" class="text-red-400 hover:text-red-600 hover:bg-red-100 dark:hover:bg-red-900/30 p-2 rounded-lg transition-colors">
+                                        <svg class="w-4 h-4" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 7l-.867 12.142A2 2 0 0116.138 21H7.862a2 2 0 01-1.995-1.858L5 7m5 4v6m4-6v6m1-10V4a1 1 0 00-1-1h-4a1 1 0 00-1 1v3M4 7h16"/></svg>
+                                    </button>
+                                </td>
+                            </tr>
+                        </template>
+                    </tbody>
+                </table>
+            </div>
+            
+            <div x-show="subjects.length === 0" class="p-10 text-center opacity-50">
+                <svg class="w-16 h-16 mx-auto mb-4 text-gray-400" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="1.5" d="M9 5H7a2 2 0 00-2 2v12a2 2 0 002 2h10a2 2 0 002-2V7a2 2 0 00-2-2h-2M9 5a2 2 0 002 2h2a2 2 0 002-2M9 5a2 2 0 012-2h2a2 2 0 012 2"/></svg>
+                <p>Список предметов пуст. Нажмите "Добавить"</p>
+            </div>
+        </div>
+        
+        <div class="md:hidden text-center mt-4 text-xs opacity-50 animate-pulse flex items-center justify-center gap-2">
+            <svg class="w-4 h-4" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M8 7h12m0 0l-4-4m4 4l-4 4m0 6H4m0 0l4 4m-4-4l4-4"/></svg>
+            Листайте таблицу влево-вправо
+        </div>
+
+    </main>
+
+    <div x-show="toast.visible" x-transition class="fixed bottom-6 left-1/2 transform -translate-x-1/2 bg-gray-900 text-white dark:bg-white dark:text-gray-900 px-6 py-3 rounded-full shadow-2xl z-50 flex items-center gap-3 font-medium text-sm">
+        <span x-text="toast.message"></span>
+    </div>
+
+    <script src="https://www.gstatic.com/firebasejs/8.10.0/firebase-app.js"></script>
+    <script src="https://www.gstatic.com/firebasejs/8.10.0/firebase-auth.js"></script>
+    <script src="https://www.gstatic.com/firebasejs/8.10.0/firebase-database.js"></script>
+
+    <script>
+        const firebaseConfig = {
+            apiKey: "AIzaSyCAOfxPW5m2UqtulWzuh3egOjJ-ti-rDf8",
+            authDomain: "register-221e5.firebaseapp.com",
+            projectId: "register-221e5",
+            storageBucket: "register-221e5.appspot.com",
+            messagingSenderId: "588640206529",
+            appId: "1:588640206529:web:b2abf5413387e251935e40"
+        };
+        
+        if (!firebase.apps.length) firebase.initializeApp(firebaseConfig);
+        const auth = firebase.auth();
+        const db = firebase.database();
+
+        document.addEventListener('alpine:init', () => {
+            Alpine.data('gradeApp', () => ({
+                isDark: localStorage.getItem('theme') === 'dark',
+                isSaving: false,
+                // Начальное состояние данных пользователя
+                userData: { 
+                    name: '', 
+                    email: '',
+                    group: '', 
+                    faculty: '', 
+                    course: '', 
+                    phoneNumber: '',
+                    photoURL: '' 
+                },
+                subjects: [],
+                toast: { visible: false, message: '' },
+                
+                init() {
+                    auth.onAuthStateChanged(user => {
+                        if (user) {
+                            this.loadUserData(user.uid);
+                            this.loadGrades(user.uid);
+                        } else {
+                            // Режим демо/оффлайн
+                            this.userData.name = 'Гость';
+                            this.loadLocalGrades(); 
                         }
                     });
+                },
+
+                // ЗАГРУЗКА ВСЕХ ДАННЫХ ПРОФИЛЯ
+                loadUserData(uid) {
+                    db.ref('users/' + uid).once('value').then(snap => {
+                        const data = snap.val() || {};
+                        const user = auth.currentUser;
+                        
+                        this.userData = {
+                            name: data.displayName || user.displayName || 'Студент',
+                            email: user.email,
+                            photoURL: data.photoURL || user.photoURL,
+                            
+                            // Получаем поля, если их нет — будут undefined (Alpine покажет "Нет данных")
+                            group: data.group,
+                            faculty: data.faculty,
+                            course: data.course,
+                            phoneNumber: data.phoneNumber
+                        };
+                    });
+                },
+
+                loadGrades(uid) {
+                    db.ref('users/' + uid + '/grades').once('value').then(snap => {
+                        const data = snap.val();
+                        if (data) {
+                            this.subjects = data;
+                        } else {
+                            this.loadLocalGrades();
+                        }
+                    });
+                },
+
+                loadLocalGrades() {
+                    const local = localStorage.getItem('gradeData');
+                    if (local) this.subjects = JSON.parse(local);
+                    else this.addSubject();
+                },
+
+                addSubject() {
+                    this.subjects.push({ id: Date.now(), name: '', p1: '', p2: '', exam: '', total: 0, grade: '-' });
+                    this.$nextTick(() => {
+                        const container = document.getElementById('tableContainer');
+                        container.scrollTop = container.scrollHeight;
+                    });
+                },
+
+                removeSubject(index) {
+                    this.subjects.splice(index, 1);
+                    this.calcAll();
+                },
+
+                calcRow(index) {
+                    const s = this.subjects[index];
+                    const p1 = parseFloat(s.p1) || 0;
+                    const p2 = parseFloat(s.p2) || 0;
+                    const exam = parseFloat(s.exam) || 0;
+
+                    const ratingScore = ((p1 + p2) / 2) * 0.6;
+                    const examScore = exam * 0.4;
+                    const total = ratingScore + examScore;
+
+                    s.total = total.toFixed(0);
+                    
+                    if (total >= 95) s.grade = "A";
+                    else if (total >= 90) s.grade = "A-";
+                    else if (total >= 85) s.grade = "B+";
+                    else if (total >= 80) s.grade = "B";
+                    else if (total >= 75) s.grade = "B-";
+                    else if (total >= 70) s.grade = "C+";
+                    else if (total >= 65) s.grade = "C";
+                    else if (total >= 60) s.grade = "C-";
+                    else if (total >= 55) s.grade = "D+";
+                    else if (total >= 50) s.grade = "D";
+                    else s.grade = "F";
+                },
+
+                calcAll() {
+                    this.subjects.forEach((_, i) => this.calcRow(i));
+                },
+
+                calculateAverage() {
+                    if (this.subjects.length === 0) return 0;
+                    let sum = 0;
+                    let count = 0;
+                    this.subjects.forEach(s => {
+                        if (s.total > 0) {
+                            sum += parseFloat(s.total);
+                            count++;
+                        }
+                    });
+                    return count === 0 ? 0 : (sum / count).toFixed(1);
+                },
+
+                getGradeColor(grade) {
+                    if (grade.includes('A')) return 'bg-green-100 text-green-700 dark:bg-green-900/40 dark:text-green-300';
+                    if (grade.includes('B')) return 'bg-blue-100 text-blue-700 dark:bg-blue-900/40 dark:text-blue-300';
+                    if (grade.includes('C')) return 'bg-yellow-100 text-yellow-700 dark:bg-yellow-900/40 dark:text-yellow-300';
+                    if (grade.includes('D')) return 'bg-orange-100 text-orange-700 dark:bg-orange-900/40 dark:text-orange-300';
+                    return 'bg-gray-100 text-gray-500 dark:bg-gray-700 dark:text-gray-400';
+                },
+
+                saveData() {
+                    this.isSaving = true;
+                    localStorage.setItem('gradeData', JSON.stringify(this.subjects));
+                    
+                    if (auth.currentUser) {
+                        db.ref('users/' + auth.currentUser.uid + '/grades').set(this.subjects)
+                            .then(() => { this.showToast('Успешно сохранено!'); })
+                            .catch(e => { this.showToast('Ошибка: ' + e.message); })
+                            .finally(() => this.isSaving = false);
+                    } else {
+                        setTimeout(() => {
+                            this.isSaving = false;
+                            this.showToast('Сохранено локально');
+                        }, 800);
+                    }
+                },
+
+                exportExcel() {
+                    const dataToExport = this.subjects.map(s => ({
+                        "Предмет": s.name, "Рейтинг 1": s.p1, "Рейтинг 2": s.p2, "Экзамен": s.exam, "Итого": s.total, "Оценка": s.grade
+                    }));
+                    const wb = XLSX.utils.book_new();
+                    const ws = XLSX.utils.json_to_sheet(dataToExport);
+                    const wscols = [{wch:20}, {wch:10}, {wch:10}, {wch:10}, {wch:10}, {wch:10}];
+                    ws['!cols'] = wscols;
+                    XLSX.utils.book_append_sheet(wb, ws, "Оценки");
+                    XLSX.writeFile(wb, "Мои_Оценки.xlsx");
+                    this.showToast('Файл Excel скачан');
+                },
+
+                showToast(msg) {
+                    this.toast.message = msg;
+                    this.toast.visible = true;
+                    setTimeout(() => this.toast.visible = false, 3000);
+                },
+
+                handleScroll(e) {
+                    const el = e.target;
+                    const cols = document.querySelectorAll('.sticky-col');
+                    if (el.scrollLeft > 5) cols.forEach(c => c.classList.add('sticky-shadow-visible')); 
                 }
-            } else {
-                // Add one empty row if no data exists
-                addRow();
-            }
-        }
+            }))
+        });
 
-        function exportToExcel() {
-            let table = document.getElementById("examTable");
-            let wb = XLSX.utils.table_to_book(table, {sheet:"Экзамены"});
-            XLSX.writeFile(wb, "exam_results.xlsx");
-        }
-
-        document.addEventListener("DOMContentLoaded", loadData);
+        document.addEventListener('contextmenu', e => e.preventDefault());
+        document.addEventListener('keydown', e => {
+            if(e.key === 'F12' || (e.ctrlKey && (e.key === 'u' || e.key === 'c'))) e.preventDefault();
+        });
     </script>
-    <script src="https://cdnjs.cloudflare.com/ajax/libs/xlsx/0.17.0/xlsx.full.min.js"></script>
 </body>
 </html>
