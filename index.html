@@ -439,9 +439,9 @@ window.addEventListener('load', () => {
         function showWelcomeMessage(username) {
             const hour = new Date().getHours();
             let greeting = '', timeClass = '';
-            if (hour >= 5 && hour < 12) { greeting = 'Доброе утро🏙️'; timeClass = 'morning'; }
-            else if (hour >= 12 && hour < 18) { greeting = 'Добрый день'; timeClass = 'afternoon'; }
-            else if (hour >= 18 && hour < 22) { greeting = 'Добрый вечер🌙'; timeClass = 'evening'; }
+            if (hour >= 5 && hour < 11) { greeting = 'Доброе утро🏙️'; timeClass = 'morning'; }
+            else if (hour >= 12 && hour < 17) { greeting = 'Добрый день'; timeClass = 'afternoon'; }
+            else if (hour >= 18 && hour < 21) { greeting = 'Добрый вечер🌙'; timeClass = 'evening'; }
             else { greeting = 'Доброй ночи🌙'; timeClass = 'night'; }
             
             welcomeContainer.className = `welcome-container active ${timeClass}`;
