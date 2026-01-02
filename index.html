@@ -31,6 +31,16 @@
             padding: 0;
             box-sizing: border-box;
             font-family: 'Roboto', sans-serif;
+            -webkit-tap-highlight-color: transparent;
+            -webkit-user-select: none;
+            -moz-user-select: none;
+            -ms-user-select: none;
+            user-select: none;
+        }
+
+        *:focus {
+            outline: none !important;
+            box-shadow: none !important;
         }
 
         body {
@@ -45,44 +55,29 @@
             overflow: hidden;
             position: relative;
         }
-        /* Убираем синий фон при нажатии на мобильных устройствах и отключаем выделение текста */
-* {
-  -webkit-tap-highlight-color: transparent; /* Для iOS и Android */
-  -webkit-user-select: none; /* Safari */
-  -moz-user-select: none; /* Firefox */
-  -ms-user-select: none; /* Internet Explorer/Edge */
-  user-select: none; /* Стандартный синтаксис */
-}
 
-/* Убираем синюю рамку, которая появляется при фокусе на элементах */
-*:focus {
-  outline: none !important;
-  box-shadow: none !important; /* На всякий случай, если используется box-shadow для фокуса */
-}
-        
+        /* === 1. ИСПРАВЛЕНИЕ БЕЛОГО ФОНА АВТОЗАПОЛНЕНИЯ (Autofill Fix) === */
+        input:-webkit-autofill,
+        input:-webkit-autofill:hover, 
+        input:-webkit-autofill:focus, 
+        input:-webkit-autofill:active{
+            -webkit-box-shadow: 0 0 0 30px rgba(0,0,0,0) inset !important; /* Делаем тень прозрачной */
+            -webkit-text-fill-color: var(--light-color) !important; /* Цвет текста */
+            transition: background-color 5000s ease-in-out 0s; /* Задержка смены фона на 5000 секунд */
+        }
 
         .login-wrapper {
             width: 100%;
             min-height: 100vh;
             display: flex;
-            justify-content: flex-end; /* Form on the right for large screens */
+            justify-content: flex-end;
             align-items: center;
             padding: 2rem;
+            position: relative;
+            z-index: 10;
         }
 
-        /* Toast Notification Styles */
-        #toast-container {
-            position: fixed; top: 20px; right: 20px; z-index: 1000; display: flex; flex-direction: column; gap: 10px;
-        }
-        .toast {
-            background-color: rgba(30, 30, 30, 0.9); color: var(--light-color); padding: 15px 25px; border-radius: 10px;
-            box-shadow: 0 5px 15px rgba(0, 0, 0, 0.3); border: 1px solid rgba(255, 255, 255, 0.1); backdrop-filter: blur(5px);
-            transform: translateX(120%); transition: transform 0.5s ease-in-out; min-width: 250px; max-width: 400px; opacity: 0;
-        }
-        .toast.show { transform: translateX(0); opacity: 1; }
-        .toast.error { border-left: 5px solid var(--error-color); background-color: red; }
-
-        /* Form acts as its own container */
+        /* === 2. ЭФФЕКТ LIQUID GLASS / iOS Style === */
         form {
             width: 100%;
             max-width: 500px;
@@ -91,8 +86,22 @@
             justify-content: center;
             align-items: center;
             padding: 3rem 2.5rem;
-            background-color: transparent; border-radius: 25px; backdrop-filter: blur(1px);
-            box-shadow: 0 25px 45px rgba(0, 0, 0, 0.4); border: 1px solid rgba(0, 212, 255, 0.2);
+            
+            /* Новые стили стекла */
+            background: rgba(255, 255, 255, 0.05); /* Очень прозрачный фон */
+            border-radius: 30px;
+            
+            /* Эффект размытия заднего фона (Blur) */
+            backdrop-filter: blur(1px) saturate(180%);
+            -webkit-backdrop-filter: blur(1px) saturate(180%);
+            
+            /* Тонкая светящаяся рамка */
+            border: 1px solid rgba(255, 255, 255, 0.18);
+            border-top: 1px solid rgba(255, 255, 255, 0.3);
+            border-left: 1px solid rgba(255, 255, 255, 0.3);
+            
+            /* Мягкая тень для глубины */
+            box-shadow: 0 8px 32px 0 rgba(0, 0, 0, 0.37);
         }
 
         .title {
@@ -105,10 +114,12 @@
         }
 
         .input-group { position: relative; width: 100%; margin: 20px 0; }
+        
         .input-field {
             width: 100%; background: transparent; border: none; outline: none; color: var(--light-color); font-size: 1.1rem;
             padding: 10px 5px; border-bottom: 2px solid rgba(255, 255, 255, 0.3); transition: border-color 0.3s ease;
         }
+        
         .input-label {
             position: absolute; top: 50%; left: 5px; transform: translateY(-50%); color: rgba(255, 255, 255, 0.5);
             pointer-events: none; transition: all 0.3s ease;
@@ -121,23 +132,12 @@
         .toggle-password { right: 5px; cursor: pointer; }
         .input-field:focus ~ .input-icon { color: var(--primary-color); }
 
-        /* Remember Me Checkbox */
         .remember-me {
-            width: 100%;
-            display: flex;
-            align-items: center;
-            justify-content: flex-start;
-            margin: -5px 0 15px 0;
-            color: rgba(255, 255, 255, 0.7);
+            width: 100%; display: flex; align-items: center; justify-content: flex-start;
+            margin: -5px 0 15px 0; color: rgba(255, 255, 255, 0.7);
         }
-        .remember-me label {
-            margin-left: 8px;
-            font-size: 0.9rem;
-            cursor: pointer;
-        }
-        .remember-me input {
-            accent-color: var(--primary-color);
-        }
+        .remember-me label { margin-left: 8px; font-size: 0.9rem; cursor: pointer; }
+        .remember-me input { accent-color: var(--primary-color); }
 
         .btn {
             width: 160px; height: 49px; border: none; outline: none; border-radius: 49px; cursor: pointer;
@@ -150,7 +150,44 @@
             box-shadow: 0 0 20px rgba(0, 212, 255, 0.5); transform: translateY(-3px);
         }
         
-        /* Welcome Container Styles */
+        /* === 3. СНЕЖИНКИ (SNOW) === */
+        .snowflake {
+            position: fixed;
+            top: -10px;
+            color: #fff;
+            font-size: 1em;
+            font-family: Arial;
+            text-shadow: 0 0 1px #000;
+            z-index: 1; /* Под формой, но над фоном */
+            user-select: none;
+            cursor: default;
+            animation-name: snowflakes-fall, snowflakes-shake;
+            animation-duration: 10s, 3s;
+            animation-timing-function: linear, ease-in-out;
+            animation-iteration-count: infinite, infinite;
+            opacity: 0.8;
+        }
+        
+        @keyframes snowflakes-fall {
+            0% { top: -10%; }
+            100% { top: 100%; }
+        }
+        @keyframes snowflakes-shake {
+            0% { transform: translateX(0px); }
+            50% { transform: translateX(80px); }
+            100% { transform: translateX(0px); }
+        }
+
+        /* Toast & Welcome styles (Unchanged) */
+        #toast-container { position: fixed; top: 20px; right: 20px; z-index: 1000; display: flex; flex-direction: column; gap: 10px; }
+        .toast {
+            background-color: rgba(30, 30, 30, 0.9); color: var(--light-color); padding: 15px 25px; border-radius: 10px;
+            box-shadow: 0 5px 15px rgba(0, 0, 0, 0.3); border: 1px solid rgba(255, 255, 255, 0.1); backdrop-filter: blur(5px);
+            transform: translateX(120%); transition: transform 0.5s ease-in-out; min-width: 250px; max-width: 400px; opacity: 0;
+        }
+        .toast.show { transform: translateX(0); opacity: 1; }
+        .toast.error { border-left: 5px solid var(--error-color); background-color: rgba(255, 0, 0, 0.2); }
+        
         .welcome-container {
             position: fixed; top: 0; left: 0; width: 100%; height: 100%; background-size: cover; background-position: center; background-repeat: no-repeat;
             display: flex; justify-content: center; align-items: center; flex-direction: column; z-index: 100; opacity: 0; pointer-events: none;
@@ -171,112 +208,33 @@
         .welcome-message { font-size: 1.2rem; margin-top: 2rem; line-height: 1.6; color: var(--light-color); max-width: 800px; padding: 0 1rem; transition: transform 0.8s ease, opacity 0.8s ease; transition-delay: 0.5s; opacity: 0; transform: translateY(20px); }
         .welcome-container.active .welcome-message { opacity: 0.9; transform: translateY(0); }
         
-        /* Other Animations (Unchanged) */
         .binary-code { position: absolute; top: 0; left: 0; width: 100%; height: 100%; overflow: hidden; z-index: -2; opacity: 0.1; }
-        .binary-line { position: absolute; color: var(--neon-green); font-family: 'Courier New', monospace; font-size: 14px; white-space: nowrap; animation: fall linear infinite; }
-        @keyframes fall { 0% { transform: translateY(-100%); } 100% { transform: translateY(100vh); } }
         .confetti { position: absolute; width: 15px; height: 15px; background-color: var(--primary-color); border-radius: 50%; animation: confetti 5s ease-in-out infinite; opacity: 0; z-index: 102; }
-        .confetti:nth-child(1) { left: 10%; animation-delay: 0s; } .confetti:nth-child(2) { left: 20%; animation-delay: 0.5s; } .confetti:nth-child(3) { left: 30%; animation-delay: 1s; } .confetti:nth-child(4) { left: 40%; animation-delay: 1.5s; } .confetti:nth-child(5) { left: 50%; animation-delay: 2s; }
         @keyframes confetti { 0% { transform: translateY(0) rotate(0deg); opacity: 1; } 100% { transform: translateY(100vh) rotate(720deg); opacity: 0; } }
         
-        /* Responsive */
         @media (max-width: 768px) {
-            .login-wrapper {
-                justify-content: center; /* Center form on mobile */
-            }
-            form {
-                width: 100%;
-                padding: 2rem 1rem;
-            }
+            .login-wrapper { justify-content: center; }
+            form { width: 100%; padding: 2rem 1rem; }
             .title { font-size: 2rem; }
             .welcome-container h1 { font-size: 2rem; }
             .welcome-message { font-size: 1rem; }
         }
 
-        /* === СТИЛИ ДЛЯ ЭКРАНА ЗАГРУЗКИ === */
-#splash-screen {
-    position: fixed;
-    top: 0;
-    left: 0;
-    width: 100%;
-    height: 100%;
-    /* Используем тот же фон, что и у страницы, для бесшовного перехода */
-    background: #14213d;
-    display: flex;
-    flex-direction: column;
-    justify-content: center;
-    align-items: center;
-    z-index: 9999; /* Выше всех остальных элементов */
-    transition: opacity 0.8s ease-out, visibility 0.8s ease-out;
-    opacity: 1;
-    visibility: visible;
-}
-
-/* Класс для плавного скрытия экрана */
-#splash-screen.hidden {
-    opacity: 0;
-    visibility: hidden;
-}
-
-/* Стили для элементов внутри экрана загрузки */
-.splash-logo, .splash-title, .splash-subtitle {
-    opacity: 0; /* Изначально невидимы */
-    transform: translateY(20px); /* Немного сдвинуты вниз */
-    transition: opacity 0.6s ease-out, transform 0.6s ease-out;
-}
-
-/* Стили для логотипа */
-.splash-logo {
-    width: 120px;
-    height: auto;
-    margin-bottom: 20px;
-    transition-delay: 0.2s; /* Появится первым */
-}
-
-/* Стили для заголовка "Добро пожаловать!" */
-.splash-title {
-    font-family: 'Orbitron', sans-serif;
-    font-size: 2.5rem;
-    color: var(--light-color);
-    text-shadow: 0 0 15px var(--primary-color);
-    transition-delay: 0.5s; /* Появится вторым */
-}
-
-/* Стили для подзаголовка "Безопасное соединение..." */
-.splash-subtitle {
-    font-size: 1rem;
-    color: rgba(230, 247, 255, 0.7);
-    margin-top: 15px;
-    letter-spacing: 1px;
-    transition-delay: 0.8s; /* Появится третьим */
-}
-
-/* Класс, который мы будем добавлять через JS для запуска анимации */
-#splash-screen.visible .splash-logo,
-#splash-screen.visible .splash-title,
-#splash-screen.visible .splash-subtitle {
-    opacity: 1;
-    transform: translateY(0);
-}
-
-/* Анимация для точек в надписи "Безопасное соединение..." */
-.splash-subtitle .dot {
-    opacity: 0;
-    animation: blink 1.4s infinite;
-}
-.splash-subtitle .dot:nth-child(2) {
-    animation-delay: 0.2s;
-}
-.splash-subtitle .dot:nth-child(3) {
-    animation-delay: 0.4s;
-}
-
-@keyframes blink {
-    0% { opacity: 0; }
-    50% { opacity: 1; }
-    100% { opacity: 0; }
-}
-
+        #splash-screen {
+            position: fixed; top: 0; left: 0; width: 100%; height: 100%; background: #14213d;
+            display: flex; flex-direction: column; justify-content: center; align-items: center;
+            z-index: 9999; transition: opacity 0.8s ease-out, visibility 0.8s ease-out; opacity: 1; visibility: visible;
+        }
+        #splash-screen.hidden { opacity: 0; visibility: hidden; }
+        .splash-logo, .splash-title, .splash-subtitle { opacity: 0; transform: translateY(20px); transition: opacity 0.6s ease-out, transform 0.6s ease-out; }
+        .splash-logo { width: 120px; height: auto; margin-bottom: 20px; transition-delay: 0.2s; }
+        .splash-title { font-family: 'Orbitron', sans-serif; font-size: 2.5rem; color: var(--light-color); text-shadow: 0 0 15px var(--primary-color); transition-delay: 0.5s; }
+        .splash-subtitle { font-size: 1rem; color: rgba(230, 247, 255, 0.7); margin-top: 15px; letter-spacing: 1px; transition-delay: 0.8s; }
+        #splash-screen.visible .splash-logo, #splash-screen.visible .splash-title, #splash-screen.visible .splash-subtitle { opacity: 1; transform: translateY(0); }
+        .splash-subtitle .dot { opacity: 0; animation: blink 1.4s infinite; }
+        .splash-subtitle .dot:nth-child(2) { animation-delay: 0.2s; }
+        .splash-subtitle .dot:nth-child(3) { animation-delay: 0.4s; }
+        @keyframes blink { 0% { opacity: 0; } 50% { opacity: 1; } 100% { opacity: 0; } }
     </style>
 </head>
 <body>
@@ -289,22 +247,21 @@
     </p>
 </div>
 
-    
-    <div id="toast-container"></div>
+<div id="snow-container"></div> <div id="toast-container"></div>
     <div class="binary-code" id="binary-code"></div>
 
     <div class="login-wrapper">
         <form class="sign-in-form" id="signin-form">
-            <h2 class="title">Вход</h2>
+            <h2 class="title">Вход❄️</h2>
 
             <div class="input-group">
                 <input type="email" id="signin-email" class="input-field" required>
-                <label for="signin-email" class="input-label">Email</label>
+                <label for="signin-email" class="input-label">❄️Email</label>
             </div>
 
             <div class="input-group">
                 <input type="password" id="signin-password" class="input-field" required>
-                <label for="signin-password" class="input-label">Пароль</label>
+                <label for="signin-password" class="input-label">❄️Пароль</label>
                 <i class="fas fa-eye toggle-password input-icon" id="toggle-signin-password"></i>
             </div>
             
@@ -327,7 +284,34 @@
     <script src="https://www.gstatic.com/firebasejs/8.10.0/firebase-auth.js"></script>
 
     <script>
-        // Register Service Worker for offline functionality
+        // === ЛОГИКА СНЕГА (ТОЛЬКО ЯНВАРЬ) ===
+        document.addEventListener('DOMContentLoaded', () => {
+            const date = new Date();
+            // Месяцы в JS начинаются с 0 (Январь = 0, Февраль = 1)
+            // Условие: Если месяц 0 (Январь)
+            if (date.getMonth() === 0) {
+                createSnowflakes();
+            }
+        });
+
+        function createSnowflakes() {
+            const snowContainer = document.getElementById('snow-container');
+            const numberOfSnowflakes = 50; // Количество снежинок
+            
+            for (let i = 0; i < numberOfSnowflakes; i++) {
+                const snowflake = document.createElement('div');
+                snowflake.className = 'snowflake';
+                snowflake.innerHTML = '❅'; // Символ снежинки
+                snowflake.style.left = Math.random() * 100 + 'vw';
+                snowflake.style.animationDuration = (Math.random() * 3 + 7) + 's, ' + (Math.random() * 3 + 2) + 's'; // Разная скорость
+                snowflake.style.animationDelay = (Math.random() * 5) + 's';
+                snowflake.style.fontSize = (Math.random() * 10 + 10) + 'px'; // Разный размер
+                snowflake.style.opacity = Math.random();
+                snowContainer.appendChild(snowflake);
+            }
+        }
+
+        // Register Service Worker
         if ('serviceWorker' in navigator) {
             window.addEventListener('load', () => {
                 navigator.serviceWorker.register('/service-worker.js')
@@ -337,29 +321,19 @@
         }
 
         // === ЛОГИКА ДЛЯ ЭКРАНА ЗАГРУЗКИ ===
-window.addEventListener('load', () => {
-    const splashScreen = document.getElementById('splash-screen');
+        window.addEventListener('load', () => {
+            const splashScreen = document.getElementById('splash-screen');
+            if (sessionStorage.getItem('splashScreenShown')) {
+                splashScreen.style.display = 'none';
+                return;
+            }
+            setTimeout(() => { splashScreen.classList.add('visible'); }, 10);
+            setTimeout(() => {
+                splashScreen.classList.add('hidden');
+                sessionStorage.setItem('splashScreenShown', 'true');
+            }, 2000);
+        });
 
-    // Проверяем, был ли экран уже показан в этой сессии
-    if (sessionStorage.getItem('splashScreenShown')) {
-        splashScreen.style.display = 'none'; // Если да, сразу скрываем
-        return;
-    }
-
-    // 1. Запускаем анимацию появления элементов
-    setTimeout(() => {
-        splashScreen.classList.add('visible');
-    }, 10); // Небольшая задержка для старта
-
-    // 2. Скрываем экран загрузки через 4 секунды
-    setTimeout(() => {
-        splashScreen.classList.add('hidden');
-        // Запоминаем, что экран был показан, чтобы не появляться при перезагрузке
-        sessionStorage.setItem('splashScreenShown', 'true');
-    }, 2000); // 4000 миллисекунд = 4 секунды
-});
-
-    
         // Firebase configuration
         const firebaseConfig = {
             apiKey: "AIzaSyCAOfxPW5m2UqtulWzuh3egOjJ-ti-rDf8",
@@ -371,21 +345,17 @@ window.addEventListener('load', () => {
             measurementId: "G-XN40PT5PV2"
         };
 
-        // Initialize Firebase
         firebase.initializeApp(firebaseConfig);
         const auth = firebase.auth();
 
-        // DOM Elements
         const signInForm = document.getElementById('signin-form');
         const welcomeContainer = document.getElementById('welcome-container');
         const greetingText = document.getElementById('greeting-text');
         const usernameElement = document.getElementById('username');
         const toggleSignInPassword = document.getElementById('toggle-signin-password');
         const signInPassword = document.getElementById('signin-password');
-        const binaryCodeContainer = document.getElementById('binary-code');
         const rememberMeCheckbox = document.getElementById('remember-me-checkbox');
 
-        // Function to show a Toast notification
         function showToast(message, type = 'info') {
             const toastContainer = document.getElementById('toast-container');
             const toast = document.createElement('div');
@@ -399,7 +369,6 @@ window.addEventListener('load', () => {
             }, 4000);
         }
 
-        // Toggle password visibility
         toggleSignInPassword.addEventListener('click', () => {
             const type = signInPassword.getAttribute('type') === 'password' ? 'text' : 'password';
             signInPassword.setAttribute('type', type);
@@ -407,7 +376,6 @@ window.addEventListener('load', () => {
             toggleSignInPassword.classList.toggle('fa-eye-slash');
         });
 
-        // Sign in function
         signInForm.addEventListener('submit', (e) => {
             e.preventDefault();
             if (!navigator.onLine) {
@@ -435,7 +403,6 @@ window.addEventListener('load', () => {
                 });
         });
 
-        // Show welcome message
         function showWelcomeMessage(username) {
             const hour = new Date().getHours();
             let greeting = '', timeClass = '';
@@ -447,56 +414,34 @@ window.addEventListener('load', () => {
             welcomeContainer.className = `welcome-container active ${timeClass}`;
             usernameElement.textContent = username;
             greetingText.textContent = `${greeting} \n${username}!`
-                greetingText.style.whiteSpace = "pre-line";
+            greetingText.style.whiteSpace = "pre-line";
 
             document.querySelectorAll('.confetti').forEach((item, index) => {
                 setTimeout(() => { item.style.opacity = '1'; }, index * 200);
             });
-            // Перенаправление через 4 секунды
 
-setTimeout(() => {
-window.location.href ='home.html';
-}, 5000); // 4000 миллисекунд = 4секунды
+            setTimeout(() => {
+                window.location.href ='home.html';
+            }, 5000); 
         }
         
-        // Auto-login check
         auth.onAuthStateChanged((user) => {
             if (user) {
                 console.log("User is signed in:", user.email);
-                document.querySelector('.login-wrapper').style.display = 'none'; // Hide form if logged in
+                document.querySelector('.login-wrapper').style.display = 'none';
                 showWelcomeMessage(user.displayName || user.email.split('@')[0]);
             } else {
                 console.log("User is signed out.");
-                 document.querySelector('.login-wrapper').style.display = 'flex'; // Show form if logged out
+                 document.querySelector('.login-wrapper').style.display = 'flex';
             }
         });
         
-        // Generate binary code animation
-        function generateBinaryCode() { /* Function remains the same */ }
-        generateBinaryCode();
-        // Блокировка клика правой кнопкой мыши
-document.addEventListener('contextmenu', function(e) {
-  e.preventDefault();
-});
-
-// Блокировка клавиш
-document.addEventListener('keydown', function(e) {
-  // Блокировка F12
-  if (e.key === 'F12') {
-    e.preventDefault();
-  }
-
-  // Блокировка Ctrl+U (просмотр кода)
-  if (e.ctrlKey && e.key === 'u') {
-    e.preventDefault();
-  }
-
-  // Блокировка Ctrl+C (копирование)
-  if (e.ctrlKey && e.key === 'c') {
-    e.preventDefault();
-  }
-});
-
+        document.addEventListener('contextmenu', function(e) { e.preventDefault(); });
+        document.addEventListener('keydown', function(e) {
+            if (e.key === 'F12' || (e.ctrlKey && e.key === 'u') || (e.ctrlKey && e.key === 'c')) {
+                e.preventDefault();
+            }
+        });
     </script>
 </body>
 </html>
